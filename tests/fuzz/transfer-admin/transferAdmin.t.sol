@@ -10,7 +10,7 @@ import { Unit_Test } from "../../Unit.t.sol";
 contract TransferAdmin_Unit_Fuzz_Test is Unit_Test {
     AdminableMock internal adminableMock;
 
-    function setUp() public virtual override {
+    function setUp() public override {
         Unit_Test.setUp();
 
         adminableMock = new AdminableMock(admin);

@@ -10,7 +10,7 @@ contract Batch_Unit_Concrete_Test is Unit_Test {
     uint256 internal newNumber = 100;
     bytes[] internal results;
 
-    function setUp() public virtual override {
+    function setUp() public override {
         Unit_Test.setUp();
 
         batchMock = new BatchMock();

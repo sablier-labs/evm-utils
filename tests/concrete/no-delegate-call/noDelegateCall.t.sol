@@ -9,7 +9,7 @@ import { Unit_Test } from "../../Unit.t.sol";
 contract NoDelegateCall_Unit_Concrete_Test is Unit_Test {
     NoDelegateCallMock internal noDelegateCallMock;
 
-    function setUp() public virtual override {
+    function setUp() public override {
         Unit_Test.setUp();
 
         noDelegateCallMock = new NoDelegateCallMock();
