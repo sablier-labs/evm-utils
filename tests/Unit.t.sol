@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { StdAssertions } from "forge-std/src/StdAssertions.sol";
-import { BaseTest } from "src/utils/BaseTest.sol";
+import { BaseTest } from "src/test/BaseTest.sol";
 
 abstract contract Unit_Test is BaseTest, StdAssertions {
     address internal admin;
