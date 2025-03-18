@@ -35,14 +35,6 @@ abstract contract Adminable is IAdminable {
         emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }
 
-    /// @dev A private function is used instead of inlining this logic in a modifier because Solidity copies modifiers
-    /// into every function that uses them.
-    function _onlyAdmin() private view {
-        if (admin != msg.sender) {
-            revert Errors.CallerNotAdmin({ admin: admin, caller: msg.sender });
-        }
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                          USER-FACING NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -54,5 +46,17 @@ abstract contract Adminable is IAdminable {
 
         // Log the transfer of the admin.
         emit IAdminable.TransferAdmin({ oldAdmin: msg.sender, newAdmin: newAdmin });
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                             PRIVATE CONSTANT FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev A private function is used instead of inlining this logic in a modifier because Solidity copies modifiers
+    /// into every function that uses them.
+    function _onlyAdmin() private view {
+        if (admin != msg.sender) {
+            revert Errors.CallerNotAdmin({ admin: admin, caller: msg.sender });
+        }
     }
 }
