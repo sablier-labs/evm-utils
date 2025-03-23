@@ -180,11 +180,6 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         return Strings.equal(profile, "test-optimized");
     }
 
-    /// @dev Duplication of the `setMsgSender` function to maintain backward-compatibility.
-    function resetPrank(address msgSender) internal {
-        setMsgSender(msgSender);
-    }
-
     /// @dev Stops the active prank and sets a new one.
     function setMsgSender(address msgSender) internal {
         vm.stopPrank();
