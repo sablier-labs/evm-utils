@@ -22,25 +22,8 @@ contract TransferAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Co
     }
 
     function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
-        // It should emit {RoleRevoked}, {RoleGranted} and {TransferAdmin} events.
-        vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IAccessControl.RoleRevoked({ role: DEFAULT_ADMIN_ROLE, account: admin, sender: admin });
-        vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IAccessControl.RoleGranted({ role: DEFAULT_ADMIN_ROLE, account: admin, sender: admin });
-        vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IRoleAdminable.TransferAdmin({ oldAdmin: admin, newAdmin: admin });
-
-        // Transfer the admin.
-        roleAdminableMock.transferAdmin(admin);
-
-        // It should keep the same admin.
-        address actualAdmin = roleAdminableMock.admin();
-        address expectedAdmin = admin;
-        assertEq(actualAdmin, expectedAdmin, "admin");
-
-        // It should keep the admin role.
-        bool actualHasRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
-        assertTrue(actualHasRole, "hasRole");
+        // Transfer ownership to the same admin.
+        _testTransferAdmin(admin, admin);
     }
 
     modifier whenNewAdminNotSameAsCurrentAdmin() {
@@ -48,50 +31,42 @@ contract TransferAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Co
     }
 
     function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
-        // It should emit {RoleRevoked}, {RoleGranted} and {TransferAdmin} events.
-        vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IAccessControl.RoleRevoked({ role: DEFAULT_ADMIN_ROLE, account: admin, sender: admin });
-        vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IAccessControl.RoleGranted({ role: DEFAULT_ADMIN_ROLE, account: address(0), sender: admin });
-        vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IRoleAdminable.TransferAdmin({ oldAdmin: admin, newAdmin: address(0) });
-
-        // Transfer the admin.
-        roleAdminableMock.transferAdmin(address(0));
-
-        // It should set the admin to the zero address.
-        address actualAdmin = roleAdminableMock.admin();
-        address expectedAdmin = address(0);
-        assertEq(actualAdmin, expectedAdmin, "admin");
+        // Transfer ownership to the zero address.
+        _testTransferAdmin(admin, address(0));
 
         // It should revoke the admin role.
-        bool actualHasRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
-        assertFalse(actualHasRole, "hasRole");
+        bool hasOldAdminRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
+        assertFalse(hasOldAdminRole, "hasRole");
     }
 
     function test_WhenNewAdminNotZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
+        // Transfer ownership to alice.
+        _testTransferAdmin(admin, alice);
+
+        // It should revoke the admin role from the old admin.
+        bool hasOldAdminRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
+        assertFalse(hasOldAdminRole, "hasRole");
+    }
+
+    /// @dev Private function to test transfer admin.
+    function _testTransferAdmin(address oldAdmin, address newAdmin) private {
         // It should emit {RoleRevoked}, {RoleGranted} and {TransferAdmin} events.
         vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IAccessControl.RoleRevoked({ role: DEFAULT_ADMIN_ROLE, account: admin, sender: admin });
+        emit IAccessControl.RoleRevoked({ role: DEFAULT_ADMIN_ROLE, account: oldAdmin, sender: oldAdmin });
         vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IAccessControl.RoleGranted({ role: DEFAULT_ADMIN_ROLE, account: alice, sender: admin });
+        emit IAccessControl.RoleGranted({ role: DEFAULT_ADMIN_ROLE, account: newAdmin, sender: oldAdmin });
         vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IRoleAdminable.TransferAdmin({ oldAdmin: admin, newAdmin: alice });
+        emit IRoleAdminable.TransferAdmin(oldAdmin, newAdmin);
 
         // Transfer the admin.
-        roleAdminableMock.transferAdmin(alice);
+        roleAdminableMock.transferAdmin(newAdmin);
 
         // It should set the new admin.
         address actualAdmin = roleAdminableMock.admin();
-        address expectedAdmin = alice;
-        assertEq(actualAdmin, expectedAdmin, "admin");
+        assertEq(actualAdmin, newAdmin, "admin");
 
-        // It should revoke the admin role from the old admin.
-        bool actualHasRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
-        assertFalse(actualHasRole, "hasRole");
-
-        // It should grant the admin role to alice.
-        actualHasRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, alice);
-        assertTrue(actualHasRole, "hasRole");
+        // It should grant the admin role to new admin.
+        bool hasNewAdminRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, newAdmin);
+        assertTrue(hasNewAdminRole, "hasRole");
     }
 }
