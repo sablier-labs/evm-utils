@@ -54,9 +54,11 @@ contract TransferAdmin_RoleAdminable_Unit_Fuzz_Test is Unit_Test {
         address actualAdmin = roleAdminableMock.admin();
         assertEq(actualAdmin, newAdmin, "admin");
 
-        // Assert that the old admin has been revoked the admin role.
-        bool hasOldAdminRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
-        assertFalse(hasOldAdminRole, "hasRole");
+        // Assert that the old admin has been revoked the admin role if the new admin is different.
+        if (newAdmin != admin) {
+            bool hasOldAdminRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
+            assertFalse(hasOldAdminRole, "hasRole");
+        }
 
         // Assert that the new admin has been granted the admin role.
         bool hasNewAdminRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, newAdmin);
