@@ -31,7 +31,7 @@ interface IRoleAdminable is IAccessControl {
     function admin() external view returns (address);
 
     /// @notice Returns `true` if `msg.sender` has the `role` or is the admin.
-    function hasRoleOrAdmin(bytes32 role) external view returns (bool);
+    function hasRoleOrIsAdmin(bytes32 role) external view returns (bool);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS

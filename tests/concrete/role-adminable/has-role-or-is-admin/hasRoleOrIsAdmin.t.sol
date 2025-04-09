@@ -3,11 +3,11 @@ pragma solidity >=0.8.22 <0.9.0;
 
 import { RoleAdminable_Unit_Concrete_Test } from "../RoleAdminable.t.sol";
 
-contract HasRoleOrAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Concrete_Test {
+contract HasRoleOrIsAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Concrete_Test {
     function test_WhenCallerAdmin() external view {
         // It should return true.
-        bool actualHasRole = roleAdminableMock.hasRoleOrAdmin(FEE_COLLECTOR_ROLE);
-        assertTrue(actualHasRole, "hasRoleOrAdmin");
+        bool actualHasRole = roleAdminableMock.hasRoleOrIsAdmin(FEE_COLLECTOR_ROLE);
+        assertTrue(actualHasRole, "hasRoleOrIsAdmin");
     }
 
     modifier whenCallerNotAdmin() {
@@ -22,8 +22,8 @@ contract HasRoleOrAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_C
         setMsgSender(eve);
 
         // It should return true.
-        bool actualHasRole = roleAdminableMock.hasRoleOrAdmin(FEE_COLLECTOR_ROLE);
-        assertTrue(actualHasRole, "hasRoleOrAdmin");
+        bool actualHasRole = roleAdminableMock.hasRoleOrIsAdmin(FEE_COLLECTOR_ROLE);
+        assertTrue(actualHasRole, "hasRoleOrIsAdmin");
     }
 
     function test_WhenCallerDoesNotHaveRole() external whenCallerNotAdmin {
@@ -31,7 +31,7 @@ contract HasRoleOrAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_C
         setMsgSender(eve);
 
         // It should return false.
-        bool actualHasRole = roleAdminableMock.hasRoleOrAdmin(FEE_COLLECTOR_ROLE);
-        assertFalse(actualHasRole, "hasRoleOrAdmin");
+        bool actualHasRole = roleAdminableMock.hasRoleOrIsAdmin(FEE_COLLECTOR_ROLE);
+        assertFalse(actualHasRole, "hasRoleOrIsAdmin");
     }
 }

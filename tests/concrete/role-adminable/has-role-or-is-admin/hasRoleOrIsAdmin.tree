@@ -1,4 +1,4 @@
-HasRoleOrAdmin_RoleAdminable_Unit_Concrete_Test
+HasRoleOrIsAdmin_RoleAdminable_Unit_Concrete_Test
 ├── when caller admin
 │  └── it should return true
 └── when caller not admin

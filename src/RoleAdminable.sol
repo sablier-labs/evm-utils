@@ -57,7 +57,7 @@ abstract contract RoleAdminable is IRoleAdminable, AccessControl {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IRoleAdminable
-    function hasRoleOrAdmin(bytes32 role) public view override returns (bool) {
+    function hasRoleOrIsAdmin(bytes32 role) public view override returns (bool) {
         return hasRole(role, _msgSender()) || admin == _msgSender();
     }
 
