@@ -22,7 +22,7 @@ contract TransferAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Co
     }
 
     function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
-        // Transfer ownership to the same admin.
+        // Transfer the admin role to the same admin.
         _testTransferAdmin(admin, admin);
     }
 
@@ -31,7 +31,7 @@ contract TransferAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Co
     }
 
     function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
-        // Transfer ownership to the zero address.
+        // Transfer the admin role to the zero address.
         _testTransferAdmin(admin, address(0));
 
         // It should revoke the admin role.
@@ -40,7 +40,7 @@ contract TransferAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Co
     }
 
     function test_WhenNewAdminNotZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
-        // Transfer ownership to alice.
+        // Transfer the admin role to Alice.
         _testTransferAdmin(admin, alice);
 
         // It should revoke the admin role from the old admin.

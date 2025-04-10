@@ -24,7 +24,7 @@ contract OnlyRole_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Concret
     }
 
     function test_WhenCallerHasRole() external whenCallerNotAdmin {
-        // Grant role to eve.
+        // Grant role to Eve.
         roleAdminableMock.grantRole(FEE_COLLECTOR_ROLE, eve);
 
         setMsgSender(eve);

@@ -15,10 +15,10 @@ contract HasRoleOrIsAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit
     }
 
     function test_WhenCallerHasRole() external whenCallerNotAdmin {
-        // Grant role to eve.
+        // Grant role to Eve.
         roleAdminableMock.grantRole(FEE_COLLECTOR_ROLE, eve);
 
-        // Change `msg.sender` to eve.
+        // Change `msg.sender` to Eve.
         setMsgSender(eve);
 
         // It should return true.
@@ -27,7 +27,7 @@ contract HasRoleOrIsAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit
     }
 
     function test_WhenCallerDoesNotHaveRole() external whenCallerNotAdmin {
-        // Change `msg.sender` to eve.
+        // Change `msg.sender` to Eve.
         setMsgSender(eve);
 
         // It should return false.
