@@ -40,8 +40,8 @@ interface IRoleAdminable is IAccessControl {
     /// @notice Transfers the admin to a new address.
     ///
     /// @dev Notes:
-    /// - Revokes the {DEFAULT_ADMIN_ROLE} from the old admin.
-    /// - Grants the {DEFAULT_ADMIN_ROLE} to the new admin.
+    /// - Revokes the {AccessControl.DEFAULT_ADMIN_ROLE} from the old admin.
+    /// - Grants the {AccessControl.DEFAULT_ADMIN_ROLE} to the new admin.
     /// - Does not revert if the admin is the same.
     /// - This function can potentially leave the contract without an admin, thereby removing any
     /// functionality that is only available to the admin.
