@@ -49,7 +49,7 @@ abstract contract RoleAdminable is IRoleAdminable, AccessControl {
         _grantRole(DEFAULT_ADMIN_ROLE, initialAdmin);
 
         // Log the transfer of the admin.
-        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+        emit IRoleAdminable.TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
