@@ -118,7 +118,7 @@ abstract contract RoleAdminable is IRoleAdminable {
     function _checkRole(bytes32 role) private view {
         // Check: `msg.sender` is the admin or has the `role`.
         if (!_hasRoleOrIsAdmin(role)) {
-            revert Errors.AccessControlUnauthorizedAccount({ account: msg.sender, neededRole: role });
+            revert Errors.CallerWithoutRoleOrNotAdmin({ caller: msg.sender, neededRole: role });
         }
     }
 

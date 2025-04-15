@@ -18,8 +18,8 @@ library Errors {
                                     ROLE-ADMINABLE
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Thrown if `account` is missing the `neededRole`.
-    error AccessControlUnauthorizedAccount(address account, bytes32 neededRole);
+    /// @notice Thrown if `caller` is missing the `neededRole` and is not the admin.
+    error CallerWithoutRoleOrNotAdmin(address caller, bytes32 neededRole);
 
     /// @notice Thrown when trying to grant role to an `account` that already has the `role`.
     error RoleAlreadyGranted(bytes32 role, address account);
