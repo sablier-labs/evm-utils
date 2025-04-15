@@ -13,4 +13,17 @@ library Errors {
 
     /// @notice Thrown when trying to delegate call to a function that disallows delegate calls.
     error DelegateCall();
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                    ROLE-ADMINABLE
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown if `account` is missing the `neededRole`.
+    error AccessControlUnauthorizedAccount(address account, bytes32 neededRole);
+
+    /// @notice Thrown when trying to grant role to an `account` that already has the `role`.
+    error RoleAlreadyGranted(bytes32 role, address account);
+
+    /// @notice Thrown when trying to revoke role from an `account` that does not have the `role`.
+    error RoleNotGranted(bytes32 role, address account);
 }

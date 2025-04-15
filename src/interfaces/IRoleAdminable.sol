@@ -1,16 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
-import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
-
 /// @title IRoleAdminable
-/// @notice Contract module that provides role-based access control mechanisms through OpenZeppelin's AccessControl
-/// contract, including an admin that can be granted exclusive access to specific functions. The inheriting contract
-/// must set the initial admin in the constructor.
-interface IRoleAdminable is IAccessControl {
+/// @notice Contract module that provides role-based access control mechanisms, including an admin that can be granted
+/// exclusive access to specific functions. The inheriting contract must set the initial admin in the constructor.
+interface IRoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Emitted when `account` is granted `role`.
+    /// @param admin The address of the admin that granted the role.
+    /// @param account The address of the account to which the role is granted.
+    /// @param role The identifier of the role.
+    event RoleGranted(address indexed admin, address indexed account, bytes32 indexed role);
+
+    /// @notice Emitted when `account` is revoked `role`.
+    /// @param admin The address of the admin that revoked the role.
+    /// @param account The address of the account from which the role is revoked.
+    /// @param role The identifier of the role.
+    event RoleRevoked(address indexed admin, address indexed account, bytes32 indexed role);
 
     /// @notice Emitted when the admin is transferred.
     /// @param oldAdmin The address of the old admin.
@@ -37,11 +46,31 @@ interface IRoleAdminable is IAccessControl {
                                NON-CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @notice Grants `role` to `account`. Reverts if `account` already has the role.
+    ///
+    /// @dev Emits {RoleGranted} event.
+    ///
+    /// Requirements:
+    /// - `msg.sender` must be the admin.
+    ///
+    /// @param role The identifier of the role.
+    /// @param account The address of the account to which the role is granted.
+    function grantRole(bytes32 role, address account) external;
+
+    /// @notice Revokes `role` from `account`. Reverts if `account` does not have the role.
+    ///
+    /// @dev Emits {RoleRevoked} event.
+    ///
+    /// Requirements:
+    /// - `msg.sender` must be the admin.
+    ///
+    /// @param role The identifier of the role.
+    /// @param account The address of the account from which the role is revoked.
+    function revokeRole(bytes32 role, address account) external;
+
     /// @notice Transfers the admin to a new address.
     ///
     /// @dev Notes:
-    /// - Revokes the {AccessControl.DEFAULT_ADMIN_ROLE} from the old admin.
-    /// - Grants the {AccessControl.DEFAULT_ADMIN_ROLE} to the new admin.
     /// - Does not revert if the admin is the same.
     /// - This function can potentially leave the contract without an admin, thereby removing any
     /// functionality that is only available to the admin.

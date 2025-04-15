@@ -13,8 +13,8 @@ abstract contract RoleAdminable_Unit_Concrete_Test is Unit_Test {
         roleAdminableMock = new RoleAdminableMock(admin);
         setMsgSender(admin);
 
-        // It should grant the default role to the admin.
-        bool actualHasRole = roleAdminableMock.hasRole(DEFAULT_ADMIN_ROLE, admin);
-        assertTrue(actualHasRole, "hasRole");
+        assertEq(roleAdminableMock.admin(), admin, "admin");
+        assertEq(roleAdminableMock.FEE_COLLECTOR_ROLE(), keccak256("FEE_COLLECTOR_ROLE"), "fee collector role");
+        assertEq(roleAdminableMock.FEE_MANAGEMENT_ROLE(), keccak256("FEE_MANAGEMENT_ROLE"), "fee management role");
     }
 }
