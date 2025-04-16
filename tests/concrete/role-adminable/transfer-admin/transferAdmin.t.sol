@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.22 <0.9.0;
+pragma solidity >=0.8.22;
 
 import { IRoleAdminable } from "src/interfaces/IRoleAdminable.sol";
 import { Errors } from "src/libraries/Errors.sol";
@@ -8,25 +8,17 @@ import { RoleAdminable_Unit_Concrete_Test } from "../RoleAdminable.t.sol";
 
 contract TransferAdmin_RoleAdminable_Unit_Concrete_Test is RoleAdminable_Unit_Concrete_Test {
     function test_RevertWhen_CallerNotAdmin() external {
-        // Make Eve the caller in this test.
-        setMsgSender(eve);
+        // Make Accountant the caller in this test.
+        setMsgSender(accountant);
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
-        roleAdminableMock.transferAdmin(eve);
-    }
-
-    modifier whenCallerAdmin() {
-        _;
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, accountant));
+        roleAdminableMock.transferAdmin(accountant);
     }
 
     function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
         // Transfer the admin to the same admin.
         _testTransferAdmin(admin, admin);
-    }
-
-    modifier whenNewAdminNotSameAsCurrentAdmin() {
-        _;
     }
 
     function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {

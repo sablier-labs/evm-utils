@@ -39,8 +39,8 @@ interface IRoleAdminable {
     /// @notice Returns the address of the admin.
     function admin() external view returns (address);
 
-    /// @notice Returns `true` if `msg.sender` has the `role` or is the admin.
-    function hasRoleOrIsAdmin(bytes32 role) external view returns (bool);
+    /// @notice Returns `true` if `account` has the `role` or is the admin.
+    function hasRoleOrIsAdmin(bytes32 role, address account) external view returns (bool);
 
     /*//////////////////////////////////////////////////////////////////////////
                                NON-CONSTANT FUNCTIONS

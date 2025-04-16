@@ -1,8 +1,8 @@
-OnlyRole_RoleAdminable_Unit_Concrete_Test
+OnlyAdmin_RoleAdminable_Unit_Concrete_Test
 ├── when caller admin
 │  └── it should execute the function
 └── when caller not admin
    ├── when caller not have role
    │  └── it should revert
    └── when caller has role
-      └── it should execute the function
+      └── it should revert

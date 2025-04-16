@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.22 <0.9.0;
+pragma solidity >=0.8.22;
 
 import { IAdminable } from "src/interfaces/IAdminable.sol";
 import { Errors } from "src/libraries/Errors.sol";
@@ -27,10 +27,6 @@ contract TransferAdmin_Adminable_Unit_Fuzz_Test is Unit_Test {
         // Run the test.
         vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
         adminableMock.transferAdmin(eve);
-    }
-
-    modifier whenCallerAdmin() {
-        _;
     }
 
     function testFuzz_TransferAdmin(address newAdmin) external whenCallerAdmin {

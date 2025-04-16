@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.22 <0.9.0;
+pragma solidity >=0.8.22;
 
 import { IAdminable } from "src/interfaces/IAdminable.sol";
 import { Errors } from "src/libraries/Errors.sol";
@@ -26,10 +26,6 @@ contract TransferAdmin_Adminable_Unit_Concrete_Test is Unit_Test {
         adminableMock.transferAdmin(eve);
     }
 
-    modifier whenCallerAdmin() {
-        _;
-    }
-
     function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
         // It should emit a {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
@@ -42,10 +38,6 @@ contract TransferAdmin_Adminable_Unit_Concrete_Test is Unit_Test {
         address actualAdmin = adminableMock.admin();
         address expectedAdmin = admin;
         assertEq(actualAdmin, expectedAdmin, "admin");
-    }
-
-    modifier whenNewAdminNotSameAsCurrentAdmin() {
-        _;
     }
 
     function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {

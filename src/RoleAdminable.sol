@@ -42,7 +42,7 @@ abstract contract RoleAdminable is IRoleAdminable {
 
     /// @notice Reverts if `msg.sender` neither has the `role` nor is the admin.
     modifier onlyRole(bytes32 role) {
-        _checkRole(role);
+        _checkRoleOrIsAdmin(role);
         _;
     }
 
@@ -65,8 +65,8 @@ abstract contract RoleAdminable is IRoleAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IRoleAdminable
-    function hasRoleOrIsAdmin(bytes32 role) public view override returns (bool) {
-        return _hasRoleOrIsAdmin(role);
+    function hasRoleOrIsAdmin(bytes32 role, address account) public view override returns (bool) {
+        return _hasRoleOrIsAdmin(role, account);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ abstract contract RoleAdminable is IRoleAdminable {
     function grantRole(bytes32 role, address account) public override onlyAdmin {
         // Check: `account` does not have the `role`.
         if (_roles[role][account]) {
-            revert Errors.RoleAlreadyGranted(role, account);
+            revert Errors.AccountAlreadyHasRole(role, account);
         }
 
         // Effect: grant the `role` to `account`.
@@ -91,7 +91,7 @@ abstract contract RoleAdminable is IRoleAdminable {
     function revokeRole(bytes32 role, address account) public override onlyAdmin {
         // Check: `account` has the `role`.
         if (!_roles[role][account]) {
-            revert Errors.RoleNotGranted(role, account);
+            revert Errors.AccountDoesNotHaveRole(role, account);
         }
 
         // Effect: revoke the `role` from `account`.
@@ -115,17 +115,17 @@ abstract contract RoleAdminable is IRoleAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Checks whether `msg.sender` has the `role` or is the admin. This is used in the {onlyRole} modifier.
-    function _checkRole(bytes32 role) private view {
+    function _checkRoleOrIsAdmin(bytes32 role) private view {
         // Check: `msg.sender` is the admin or has the `role`.
-        if (!_hasRoleOrIsAdmin(role)) {
-            revert Errors.CallerWithoutRoleOrNotAdmin({ caller: msg.sender, neededRole: role });
+        if (!_hasRoleOrIsAdmin(role, msg.sender)) {
+            revert Errors.UnauthorizedAccess({ caller: msg.sender, neededRole: role });
         }
     }
 
-    /// @dev Returns `true` if `msg.sender` is the admin or has the `role`.
-    function _hasRoleOrIsAdmin(bytes32 role) private view returns (bool) {
-        // Returns true if `msg.sender` is the admin or has the `role`.
-        if (admin == msg.sender || _roles[role][msg.sender]) {
+    /// @dev Returns `true` if `account` is the admin or has the `role`.
+    function _hasRoleOrIsAdmin(bytes32 role, address account) private view returns (bool) {
+        // Returns true if `account` is the admin or has the `role`.
+        if (admin == account || _roles[role][account]) {
             return true;
         }
 
