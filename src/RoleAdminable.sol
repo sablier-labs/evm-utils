@@ -3,12 +3,13 @@ pragma solidity >=0.8.22;
 
 import { IRoleAdminable } from "./interfaces/IRoleAdminable.sol";
 import { Errors } from "./libraries/Errors.sol";
+import { Adminable } from "./Adminable.sol";
 
 /// @title RoleAdminable
 /// @notice See the documentation in {IRoleAdminable}.
 /// @dev This contract is a lightweight version of OpenZeppelin's AccessControl contract which can be found at
 /// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControl.sol.
-abstract contract RoleAdminable is IRoleAdminable {
+abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
@@ -27,18 +28,9 @@ abstract contract RoleAdminable is IRoleAdminable {
     /// their `bytes32` identifier.
     mapping(bytes32 role => mapping(address account => bool)) private _roles;
 
-    /// @inheritdoc IRoleAdminable
-    address public override admin;
-
     /*//////////////////////////////////////////////////////////////////////////
                                       MODIFIERS
     //////////////////////////////////////////////////////////////////////////*/
-
-    /// @notice Reverts if `msg.sender` is not the admin.
-    modifier onlyAdmin() {
-        _onlyAdmin();
-        _;
-    }
 
     /// @notice Reverts if `msg.sender` neither has the `role` nor is the admin.
     modifier onlyRole(bytes32 role) {
@@ -50,15 +42,8 @@ abstract contract RoleAdminable is IRoleAdminable {
                                      CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial admin.
-    constructor(address initialAdmin) {
-        // Effect: set the admin.
-        admin = initialAdmin;
-
-        // Log the transfer of the admin.
-        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
-    }
+    constructor(address initialAdmin) Adminable(initialAdmin) { }
 
     /*//////////////////////////////////////////////////////////////////////////
                             USER-FACING CONSTANT FUNCTIONS
@@ -101,15 +86,6 @@ abstract contract RoleAdminable is IRoleAdminable {
         emit RoleRevoked({ admin: msg.sender, account: account, role: role });
     }
 
-    /// @inheritdoc IRoleAdminable
-    function transferAdmin(address newAdmin) public virtual override onlyAdmin {
-        // Effect: update the admin.
-        admin = newAdmin;
-
-        // Log the transfer of the admin.
-        emit IRoleAdminable.TransferAdmin({ oldAdmin: msg.sender, newAdmin: newAdmin });
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                              PRIVATE CONSTANT FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -131,12 +107,5 @@ abstract contract RoleAdminable is IRoleAdminable {
 
         // Otherwise, return false.
         return false;
-    }
-
-    /// @dev Checks whether `msg.sender` is the admin. This is used in the {onlyAdmin} modifier.
-    function _onlyAdmin() private view {
-        if (admin != msg.sender) {
-            revert Errors.CallerNotAdmin({ admin: admin, caller: msg.sender });
-        }
     }
 }

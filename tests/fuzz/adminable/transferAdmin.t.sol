@@ -19,7 +19,6 @@ contract TransferAdmin_Adminable_Unit_Fuzz_Test is Unit_Test {
 
     function testFuzz_RevertWhen_CallerNotAdmin(address eve) external {
         vm.assume(eve != address(0) && eve != admin);
-        assumeNotPrecompile(eve);
 
         // Make Eve the caller in this test.
         setMsgSender(eve);
