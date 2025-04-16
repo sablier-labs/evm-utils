@@ -2,7 +2,15 @@
 pragma solidity >=0.8.22;
 
 abstract contract Modifiers {
+    modifier whenAccountHasRole() {
+        _;
+    }
+
     modifier whenAccountNotAdmin() {
+        _;
+    }
+
+    modifier whenAccountNotHaveRole() {
         _;
     }
 

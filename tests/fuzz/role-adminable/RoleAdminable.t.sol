@@ -13,7 +13,8 @@ abstract contract RoleAdminable_Fuzz_Test is Unit_Test {
         roleAdminableMock = new RoleAdminableMock(admin);
         setMsgSender(admin);
 
-        // Grant role to the accountant.
+        // Grant roles to the accountant.
         roleAdminableMock.grantRole(roleAdminableMock.FEE_COLLECTOR_ROLE(), accountant);
+        roleAdminableMock.grantRole(roleAdminableMock.FEE_MANAGEMENT_ROLE(), accountant);
     }
 }
