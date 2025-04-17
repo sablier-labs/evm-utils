@@ -8,7 +8,7 @@ import { Adminable } from "./Adminable.sol";
 /// @title RoleAdminable
 /// @notice See the documentation in {IRoleAdminable}.
 /// @dev This contract is a lightweight version of OpenZeppelin's AccessControl contract which can be found at
-/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/AccessControl.sol.
+/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/access/AccessControl.sol.
 abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /*//////////////////////////////////////////////////////////////////////////
                                      CONSTANTS

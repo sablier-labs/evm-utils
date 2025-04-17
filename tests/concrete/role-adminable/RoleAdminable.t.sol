@@ -18,8 +18,8 @@ abstract contract RoleAdminable_Unit_Concrete_Test is Unit_Test {
 
         // Assert the state variables.
         assertEq(roleAdminableMock.admin(), admin, "admin");
-        assertEq(roleAdminableMock.FEE_COLLECTOR_ROLE(), keccak256("FEE_COLLECTOR_ROLE"), "fee collector role");
-        assertEq(roleAdminableMock.FEE_MANAGEMENT_ROLE(), keccak256("FEE_MANAGEMENT_ROLE"), "fee management role");
+        assertEq(roleAdminableMock.FEE_COLLECTOR_ROLE(), FEE_COLLECTOR_ROLE, "fee collector role");
+        assertEq(roleAdminableMock.FEE_MANAGEMENT_ROLE(), FEE_MANAGEMENT_ROLE, "fee management role");
 
         // Assert that the accountant has the role.
         assertTrue(
