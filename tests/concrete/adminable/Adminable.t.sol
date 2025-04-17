@@ -12,7 +12,9 @@ abstract contract Adminable_Unit_Concrete_Test is Unit_Test {
 
         adminableMock = new AdminableMock(admin);
         setMsgSender(admin);
+    }
 
+    function test_Constructor() public view {
         // Assert the state variables.
         assertEq(adminableMock.admin(), admin, "admin");
     }
