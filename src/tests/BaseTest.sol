@@ -151,9 +151,22 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
 
     /// @dev Forks the Ethereum Mainnet at the latest block and reverts if the environment variable is not set or the
     /// rpc endpoint is not valid.
-    function setUpMainnetFork() internal {
-        vm.createSelectFork({ urlOrAlias: "mainnet" });
-        require(block.chainid == 1, "Fork tests are only available on Ethereum Mainnet. Update your RPC URL in .env");
+    function setUpForkMainnet() internal {
+        setUpFork("mainnet", 1);
+    }
+
+    /// @dev Forks the `chainName` at the latest block and reverts if the environment variable is not set or the
+    /// rpc endpoint is not valid.
+    function setUpFork(string memory chainName, uint256 chainId) internal {
+        vm.createSelectFork({ urlOrAlias: chainName });
+        require(
+            block.chainid == chainId,
+            string.concat(
+                "Fork is not available on the ",
+                chainName,
+                " chain. Update your RPC URL in .env  or pass the correct chainId."
+            )
+        );
     }
 
     /*//////////////////////////////////////////////////////////////////////////
