@@ -11,7 +11,7 @@ import { Adminable } from "./Adminable.sol";
 /// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/access/AccessControl.sol.
 abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /*//////////////////////////////////////////////////////////////////////////
-                                     CONSTANTS
+                                  STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IRoleAdminable
@@ -19,10 +19,6 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
 
     /// @inheritdoc IRoleAdminable
     bytes32 public constant override FEE_MANAGEMENT_ROLE = keccak256("FEE_MANAGEMENT_ROLE");
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                  STATE VARIABLES
-    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev A mapping of role identifiers to the addresses that have been granted the role. Roles are referred to by
     /// their `bytes32` identifier.

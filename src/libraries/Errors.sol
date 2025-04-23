@@ -12,7 +12,7 @@ library Errors {
     error CallerNotAdmin(address admin, address caller);
 
     /*//////////////////////////////////////////////////////////////////////////
-                                    NoDelegateCall
+                                  NO-DELEGATE-CALL
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when trying to delegate call to a function that disallows delegate calls.

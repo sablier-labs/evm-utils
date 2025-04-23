@@ -7,7 +7,7 @@ import { Errors } from "./libraries/Errors.sol";
 /// @notice This contract implements logic to prevent delegate calls.
 abstract contract NoDelegateCall {
     /*//////////////////////////////////////////////////////////////////////////
-                                   CONSTANTS
+                                  STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev The address of the original contract that was deployed.

@@ -9,7 +9,7 @@ abstract contract BaseScript is Script {
     using stdJson for string;
 
     /*//////////////////////////////////////////////////////////////////////////
-                                   CONSTANTS
+                                  STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev The address of the default Sablier admin.
@@ -20,10 +20,6 @@ abstract contract BaseScript is Script {
 
     /// @dev Included to enable compilation of the script without a $MNEMONIC environment variable.
     string public constant TEST_MNEMONIC = "test test test test test test test test test test test junk";
-
-    /*//////////////////////////////////////////////////////////////////////////
-                                   STATE VARIABLES
-    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev Admin address mapped by the chain Id.
     mapping(uint256 chainId => address admin) private _adminMap;
