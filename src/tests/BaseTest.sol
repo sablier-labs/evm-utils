@@ -4,7 +4,9 @@ pragma solidity >=0.8.22;
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { CommonBase as StdBase } from "forge-std/src/Base.sol";
+import { console2 } from "forge-std/src/console2.sol";
 import { StdCheats } from "forge-std/src/StdCheats.sol";
+import { StdStyle } from "forge-std/src/StdStyle.sol";
 import { StdUtils } from "forge-std/src/StdUtils.sol";
 import { IRoleAdminable } from "src/interfaces/IRoleAdminable.sol";
 
@@ -143,6 +145,18 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         return Strings.equal(profile, "test-optimized");
     }
 
+    /// @notice Logs a message in blue color.
+    /// @param message The message to log.
+    function logBlue(string memory message) internal pure {
+        console2.log(StdStyle.blue(message));
+    }
+
+    /// @notice Logs a message in green color with a ✓ checkmark.
+    /// @param message The message to log.
+    function logGreen(string memory message) internal pure {
+        console2.log(StdStyle.green(string.concat(unicode"✓ ", message)));
+    }
+
     /// @dev Stops the active prank and sets a new one.
     function setMsgSender(address msgSender) internal {
         vm.stopPrank();
@@ -162,9 +176,9 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         require(
             block.chainid == chainId,
             string.concat(
-                "Fork is not available on the ",
+                "Provided chain ID does not match the forked chain ",
                 chainName,
-                " chain. Update your RPC URL in .env  or pass the correct chainId."
+                " Update your RPC URL in .env or pass the correct chainId."
             )
         );
     }
