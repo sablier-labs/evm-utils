@@ -147,6 +147,9 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
     function setMsgSender(address msgSender) internal {
         vm.stopPrank();
         vm.startPrank(msgSender);
+
+        // Deal some ETH to the new caller.
+        vm.deal(msgSender, 1 ether);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
