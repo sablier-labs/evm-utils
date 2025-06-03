@@ -8,8 +8,8 @@ import { console2 } from "forge-std/src/console2.sol";
 import { StdCheats } from "forge-std/src/StdCheats.sol";
 import { StdStyle } from "forge-std/src/StdStyle.sol";
 import { StdUtils } from "forge-std/src/StdUtils.sol";
-import { IRoleAdminable } from "src/interfaces/IRoleAdminable.sol";
 
+import { IRoleAdminable } from "../interfaces/IRoleAdminable.sol";
 import { ERC20MissingReturn } from "../mocks/erc20/ERC20MissingReturn.sol";
 import { ERC20Mock } from "../mocks/erc20/ERC20Mock.sol";
 import { ContractWithoutReceive, ContractWithReceive } from "../mocks/Receive.sol";

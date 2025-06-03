@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22;
 
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import { Adminable } from "src/Adminable.sol";
+import { Adminable } from "../../src/Adminable.sol";
 
 contract ERC1271WalletMock is Adminable {
     constructor(address initialAdmin) Adminable(initialAdmin) { }
