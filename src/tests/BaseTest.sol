@@ -108,12 +108,37 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         return new ERC20Mock(name, symbol, decimals);
     }
 
-    /// @dev Generates a user, label its address, funds it with test tokens and approve `spenders` contracts.
-    function createUser(string memory name, address[] memory spenders) internal returns (address payable) {
-        address payable user = payable(makeAddr(name));
+    /// @dev Generates a user, label its address, funds it with test tokens, approve `spenders` contracts and returns
+    /// the user's address.
+    function createUser(string memory name, address[] memory spenders) internal returns (address payable user) {
+        user = payable(makeAddr(name));
         vm.label(user, name);
         vm.deal({ account: user, newBalance: 100 ether });
 
+        dealAndApproveSpenders(user, spenders);
+    }
+
+    /// @dev Generates a user, label its address, funds it with test tokens, approve `spenders` contracts and returns
+    /// the user's address and the private key.
+    function createUserAndKey(
+        string memory name,
+        address[] memory spenders
+    )
+        internal
+        returns (address payable user, uint256 privateKey)
+    {
+        address addr;
+        (addr, privateKey) = makeAddrAndKey(name);
+
+        user = payable(addr);
+        vm.label(user, name);
+        vm.deal({ account: user, newBalance: 100 ether });
+
+        dealAndApproveSpenders(user, spenders);
+    }
+
+    /// @dev Deal tokens to user and approve contracts from spenders list.
+    function dealAndApproveSpenders(address user, address[] memory spenders) internal {
         for (uint256 i = 0; i < spenders.length; ++i) {
             for (uint256 j = 0; j < tokens.length; ++j) {
                 deal({
@@ -124,8 +149,6 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
                 approveContract(address(tokens[j]), user, spenders[i]);
             }
         }
-
-        return user;
     }
 
     /// @dev Retrieves the current block timestamp as an `uint40`.
