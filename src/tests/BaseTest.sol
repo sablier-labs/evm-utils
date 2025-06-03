@@ -108,7 +108,7 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         return new ERC20Mock(name, symbol, decimals);
     }
 
-    /// @dev Generates a user, label its address, funds it with test tokens, approve `spenders` contracts and returns
+    /// @dev Generates a user, labels its address, funds it with test tokens, approves `spenders` contracts and returns
     /// the user's address.
     function createUser(string memory name, address[] memory spenders) internal returns (address payable user) {
         user = payable(makeAddr(name));
@@ -118,7 +118,7 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         dealAndApproveSpenders(user, spenders);
     }
 
-    /// @dev Generates a user, label its address, funds it with test tokens, approve `spenders` contracts and returns
+    /// @dev Generates a user, labels its address, funds it with test tokens, approves `spenders` contracts and returns
     /// the user's address and the private key.
     function createUserAndKey(
         string memory name,
@@ -137,7 +137,7 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         dealAndApproveSpenders(user, spenders);
     }
 
-    /// @dev Deal tokens to user and approve contracts from spenders list.
+    /// @dev Deals tokens to user and approve contracts from spenders list.
     function dealAndApproveSpenders(address user, address[] memory spenders) internal {
         for (uint256 i = 0; i < spenders.length; ++i) {
             for (uint256 j = 0; j < tokens.length; ++j) {
