@@ -15,28 +15,39 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     /// @inheritdoc ISablierComptroller
     uint256 public constant override MAX_FEE_USD = 100e8;
 
-    /// @dev The minimum USD fee charged for withdrawing from a stream.
-    uint256 private _minFeeUSD;
-
     /// @inheritdoc ISablierComptroller
     address public override oracle;
 
-    /// @dev A mapping of custom fees mapped by campaign creator addresses.
-    mapping(address campaignCreator => ISablierComptroller.CustomFeeUSD customFeeUSD) private
-        _campaignCreatorCustomFeesUSD;
+    /// @dev A struct to hold the fees for airdrops.
+    AirdropsFees private airdropsFees;
 
-    /// @dev A mapping of custom fees mapped by campaign sender addresses.
-    mapping(address sender => ISablierComptroller.CustomFeeUSD customFeeUSD) private _senderCustomFeesUSD;
+    /// @dev A struct to hold the fees for flow streams.
+    FlowFees private flowFees;
+
+    /// @dev A struct to hold the fees for lockup streams.
+    LockupFees private lockupFees;
 
     /*//////////////////////////////////////////////////////////////////////////
                                     CONSTRUCTOR
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @param initialAdmin The address of the initial contract admin.
-    /// @param initialMinFeeUSD The initial min USD fee charged.
+    /// @param initialAirdropMinFeeUSD The initial airdrops min USD fee charged.
+    /// @param initialFlowMinFeeUSD The initial flow min USD fee charged.
+    /// @param initialLockupMinFeeUSD The initial lockup min USD fee charged.
     /// @param initialOracle The initial oracle contract address.
-    constructor(address initialAdmin, uint256 initialMinFeeUSD, address initialOracle) RoleAdminable(initialAdmin) {
-        _minFeeUSD = initialMinFeeUSD;
+    constructor(
+        address initialAdmin,
+        uint256 initialAirdropMinFeeUSD,
+        uint256 initialFlowMinFeeUSD,
+        uint256 initialLockupMinFeeUSD,
+        address initialOracle
+    )
+        RoleAdminable(initialAdmin)
+    {
+        airdropsFees.minFeeUSD = initialAirdropMinFeeUSD;
+        flowFees.minFeeUSD = initialFlowMinFeeUSD;
+        lockupFees.minFeeUSD = initialLockupMinFeeUSD;
 
         if (initialOracle != address(0)) {
             _setOracle(initialOracle);
@@ -55,40 +66,71 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWei() external view override returns (uint256) {
-        return _calculateMinFeeWei(_minFeeUSD);
-    }
-
-    /// @inheritdoc ISablierComptroller
     function calculateMinFeeWei(uint256 minFeeUSD) external view override returns (uint256) {
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiForCampaignCreator(address campaignCreator) external view override returns (uint256) {
-        uint256 minFeeUSD = _minFeeUSDForCampaignCreator(campaignCreator);
+    function calculateMinFeeWeiAirdrops() external view override returns (uint256) {
+        return _calculateMinFeeWei(airdropsFees.minFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function calculateMinFeeWeiFlow() external view override returns (uint256) {
+        return _calculateMinFeeWei(flowFees.minFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function calculateMinFeeWeiLockup() external view override returns (uint256) {
+        return _calculateMinFeeWei(lockupFees.minFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view override returns (uint256) {
+        uint256 minFeeUSD = _getAirdropsCustomFeeUSD(campaignCreator);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiForSender(address sender) external view override returns (uint256) {
-        uint256 minFeeUSD = _minFeeUSDForSender(sender);
+    function calculateMinFeeWeiFlowFor(address sender) external view override returns (uint256) {
+        uint256 minFeeUSD = _getFlowCustomFeeUSD(sender);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function getMinFeeUSD() external view override returns (uint256) {
-        return _minFeeUSD;
+    function calculateMinFeeWeiLockupFor(address sender) external view override returns (uint256) {
+        uint256 minFeeUSD = _getLockupCustomFeeUSD(sender);
+        return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function getMinFeeUSDForCampaignCreator(address campaignCreator) external view override returns (uint256) {
-        return _minFeeUSDForCampaignCreator(campaignCreator);
+    function getAirdropsCustomFeeUSD(address campaignCreator) external view override returns (uint256) {
+        return _getAirdropsCustomFeeUSD(campaignCreator);
     }
 
     /// @inheritdoc ISablierComptroller
-    function getMinFeeUSDForSender(address sender) external view override returns (uint256) {
-        return _minFeeUSDForSender(sender);
+    function getAirdropsMinFeeUSD() external view override returns (uint256) {
+        return airdropsFees.minFeeUSD;
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function getFlowCustomFeeUSD(address sender) external view override returns (uint256) {
+        return _getFlowCustomFeeUSD(sender);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function getFlowMinFeeUSD() external view override returns (uint256) {
+        return flowFees.minFeeUSD;
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function getLockupCustomFeeUSD(address sender) external view override returns (uint256) {
+        return _getLockupCustomFeeUSD(sender);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function getLockupMinFeeUSD() external view override returns (uint256) {
+        return lockupFees.minFeeUSD;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -119,47 +161,154 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
-    function disableCustomFeeUSD(address user) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        delete _campaignCreatorCustomFeesUSD[user];
+    function disableAirdropsCustomFeeUSD(address campaignCreator) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+        delete airdropsFees.customFeesUSD[campaignCreator];
 
         // Log the reset.
-        emit DisableCustomFeeUSD(admin, user);
+        emit DisableAirdropsCustomFeeUSD(campaignCreator);
     }
 
     /// @inheritdoc ISablierComptroller
-    function setCustomFeeUSD(address user, uint256 customFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        ISablierComptroller.CustomFeeUSD storage customFee = _campaignCreatorCustomFeesUSD[user];
+    function disableFlowCustomFeeUSD(address sender) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+        delete flowFees.customFeesUSD[sender];
 
+        // Log the reset.
+        emit DisableFlowCustomFeeUSD(sender);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function disableLockupCustomFeeUSD(address sender) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+        delete lockupFees.customFeesUSD[sender];
+
+        // Log the reset.
+        emit DisableLockupCustomFeeUSD(sender);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function setAirdropsCustomFeeUSD(
+        address campaignCreator,
+        uint256 customFeeUSD
+    )
+        external
+        override
+        onlyRole(FEE_MANAGEMENT_ROLE)
+    {
         // Check: the new fee is not greater than the maximum allowed.
         if (customFeeUSD > MAX_FEE_USD) {
             revert Errors.SablierComptroller_MaxFeeUSDExceeded(customFeeUSD, MAX_FEE_USD);
         }
 
         // Effect: enable the custom fee for the user if it is not already enabled.
-        if (!customFee.enabled) {
-            customFee.enabled = true;
+        if (!airdropsFees.customFeesUSD[campaignCreator].enabled) {
+            airdropsFees.customFeesUSD[campaignCreator].enabled = true;
         }
 
         // Effect: update the custom fee for the provided campaign creator.
-        customFee.fee = customFeeUSD;
+        airdropsFees.customFeesUSD[campaignCreator].fee = customFeeUSD;
 
         // Log the update.
-        emit SetCustomFeeUSD({ admin: admin, user: user, customFeeUSD: customFeeUSD });
+        emit SetAirdropsCustomFeeUSD(campaignCreator, customFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function setMinFeeUSD(uint256 newMinFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+    function setAirdropsMinFeeUSD(uint256 newMinFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
         // Check: the new fee is not greater than the maximum allowed.
         if (newMinFeeUSD > MAX_FEE_USD) {
             revert Errors.SablierComptroller_MaxFeeUSDExceeded(newMinFeeUSD, MAX_FEE_USD);
         }
 
-        // Effect: update the min USD fee.
-        uint256 currentMinFeeUSD = _minFeeUSD;
-        _minFeeUSD = newMinFeeUSD;
+        // Load what the previous feewill be.
+        uint256 previousMinFeeUSD = airdropsFees.minFeeUSD;
+
+        // Effect: update the airdrops min USD fee.
+        airdropsFees.minFeeUSD = newMinFeeUSD;
 
         // Log the update.
-        emit SetMinFeeUSD({ admin: admin, newMinFeeUSD: newMinFeeUSD, previousMinFeeUSD: currentMinFeeUSD });
+        emit SetAirdropsMinFeeUSD(newMinFeeUSD, previousMinFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function setFlowCustomFeeUSD(
+        address sender,
+        uint256 customFeeUSD
+    )
+        external
+        override
+        onlyRole(FEE_MANAGEMENT_ROLE)
+    {
+        // Check: the new fee is not greater than the maximum allowed.
+        if (customFeeUSD > MAX_FEE_USD) {
+            revert Errors.SablierComptroller_MaxFeeUSDExceeded(customFeeUSD, MAX_FEE_USD);
+        }
+
+        // Effect: enable the custom fee for the user if it is not already enabled.
+        if (!airdropsFees.customFeesUSD[sender].enabled) {
+            airdropsFees.customFeesUSD[sender].enabled = true;
+        }
+
+        // Effect: update the custom fee for the provided sender.
+        airdropsFees.customFeesUSD[sender].fee = customFeeUSD;
+
+        // Log the update.
+        emit SetFlowCustomFeeUSD(sender, customFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function setFlowMinFeeUSD(uint256 newMinFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+        // Check: the new fee is not greater than the maximum allowed.
+        if (newMinFeeUSD > MAX_FEE_USD) {
+            revert Errors.SablierComptroller_MaxFeeUSDExceeded(newMinFeeUSD, MAX_FEE_USD);
+        }
+        // Load what the previous feewill be.
+        uint256 previousMinFeeUSD = flowFees.minFeeUSD;
+
+        // Effect: update the flow min USD fee.
+        flowFees.minFeeUSD = newMinFeeUSD;
+
+        // Log the update.
+        emit SetFlowMinFeeUSD(newMinFeeUSD, previousMinFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function setLockupCustomFeeUSD(
+        address sender,
+        uint256 customFeeUSD
+    )
+        external
+        override
+        onlyRole(FEE_MANAGEMENT_ROLE)
+    {
+        // Check: the new fee is not greater than the maximum allowed.
+        if (customFeeUSD > MAX_FEE_USD) {
+            revert Errors.SablierComptroller_MaxFeeUSDExceeded(customFeeUSD, MAX_FEE_USD);
+        }
+
+        // Effect: enable the custom fee for the user if it is not already enabled.
+        if (!airdropsFees.customFeesUSD[sender].enabled) {
+            airdropsFees.customFeesUSD[sender].enabled = true;
+        }
+
+        // Effect: update the custom fee for the provided sender.
+        airdropsFees.customFeesUSD[sender].fee = customFeeUSD;
+
+        // Log the update.
+        emit SetLockupCustomFeeUSD(sender, customFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function setLockupMinFeeUSD(uint256 newMinFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+        // Check: the new fee is not greater than the maximum allowed.
+        if (newMinFeeUSD > MAX_FEE_USD) {
+            revert Errors.SablierComptroller_MaxFeeUSDExceeded(newMinFeeUSD, MAX_FEE_USD);
+        }
+        // Load what the previous feewill be.
+        uint256 previousMinFeeUSD = lockupFees.minFeeUSD;
+
+        // Effect: update the lockup min USD fee.
+        lockupFees.minFeeUSD = newMinFeeUSD;
+
+        // Log the update.
+        emit SetLockupMinFeeUSD(newMinFeeUSD, previousMinFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -174,22 +323,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                            INTERNAL READ-ONLY FUNCTIONS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function _minFeeUSDForCampaignCreator(address campaignCreator) internal view returns (uint256) {
-        ISablierComptroller.CustomFeeUSD memory customFee = _campaignCreatorCustomFeesUSD[campaignCreator];
-        return customFee.enabled ? customFee.fee : _minFeeUSD;
-    }
-
-    /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _minFeeUSDForSender(address sender) internal view returns (uint256) {
-        ISablierComptroller.CustomFeeUSD memory customFee = _senderCustomFeesUSD[sender];
-        return customFee.enabled ? customFee.fee : _minFeeUSD;
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                          PRIVATE STATE-CHANGING FUNCTIONS
+                            PRIVATE READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
@@ -242,6 +376,28 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Multiply by 10^18 because the native token is assumed to have 18 decimals.
         return minFeeUSD * 1e18 / price8D;
     }
+
+    /// @dev See the documentation for the user-facing functions that call this internal function.
+    function _getAirdropsCustomFeeUSD(address campaignCreator) private view returns (uint256) {
+        ISablierComptroller.CustomFeeUSD memory customFee = airdropsFees.customFeesUSD[campaignCreator];
+        return customFee.enabled ? customFee.fee : airdropsFees.minFeeUSD;
+    }
+
+    /// @dev See the documentation for the user-facing functions that call this internal function.
+    function _getFlowCustomFeeUSD(address sender) private view returns (uint256) {
+        ISablierComptroller.CustomFeeUSD memory customFee = flowFees.customFeesUSD[sender];
+        return customFee.enabled ? customFee.fee : flowFees.minFeeUSD;
+    }
+
+    /// @dev See the documentation for the user-facing functions that call this internal function.
+    function _getLockupCustomFeeUSD(address sender) private view returns (uint256) {
+        ISablierComptroller.CustomFeeUSD memory customFee = lockupFees.customFeesUSD[sender];
+        return customFee.enabled ? customFee.fee : lockupFees.minFeeUSD;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                          PRIVATE STATE-CHANGING FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
     function _setOracle(address newOracle) private {

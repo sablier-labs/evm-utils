@@ -52,33 +52,35 @@ interface ISablierComptroller is IRoleAdminable {
     /// @notice Emitted when the accrued fees are collected.
     event CollectFees(address indexed admin, address indexed feeRecipient, uint256 feeAmount);
 
-    /// @notice Emitted when the admin resets the airdrops custom USD fee for the provided campaign
-    /// creator to the min fee.
-    event DisableAirdropsCustomFeeUSD(address indexed admin, address indexed campaignCreator);
+    /// @notice Emitted when the admin or the fee manager resets the airdrops custom USD fee for the provided campaign
+    /// creator to the minimum fee.
+    event DisableAirdropsCustomFeeUSD(address indexed campaignCreator);
 
-    /// @notice Emitted when the admin resets the flow custom USD fee for the provided sender to the min fee.
-    event DisableFlowCustomFeeUSD(address indexed admin, address indexed sender);
+    /// @notice Emitted when the admin or the fee manager resets the flow custom USD fee for the provided sender to the
+    /// minimum fee.
+    event DisableFlowCustomFeeUSD(address indexed sender);
 
-    /// @notice Emitted when the admin resets the lockup custom USD fee for the provided sender to the min fee.
-    event DisableLockupCustomFeeUSD(address indexed admin, address indexed sender);
+    /// @notice Emitted when the admin or the fee manager resets the lockup custom USD fee for the provided sender to
+    /// the minimum fee.
+    event DisableLockupCustomFeeUSD(address indexed sender);
 
     /// @notice Emitted when the admin sets an airdrops custom USD fee for the provided campaign creator.
-    event SetAirdropsCustomFeeUSD(address indexed admin, address indexed campaignCreator, uint256 customFeeUSD);
+    event SetAirdropsCustomFeeUSD(address indexed campaignCreator, uint256 customFeeUSD);
 
-    /// @notice Emitted when the airdrops min USD fee is set by the admin.
-    event SetAirdropsMinFeeUSD(address indexed admin, uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
+    /// @notice Emitted when the airdrops min USD fee is set by the admin or the fee manager.
+    event SetAirdropsMinFeeUSD(uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
 
     /// @notice Emitted when the admin sets a flow custom USD fee for the provided sender.
-    event SetFlowCustomFeeUSD(address indexed admin, address indexed sender, uint256 customFeeUSD);
+    event SetFlowCustomFeeUSD(address indexed sender, uint256 customFeeUSD);
 
-    /// @notice Emitted when the flow min USD fee is set by the admin.
-    event SetFlowMinFeeUSD(address indexed admin, uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
+    /// @notice Emitted when the flow min USD fee is set by the admin or the fee manager.
+    event SetFlowMinFeeUSD(uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
 
     /// @notice Emitted when the admin sets a lockup custom USD fee for the provided sender.
-    event SetLockupCustomFeeUSD(address indexed admin, address indexed sender, uint256 customFeeUSD);
+    event SetLockupCustomFeeUSD(address indexed sender, uint256 customFeeUSD);
 
-    /// @notice Emitted when the lockup min USD fee is set by the admin.
-    event SetLockupMinFeeUSD(address indexed admin, uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
+    /// @notice Emitted when the lockup min USD fee is set by the admin or the fee manager.
+    event SetLockupMinFeeUSD(uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
 
     /// @notice Emitted when the oracle contract address is set by the admin.
     event SetOracle(address indexed admin, address newOracle, address previousOracle);
@@ -91,7 +93,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev The returned value is 100e8, which is equivalent to $100.
     function MAX_FEE_USD() external view returns (uint256);
 
-    /// @notice Calculates the min fee in wei required to either claim an airdrop or to withdraw from a stream.
+    /// @notice Calculates the minimum fee in wei required to either claim an airdrop or to withdraw from a stream.
     ///
     /// The price is considered to be 0 if:
     /// 1. The oracle is not set.
@@ -101,20 +103,66 @@ interface ISablierComptroller is IRoleAdminable {
     /// 5. The oracle price hasn't been updated in the last 24 hours.
     ///
     /// @param minFeeUSD The min USD fee, denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
-    /// @return The min fee in wei, denominated in 18 decimals (1e18 = 1 native token).
+    /// @return The minimum fee in wei, denominated in 18 decimals (1e18 = 1 native token).
     function calculateMinFeeWei(uint256 minFeeUSD) external view returns (uint256);
 
-    /// @notice Calculates the min fee in wei for the provided campaign creator.
-    /// @dev Refer to {calculateMinFeeWei(uint256 minFeeUSD)} for more details on how the fee is calculated.
-    function calculateMinFeeWeiAirdrops(address campaignCreator) external view returns (uint256);
+    /// @notice Calculates the minimum fee in wei to claim from an airdrop.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiAirdrops() external view returns (uint256);
 
-    /// @notice Calculates the min fee in wei required to withdraw from a flow stream.
-    /// @dev Refer to {calculateMinFeeWei(uint256 minFeeUSD)} for more details on how the fee is calculated.
-    function calculateMinFeeWeiFlow(address sender) external view returns (uint256);
+    /// @notice Calculates the minimum fee in wei required to withdraw from a flow stream.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiFlow() external view returns (uint256);
 
-    /// @notice Calculates the min fee in wei required to withdraw from a lockup stream.
-    /// @dev Refer to {calculateMinFeeWei(uint256 minFeeUSD)} for more details on how the fee is calculated.
-    function calculateMinFeeWeiLockup(address sender) external view returns (uint256);
+    /// @notice Calculates the minimum fee in wei required to withdraw from a lockup stream.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiLockup() external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei applicable for the provided campaign creator.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei applicable for the provided sender.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiFlowFor(address sender) external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei applicable for the provided sender.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiLockupFor(address sender) external view returns (uint256);
+
+    /// @notice Determines the min USD fee applicable for the provided campaign creator. By default, the min USD fee is
+    /// applied unless there is a custom USD fee set.
+    /// @param campaignCreator The address of the campaign creator.
+    /// @return The min USD fee, denominated in Chainlink's 8-decimal format for USD prices.
+    function getAirdropsCustomFeeUSD(address campaignCreator) external view returns (uint256);
+
+    /// @notice Retrieves the min USD fee required to claim an airdrop, paid in the native token of the chain, e.g.,
+    /// ETH for Ethereum Mainnet.
+    /// @dev The fee is denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
+    function getAirdropsMinFeeUSD() external view returns (uint256);
+
+    /// @notice Determines the min USD fee applicable for the provided sender. By default, the min USD fee is
+    /// applied unless there is a custom USD fee set.
+    /// @param sender The address of the sender.
+    /// @return The min USD fee, denominated in Chainlink's 8-decimal format for USD prices.
+    function getFlowCustomFeeUSD(address sender) external view returns (uint256);
+
+    /// @notice Retrieves the min USD fee required to withdraw from a flow stream, paid in the native token of the
+    /// chain,
+    /// e.g., ETH for Ethereum Mainnet.
+    /// @dev The fee is denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
+    function getFlowMinFeeUSD() external view returns (uint256);
+
+    /// @notice Determines the min USD fee applicable for the provided sender. By default, the min USD fee is
+    /// applied unless there is a custom USD fee set.
+    /// @param sender The address of the sender.
+    /// @return The min USD fee, denominated in Chainlink's 8-decimal format for USD prices.
+    function getLockupCustomFeeUSD(address sender) external view returns (uint256);
+
+    /// @notice Retrieves the min USD fee required to withdraw from a lockup stream, paid in the native token of the
+    /// chain, e.g., ETH for Ethereum Mainnet.
+    /// @dev The fee is denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
+    function getLockupMinFeeUSD() external view returns (uint256);
 
     /// @notice Retrieves the oracle contract address, which provides price data for the native token.
     function oracle() external view returns (address);
@@ -139,7 +187,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Emits a {DisableAirdropsCustomFeeUSD} event.
     ///
     /// Notes:
-    /// - The min fee will apply only to future campaigns. Fees for past campaigns remain unchanged.
+    /// - The minimum fee will apply only to future campaigns. Fees for past campaigns remain unchanged.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
@@ -147,11 +195,11 @@ interface ISablierComptroller is IRoleAdminable {
     /// @param campaignCreator The user to disable the custom fee for.
     function disableAirdropsCustomFeeUSD(address campaignCreator) external;
 
-    /// @notice Disables the custom USD fee for the provided sender, who will now pay the min USD fee.
+    /// @notice Disables the custom USD fee for the provided sender, whose streams will now pay the min USD fee.
     /// @dev Emits a {DisableFlowCustomFeeUSD} event.
     ///
     /// Notes:
-    /// - The min fee will apply to all streams that are created by the sender in the future.
+    /// - The minimum fee will apply to all streams that are created by the sender in the future.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
@@ -159,11 +207,11 @@ interface ISablierComptroller is IRoleAdminable {
     /// @param sender The user to disable the custom fee for.
     function disableFlowCustomFeeUSD(address sender) external;
 
-    /// @notice Disables the custom USD fee for the provided sender, who will now pay the min USD fee.
-    /// @dev Emits a {DisableFlowCustomFeeUSD} event.
+    /// @notice Disables the custom USD fee for the provided sender, whose streams will now pay the min USD fee.
+    /// @dev Emits a {DisableLockupCustomFeeUSD} event.
     ///
     /// Notes:
-    /// - The min fee will apply to all streams that are created by the sender in the future.
+    /// - The minimum fee will apply to all streams that are created by the sender in the future.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
