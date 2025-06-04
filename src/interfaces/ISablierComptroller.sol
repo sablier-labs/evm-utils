@@ -3,23 +3,13 @@ pragma solidity >=0.8.22;
 
 import { IRoleAdminable } from "./IRoleAdminable.sol";
 
-interface IComptroller is IRoleAdminable {
-    /*//////////////////////////////////////////////////////////////////////////
-                                     DATA-TYPES
-    //////////////////////////////////////////////////////////////////////////*/
-
-    enum CustomeFeeRole {
-        CampaignCreator,
-        Sender
-    }
-
+interface ISablierComptroller is IRoleAdminable {
     /// @notice Struct encapsulating the parameters of a custom USD fee.
     /// @param enabled Whether the fee is enabled. If false, the min USD fee will apply instead.
     /// @param fee The fee amount.
     struct CustomFeeUSD {
         bool enabled;
         uint256 fee;
-        CustomeFeeRole role;
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -67,6 +57,12 @@ interface IComptroller is IRoleAdminable {
     /// @return The min fee in wei, denominated in 18 decimals (1e18 = 1 native token).
     function calculateMinFeeWei(uint256 minFeeUSD) external view returns (uint256);
 
+    /// @notice Calculates the min fee in wei for the provided campaign creator.
+    /// @dev Refer to {calculateMinFeeWei(uint256 minFeeUSD)} for more details on how the fee is calculated.
+    function calculateMinFeeWeiForCampaignCreator(address campaignCreator) external view returns (uint256);
+
+    /// @notice Calculates the min fee in wei for the provided sender.
+    /// @dev Refer to {calculateMinFeeWei(uint256 minFeeUSD)} for more details on how the fee is calculated.
     function calculateMinFeeWeiForSender(address sender) external view returns (uint256);
 
     /// @notice Determines the min USD fee applicable for the provided stream sender. By default, the min USD fee is
