@@ -16,13 +16,13 @@ library Errors {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when an unauthorized address collects fee without setting the fee recipient to admin address.
-    error Comptroller_FeeRecipientNotAdmin(address feeRecipient, address admin);
+    error SablierComptroller_FeeRecipientNotAdmin(address feeRecipient, address admin);
 
     /// @notice Thrown if fee transfer fails.
-    error Comptroller_FeeTransferFailed(address feeRecipient, uint256 feeAmount);
+    error SablierComptroller_FeeTransferFailed(address feeRecipient, uint256 feeAmount);
 
     /// @notice Thrown when trying to set fee to a value that exceeds the maximum USD fee.
-    error Comptroller_MaxFeeUSDExceeded(uint256 newFeeUSD, uint256 maxFeeUSD);
+    error SablierComptroller_MaxFeeUSDExceeded(uint256 newFeeUSD, uint256 maxFeeUSD);
 
     /*//////////////////////////////////////////////////////////////////////////
                                   NO-DELEGATE-CALL
