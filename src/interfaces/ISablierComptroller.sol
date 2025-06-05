@@ -135,22 +135,16 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
     function calculateMinFeeWeiLockupFor(address sender) external view returns (uint256);
 
-    /// @notice Determines the min USD fee applicable for the provided campaign creator. By default, the min USD fee is
-    /// applied unless there is a custom USD fee set.
-    /// @param campaignCreator The address of the campaign creator.
-    /// @return The min USD fee, denominated in Chainlink's 8-decimal format for USD prices.
-    function getAirdropsCustomFeeUSD(address campaignCreator) external view returns (uint256);
-
     /// @notice Retrieves the min USD fee required to claim an airdrop, paid in the native token of the chain, e.g.,
     /// ETH for Ethereum Mainnet.
     /// @dev The fee is denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
     function getAirdropsMinFeeUSD() external view returns (uint256);
 
-    /// @notice Determines the min USD fee applicable for the provided sender. By default, the min USD fee is
+    /// @notice Determines the min USD fee applicable for the provided campaign creator. By default, the min USD fee is
     /// applied unless there is a custom USD fee set.
-    /// @param sender The address of the sender.
+    /// @param campaignCreator The address of the campaign creator.
     /// @return The min USD fee, denominated in Chainlink's 8-decimal format for USD prices.
-    function getFlowCustomFeeUSD(address sender) external view returns (uint256);
+    function getAirdropsMinFeeUSDFor(address campaignCreator) external view returns (uint256);
 
     /// @notice Retrieves the min USD fee required to withdraw from a flow stream, paid in the native token of the
     /// chain, e.g., ETH for Ethereum Mainnet.
@@ -161,12 +155,18 @@ interface ISablierComptroller is IRoleAdminable {
     /// applied unless there is a custom USD fee set.
     /// @param sender The address of the sender.
     /// @return The min USD fee, denominated in Chainlink's 8-decimal format for USD prices.
-    function getLockupCustomFeeUSD(address sender) external view returns (uint256);
+    function getFlowMinFeeUSDFor(address sender) external view returns (uint256);
 
     /// @notice Retrieves the min USD fee required to withdraw from a lockup stream, paid in the native token of the
     /// chain, e.g., ETH for Ethereum Mainnet.
     /// @dev The fee is denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
     function getLockupMinFeeUSD() external view returns (uint256);
+
+    /// @notice Determines the min USD fee applicable for the provided sender. By default, the min USD fee is
+    /// applied unless there is a custom USD fee set.
+    /// @param sender The address of the sender.
+    /// @return The min USD fee, denominated in Chainlink's 8-decimal format for USD prices.
+    function getLockupMinFeeUSDFor(address sender) external view returns (uint256);
 
     /// @notice Retrieves the oracle contract address, which provides price data for the native token.
     function oracle() external view returns (address);
