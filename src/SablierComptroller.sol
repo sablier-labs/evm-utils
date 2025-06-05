@@ -7,6 +7,8 @@ import { Errors } from "./libraries/Errors.sol";
 import { ISablierComptroller } from "./interfaces/ISablierComptroller.sol";
 import { RoleAdminable } from "./RoleAdminable.sol";
 
+/// @title SablierComptroller
+/// @notice See the documentation in {ISablierComptroller}.
 contract SablierComptroller is ISablierComptroller, RoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
@@ -26,6 +28,16 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @dev A struct to hold the fees for lockup streams.
     LockupFees private lockupFees;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                     MODIFIERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice Reverts if `newFeeUSD` exceeds the maximum allowed fee.
+    modifier notExceedMaxFeeUSD(uint256 newFeeUSD) {
+        _notExceedMaxFeeUSD(newFeeUSD);
+        _;
+    }
 
     /*//////////////////////////////////////////////////////////////////////////
                                     CONSTRUCTOR
@@ -192,12 +204,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         external
         override
         onlyRole(FEE_MANAGEMENT_ROLE)
+        notExceedMaxFeeUSD(customFeeUSD)
     {
-        // Check: the new fee is not greater than the maximum allowed.
-        if (customFeeUSD > MAX_FEE_USD) {
-            revert Errors.SablierComptroller_MaxFeeUSDExceeded(customFeeUSD, MAX_FEE_USD);
-        }
-
         // Effect: enable the custom fee for the user if it is not already enabled.
         if (!airdropsFees.customFeesUSD[campaignCreator].enabled) {
             airdropsFees.customFeesUSD[campaignCreator].enabled = true;
@@ -211,13 +219,13 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
-    function setAirdropsMinFeeUSD(uint256 newMinFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        // Check: the new fee is not greater than the maximum allowed.
-        if (newMinFeeUSD > MAX_FEE_USD) {
-            revert Errors.SablierComptroller_MaxFeeUSDExceeded(newMinFeeUSD, MAX_FEE_USD);
-        }
-
-        // Load what the previous feewill be.
+    function setAirdropsMinFeeUSD(uint256 newMinFeeUSD)
+        external
+        override
+        onlyRole(FEE_MANAGEMENT_ROLE)
+        notExceedMaxFeeUSD(newMinFeeUSD)
+    {
+        // Load what the previous fee will be.
         uint256 previousMinFeeUSD = airdropsFees.minFeeUSD;
 
         // Effect: update the airdrops min USD fee.
@@ -235,12 +243,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         external
         override
         onlyRole(FEE_MANAGEMENT_ROLE)
+        notExceedMaxFeeUSD(customFeeUSD)
     {
-        // Check: the new fee is not greater than the maximum allowed.
-        if (customFeeUSD > MAX_FEE_USD) {
-            revert Errors.SablierComptroller_MaxFeeUSDExceeded(customFeeUSD, MAX_FEE_USD);
-        }
-
         // Effect: enable the custom fee for the user if it is not already enabled.
         if (!airdropsFees.customFeesUSD[sender].enabled) {
             airdropsFees.customFeesUSD[sender].enabled = true;
@@ -254,12 +258,13 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
-    function setFlowMinFeeUSD(uint256 newMinFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        // Check: the new fee is not greater than the maximum allowed.
-        if (newMinFeeUSD > MAX_FEE_USD) {
-            revert Errors.SablierComptroller_MaxFeeUSDExceeded(newMinFeeUSD, MAX_FEE_USD);
-        }
-        // Load what the previous feewill be.
+    function setFlowMinFeeUSD(uint256 newMinFeeUSD)
+        external
+        override
+        onlyRole(FEE_MANAGEMENT_ROLE)
+        notExceedMaxFeeUSD(newMinFeeUSD)
+    {
+        // Load what the previous fee will be.
         uint256 previousMinFeeUSD = flowFees.minFeeUSD;
 
         // Effect: update the flow min USD fee.
@@ -277,12 +282,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         external
         override
         onlyRole(FEE_MANAGEMENT_ROLE)
+        notExceedMaxFeeUSD(customFeeUSD)
     {
-        // Check: the new fee is not greater than the maximum allowed.
-        if (customFeeUSD > MAX_FEE_USD) {
-            revert Errors.SablierComptroller_MaxFeeUSDExceeded(customFeeUSD, MAX_FEE_USD);
-        }
-
         // Effect: enable the custom fee for the user if it is not already enabled.
         if (!airdropsFees.customFeesUSD[sender].enabled) {
             airdropsFees.customFeesUSD[sender].enabled = true;
@@ -296,12 +297,13 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
-    function setLockupMinFeeUSD(uint256 newMinFeeUSD) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        // Check: the new fee is not greater than the maximum allowed.
-        if (newMinFeeUSD > MAX_FEE_USD) {
-            revert Errors.SablierComptroller_MaxFeeUSDExceeded(newMinFeeUSD, MAX_FEE_USD);
-        }
-        // Load what the previous feewill be.
+    function setLockupMinFeeUSD(uint256 newMinFeeUSD)
+        external
+        override
+        onlyRole(FEE_MANAGEMENT_ROLE)
+        notExceedMaxFeeUSD(newMinFeeUSD)
+    {
+        // Load what the previous fee will be.
         uint256 previousMinFeeUSD = lockupFees.minFeeUSD;
 
         // Effect: update the lockup min USD fee.
@@ -393,6 +395,15 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     function _getLockupCustomFeeUSD(address sender) private view returns (uint256) {
         ISablierComptroller.CustomFeeUSD memory customFee = lockupFees.customFeesUSD[sender];
         return customFee.enabled ? customFee.fee : lockupFees.minFeeUSD;
+    }
+
+    /// @dev A private function is used instead of inlining this logic in a modifier because Solidity copies modifiers
+    /// into every function that uses them.
+    function _notExceedMaxFeeUSD(uint256 newFeeUSD) private pure {
+        // Check: the new fee is not greater than the maximum allowed.
+        if (newFeeUSD > MAX_FEE_USD) {
+            revert Errors.SablierComptroller_MaxFeeUSDExceeded(newFeeUSD, MAX_FEE_USD);
+        }
     }
 
     /*//////////////////////////////////////////////////////////////////////////

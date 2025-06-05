@@ -3,6 +3,8 @@ pragma solidity >=0.8.22;
 
 import { IRoleAdminable } from "./IRoleAdminable.sol";
 
+/// @notice Contract that manages fees for all Sablier protocols.
+/// @dev No state-changing functions are accessible to external users, but only for the admin and the fee manager.
 interface ISablierComptroller is IRoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                        TYPES
@@ -29,7 +31,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// for each sender.
     /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices,
     /// where 1e8 is $1.
-    /// @param customFees A mapping of custom fees mapped by campaign senders.
+    /// @param customFees A mapping of custom fees mapped by senders.
     struct FlowFees {
         uint256 minFeeUSD;
         mapping(address sender => CustomFeeUSD) customFeesUSD;
@@ -39,7 +41,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// for each sender.
     /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices,
     /// where 1e8 is $1.
-    /// @param customFees A mapping of custom fees mapped by campaign senders.
+    /// @param customFees A mapping of custom fees mapped by senders.
     struct LockupFees {
         uint256 minFeeUSD;
         mapping(address sender => CustomFeeUSD) customFeesUSD;
@@ -89,7 +91,7 @@ interface ISablierComptroller is IRoleAdminable {
                                 READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Retrieves the maximum USD fee that can be set for claiming an airdrop or withdrawing from a stream fee.
+    /// @notice Retrieves the maximum USD fee that can be set for claiming an airdrop or withdrawing from a stream.
     /// @dev The returned value is 100e8, which is equivalent to $100.
     function MAX_FEE_USD() external view returns (uint256);
 
@@ -148,8 +150,7 @@ interface ISablierComptroller is IRoleAdminable {
     function getFlowCustomFeeUSD(address sender) external view returns (uint256);
 
     /// @notice Retrieves the min USD fee required to withdraw from a flow stream, paid in the native token of the
-    /// chain,
-    /// e.g., ETH for Ethereum Mainnet.
+    /// chain, e.g., ETH for Ethereum Mainnet.
     /// @dev The fee is denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
     function getFlowMinFeeUSD() external view returns (uint256);
 
