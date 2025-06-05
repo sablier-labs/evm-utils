@@ -99,25 +99,20 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @inheritdoc ISablierComptroller
     function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view override returns (uint256) {
-        uint256 minFeeUSD = _getAirdropsCustomFeeUSD(campaignCreator);
+        uint256 minFeeUSD = _getAirdropsMinFeeUSDFor(campaignCreator);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
     function calculateMinFeeWeiFlowFor(address sender) external view override returns (uint256) {
-        uint256 minFeeUSD = _getFlowCustomFeeUSD(sender);
+        uint256 minFeeUSD = _getFlowMinFeeUSDFor(sender);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
     function calculateMinFeeWeiLockupFor(address sender) external view override returns (uint256) {
-        uint256 minFeeUSD = _getLockupCustomFeeUSD(sender);
+        uint256 minFeeUSD = _getLockupMinFeeUSDFor(sender);
         return _calculateMinFeeWei(minFeeUSD);
-    }
-
-    /// @inheritdoc ISablierComptroller
-    function getAirdropsCustomFeeUSD(address campaignCreator) external view override returns (uint256) {
-        return _getAirdropsCustomFeeUSD(campaignCreator);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -126,8 +121,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
-    function getFlowCustomFeeUSD(address sender) external view override returns (uint256) {
-        return _getFlowCustomFeeUSD(sender);
+    function getAirdropsMinFeeUSDFor(address campaignCreator) external view override returns (uint256) {
+        return _getAirdropsMinFeeUSDFor(campaignCreator);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -136,13 +131,18 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
-    function getLockupCustomFeeUSD(address sender) external view override returns (uint256) {
-        return _getLockupCustomFeeUSD(sender);
+    function getFlowMinFeeUSDFor(address sender) external view override returns (uint256) {
+        return _getFlowMinFeeUSDFor(sender);
     }
 
     /// @inheritdoc ISablierComptroller
     function getLockupMinFeeUSD() external view override returns (uint256) {
         return lockupFees.minFeeUSD;
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function getLockupMinFeeUSDFor(address sender) external view override returns (uint256) {
+        return _getLockupMinFeeUSDFor(sender);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -405,19 +405,19 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _getAirdropsCustomFeeUSD(address campaignCreator) private view returns (uint256) {
+    function _getAirdropsMinFeeUSDFor(address campaignCreator) private view returns (uint256) {
         ISablierComptroller.CustomFeeUSD memory customFee = airdropsFees.customFeesUSD[campaignCreator];
         return customFee.enabled ? customFee.fee : airdropsFees.minFeeUSD;
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _getFlowCustomFeeUSD(address sender) private view returns (uint256) {
+    function _getFlowMinFeeUSDFor(address sender) private view returns (uint256) {
         ISablierComptroller.CustomFeeUSD memory customFee = flowFees.customFeesUSD[sender];
         return customFee.enabled ? customFee.fee : flowFees.minFeeUSD;
     }
 
     /// @dev See the documentation for the user-facing functions that call this internal function.
-    function _getLockupCustomFeeUSD(address sender) private view returns (uint256) {
+    function _getLockupMinFeeUSDFor(address sender) private view returns (uint256) {
         ISablierComptroller.CustomFeeUSD memory customFee = lockupFees.customFeesUSD[sender];
         return customFee.enabled ? customFee.fee : lockupFees.minFeeUSD;
     }
