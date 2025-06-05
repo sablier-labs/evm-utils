@@ -46,10 +46,8 @@ abstract contract SablierComptroller_Unit_Concrete_Test is Unit_Test {
             new SablierComptroller(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
         comptrollerZero = new SablierComptroller(admin, 0, 0, 0, address(0));
 
-        // Set the accountant role.
-        setMsgSender(admin);
-
         // Grant role to the accountant.
+        setMsgSender(admin);
         grantAllRoles({ account: accountant, target: address(comptroller) });
 
         // Set the custom fees.
