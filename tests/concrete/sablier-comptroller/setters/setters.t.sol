@@ -521,7 +521,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setOracle(address(0));
     }
 
-    function test_SetOracleWhenNewOracleZero() external whenCallerAdmin {
+    function test_SetOracle_WhenNewOracleZero() external whenCallerAdmin {
         // It should emit a {SetOracle} event.
         vm.expectEmit({ emitter: address(comptroller) });
         emit ISablierComptroller.SetOracle(admin, address(0), address(oracle));
@@ -543,7 +543,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setOracle(address(noop));
     }
 
-    function test_SetOracleWhenNewOracleWithImplementation() external whenCallerAdmin whenNewOracleNotZero {
+    function test_SetOracle_WhenNewOracleWithImplementation() external whenCallerAdmin whenNewOracleNotZero {
         ChainlinkOracleMock newOracleWithImpl = new ChainlinkOracleMock();
 
         // It should emit a {SetOracle} event.
