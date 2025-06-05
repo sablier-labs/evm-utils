@@ -66,6 +66,9 @@ interface ISablierComptroller is IRoleAdminable {
     /// the minimum fee.
     event DisableLockupCustomFeeUSD(address indexed sender);
 
+    /// @notice Emitted when a target contract is called.
+    event Execute(address indexed target, bytes data, bytes response);
+
     /// @notice Emitted when the admin sets an airdrops custom USD fee for the provided campaign creator.
     event SetAirdropsCustomFeeUSD(address indexed campaignCreator, uint256 customFeeUSD);
 
@@ -219,6 +222,19 @@ interface ISablierComptroller is IRoleAdminable {
     ///
     /// @param sender The user to disable the custom fee for.
     function disableLockupCustomFeeUSD(address sender) external;
+
+    /// @notice Executes an external call to any contract and function.
+    ///
+    /// @dev Emits an {Execute} event.
+    ///
+    /// Requirements:
+    /// - The caller must be the admin.
+    /// - `target` must be a contract.
+    ///
+    /// @param target The address of the target contract.
+    /// @param data Function selector plus ABI encoded data.
+    /// @return response The response received from the target contract, if any.
+    function execute(address target, bytes calldata data) external returns (bytes memory response);
 
     /// @notice Sets a custom USD fee for the provided campaign creator.
     /// @dev Emits a {SetAirdropsCustomFeeUSD} event.
