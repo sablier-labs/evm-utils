@@ -17,9 +17,6 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     /// @inheritdoc ISablierComptroller
     uint256 public constant override MAX_FEE_USD = 100e8;
 
-    /// @inheritdoc ISablierComptroller
-    address public override oracle;
-
     /// @dev A struct to hold the fees for airdrops.
     AirdropsFees private airdropsFees;
 
@@ -28,6 +25,9 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @dev A struct to hold the fees for lockup streams.
     LockupFees private lockupFees;
+
+    /// @inheritdoc ISablierComptroller
+    address public override oracle;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      MODIFIERS
@@ -271,12 +271,12 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(customFeeUSD)
     {
         // Effect: enable the custom fee for the user if it is not already enabled.
-        if (!airdropsFees.customFeesUSD[sender].enabled) {
-            airdropsFees.customFeesUSD[sender].enabled = true;
+        if (!flowFees.customFeesUSD[sender].enabled) {
+            flowFees.customFeesUSD[sender].enabled = true;
         }
 
         // Effect: update the custom fee for the provided sender.
-        airdropsFees.customFeesUSD[sender].fee = customFeeUSD;
+        flowFees.customFeesUSD[sender].fee = customFeeUSD;
 
         // Log the update.
         emit SetFlowCustomFeeUSD(sender, customFeeUSD);
@@ -310,12 +310,12 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(customFeeUSD)
     {
         // Effect: enable the custom fee for the user if it is not already enabled.
-        if (!airdropsFees.customFeesUSD[sender].enabled) {
-            airdropsFees.customFeesUSD[sender].enabled = true;
+        if (!lockupFees.customFeesUSD[sender].enabled) {
+            lockupFees.customFeesUSD[sender].enabled = true;
         }
 
         // Effect: update the custom fee for the provided sender.
-        airdropsFees.customFeesUSD[sender].fee = customFeeUSD;
+        lockupFees.customFeesUSD[sender].fee = customFeeUSD;
 
         // Log the update.
         emit SetLockupCustomFeeUSD(sender, customFeeUSD);
