@@ -115,21 +115,21 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
     function calculateMinFeeWeiAirdrops() external view returns (uint256);
 
-    /// @notice Calculates the minimum fee in wei required to withdraw from a flow stream.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiFlow() external view returns (uint256);
-
-    /// @notice Calculates the minimum fee in wei required to withdraw from a lockup stream.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiLockup() external view returns (uint256);
-
     /// @notice Calculates the minimum fee in wei applicable for the provided campaign creator.
     /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
     function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view returns (uint256);
 
+    /// @notice Calculates the minimum fee in wei required to withdraw from a flow stream.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiFlow() external view returns (uint256);
+
     /// @notice Calculates the minimum fee in wei applicable for the provided sender.
     /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
     function calculateMinFeeWeiFlowFor(address sender) external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei required to withdraw from a lockup stream.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateMinFeeWeiLockup() external view returns (uint256);
 
     /// @notice Calculates the minimum fee in wei applicable for the provided sender.
     /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.

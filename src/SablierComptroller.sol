@@ -88,25 +88,25 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiFlow() external view override returns (uint256) {
-        return _calculateMinFeeWei(flowFees.minFeeUSD);
-    }
-
-    /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiLockup() external view override returns (uint256) {
-        return _calculateMinFeeWei(lockupFees.minFeeUSD);
-    }
-
-    /// @inheritdoc ISablierComptroller
     function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view override returns (uint256) {
         uint256 minFeeUSD = _getAirdropsMinFeeUSDFor(campaignCreator);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
+    function calculateMinFeeWeiFlow() external view override returns (uint256) {
+        return _calculateMinFeeWei(flowFees.minFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
     function calculateMinFeeWeiFlowFor(address sender) external view override returns (uint256) {
         uint256 minFeeUSD = _getFlowMinFeeUSDFor(sender);
         return _calculateMinFeeWei(minFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function calculateMinFeeWeiLockup() external view override returns (uint256) {
+        return _calculateMinFeeWei(lockupFees.minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
