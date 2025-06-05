@@ -10,11 +10,10 @@ abstract contract Unit_Test is BaseTest, Modifiers, StdAssertions {
     address internal admin;
     address internal alice;
     address internal eve;
+    address[] internal noSpenders;
 
     function setUp() public virtual override {
         BaseTest.setUp();
-
-        address[] memory noSpenders = new address[](0);
 
         accountant = createUser("accountant", noSpenders);
         admin = createUser("admin", noSpenders);
