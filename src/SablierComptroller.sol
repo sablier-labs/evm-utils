@@ -197,6 +197,31 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     }
 
     /// @inheritdoc ISablierComptroller
+    function execute(address target, bytes calldata data) external override onlyAdmin returns (bytes memory response) {
+        bool success;
+
+        // Interactions: call the target contract with the provided data.
+        (success, response) = target.call(data);
+
+        // Log the execution.
+        emit Execute(target, data, response);
+
+        // Check if the call was successful or not.
+        if (!success) {
+            // If there is return data, the call reverted with a reason or a custom error, which we bubble up.
+            if (response.length > 0) {
+                assembly {
+                    // The length of the data is at `response`, while the actual data is at `response + 32`.
+                    let returndata_size := mload(response)
+                    revert(add(response, 32), returndata_size)
+                }
+            } else {
+                revert Errors.SablierComptroller_ExecutionFailed();
+            }
+        }
+    }
+
+    /// @inheritdoc ISablierComptroller
     function setAirdropsCustomFeeUSD(
         address campaignCreator,
         uint256 customFeeUSD

@@ -15,6 +15,9 @@ library Errors {
                                     COMPTROLLER
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @notice Thrown when a target contract reverts without a specified reason.
+    error SablierComptroller_ExecutionFailed();
+
     /// @notice Thrown when an unauthorized address collects fee without setting the fee recipient to admin address.
     error SablierComptroller_FeeRecipientNotAdmin(address feeRecipient, address admin);
 
