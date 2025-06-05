@@ -6,14 +6,6 @@ import { SablierComptroller_Unit_Concrete_Test } from "../SablierComptroller.t.s
 import { SablierComptroller } from "src/SablierComptroller.sol";
 
 contract Getters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
-    SablierComptroller internal comptrollerZero;
-
-    function setUp() public override {
-        SablierComptroller_Unit_Concrete_Test.setUp();
-
-        comptrollerZero = new SablierComptroller(admin, 0, 0, 0, address(0));
-    }
-
     function test_GetAirdropsMinFeeUSDGivenMinFeeNotSet() external view {
         assertEq(comptrollerZero.getAirdropsMinFeeUSD(), 0, "airdrop min fee USD not set");
     }
