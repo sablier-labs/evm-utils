@@ -1,3 +1,48 @@
+Setters_Unit_Concrete_Test::disableAirdropsCustomFeeUSD
+├── when caller not admin
+│  ├── when caller with fee management role
+│  │  ├── it should return the min USD fee
+│  │  └── it should emit a {DisableAirdropsCustomFeeUSD} event
+│  └── when caller without fee management role
+│     └── it should revert
+└── when caller admin
+   ├── when not enabled
+   │  ├── it should return the min USD fee
+   │  └── it should emit a {DisableAirdropsCustomFeeUSD} event
+   └── when enabled
+      ├── it should return the min USD fee
+      └── it should emit a {DisableAirdropsCustomFeeUSD} event
+
+Setters_Unit_Concrete_Test::disableFlowCustomFeeUSD
+├── when caller not admin
+│  ├── when caller with fee management role
+│  │  ├── it should return the min USD fee
+│  │  └── it should emit a {DisableFlowCustomFeeUSD} event
+│  └── when caller without fee management role
+│     └── it should revert
+└── when caller admin
+   ├── when not enabled
+   │  ├── it should return the min USD fee
+   │  └── it should emit a {DisableFlowCustomFeeUSD} event
+   └── when enabled
+      ├── it should return the min USD fee
+      └── it should emit a {DisableFlowCustomFeeUSD} event
+
+Setters_Unit_Concrete_Test::disableLockupCustomFeeUSD
+├── when caller not admin
+│  ├── when caller with fee management role
+│  │  ├── it should return the min USD fee
+│  │  └── it should emit a {DisableLockupCustomFeeUSD} event
+│  └── when caller without fee management role
+│     └── it should revert
+└── when caller admin
+   ├── when not enabled
+   │  ├── it should return the min USD fee
+   │  └── it should emit a {DisableLockupCustomFeeUSD} event
+   └── when enabled
+      ├── it should return the min USD fee
+      └── it should emit a {DisableLockupCustomFeeUSD} event
+
 Setters_Unit_Concrete_Test::setAirdropsCustomFeeUSD
 ├── when caller not admin
 │  ├── when caller with fee management role
