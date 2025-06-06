@@ -7,12 +7,9 @@ import { ChainlinkOracleMock } from "src/mocks/ChainlinkMocks.sol";
 import { Unit_Test } from "../../Unit.t.sol";
 
 abstract contract SablierComptroller_Unit_Concrete_Test is Unit_Test {
-    ChainlinkOracleMock internal oracle;
-    SablierComptroller internal comptroller;
-    SablierComptroller internal comptrollerZero;
-
-    address internal campaignCreator;
-    address internal sender;
+    /*//////////////////////////////////////////////////////////////////////////
+                                     CONSTANTS
+    //////////////////////////////////////////////////////////////////////////*/
 
     uint256 internal constant AIRDROP_MIN_FEE_USD = 3e8; // equivalent to $3
     uint256 public constant AIRDROP_MIN_FEE_WEI = (1e18 * AIRDROP_MIN_FEE_USD) / 3000e8; // at $3000 per ETH
@@ -28,6 +25,20 @@ abstract contract SablierComptroller_Unit_Concrete_Test is Unit_Test {
     uint256 internal constant LOCKUP_CUSTOM_FEE_WEI = (1e18 * LOCKUP_CUSTOM_FEE_USD) / 3000e8; // at $3000 per ETH
     uint256 internal constant MAX_FEE_USD = 100e8; // equivalent to $100
     uint40 public constant FEB_1_2025 = 1_738_368_000;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                  STATE-VARIABLES
+    //////////////////////////////////////////////////////////////////////////*/
+
+    address internal campaignCreator;
+    SablierComptroller internal comptroller;
+    SablierComptroller internal comptrollerZero;
+    ChainlinkOracleMock internal oracle;
+    address internal sender;
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                       SET-UP
+    //////////////////////////////////////////////////////////////////////////*/
 
     function setUp() public virtual override {
         Unit_Test.setUp();
