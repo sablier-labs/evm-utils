@@ -3,8 +3,6 @@ pragma solidity >=0.8.22;
 
 import { SablierComptroller_Unit_Concrete_Test } from "../SablierComptroller.t.sol";
 
-import { SablierComptroller } from "src/SablierComptroller.sol";
-
 contract Getters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     function test_GetAirdropsMinFeeUSD_GivenMinFeeNotSet() external view {
         assertEq(comptrollerZero.getAirdropsMinFeeUSD(), 0, "airdrop min fee USD not set");

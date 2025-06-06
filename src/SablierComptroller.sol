@@ -210,6 +210,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         if (!success) {
             // If there is return data, the call reverted with a reason or a custom error, which we bubble up.
             if (response.length > 0) {
+                // solhint-disable-next-line no-inline-assembly
                 assembly {
                     // The length of the data is at `response`, while the actual data is at `response + 32`.
                     let returndata_size := mload(response)
