@@ -90,7 +90,7 @@ contract Execute_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
 
         // It should revert with a require
         data = bytes.concat(targets.reverter.withRequire.selector);
-        vm.expectRevert();
+        vm.expectRevert("You shall not pass");
         comptroller.execute(address(targets.reverter), data);
 
         // It should revert with a reason string
