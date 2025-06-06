@@ -12,17 +12,14 @@ import { TargetReverter } from "./targets/TargetReverter.sol";
 import { SablierComptroller_Unit_Concrete_Test } from "../SablierComptroller.t.sol";
 
 contract Execute_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
-    address internal target;
-
     struct Targets {
         AdminableMock adminable;
         TargetPanic panic;
         TargetReverter reverter;
     }
 
-    Targets internal targets;
-
     bytes internal data;
+    Targets internal targets;
 
     function setUp() public override {
         SablierComptroller_Unit_Concrete_Test.setUp();
@@ -34,6 +31,7 @@ contract Execute_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
             reverter: new TargetReverter()
         });
 
+        // Declare the data to change the admin.
         data = abi.encodeCall(targets.adminable.transferAdmin, (admin));
     }
 
@@ -103,6 +101,10 @@ contract Execute_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         // it should emit an {Execute} event
         vm.expectEmit({ emitter: address(comptroller) });
         emit ISablierComptroller.Execute({ target: address(targets.adminable), data: data, response: "" });
+
+        assertEq(
+            targets.adminable.admin(), address(comptroller), "The admin of the target should be set to the comptroller"
+        );
 
         comptroller.execute({ target: address(targets.adminable), data: data });
 

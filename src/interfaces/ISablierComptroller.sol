@@ -203,7 +203,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Emits a {DisableFlowCustomFeeUSD} event.
     ///
     /// Notes:
-    /// - The minimum fee will apply to all streams that are created by the sender in the future.
+    /// - The minimum fee will apply to all streams that are created by the sender.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
@@ -215,7 +215,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Emits a {DisableLockupCustomFeeUSD} event.
     ///
     /// Notes:
-    /// - The minimum fee will apply to all streams that are created by the sender in the future.
+    /// - The minimum fee will apply to all streams that are created by the sender.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
@@ -267,7 +267,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Emits a {SetFlowCustomFeeUSD} event.
     ///
     /// Notes:
-    /// - The custom USD fee will apply to all streams that are created by the sender in the future.
+    /// - The custom USD fee will apply to all streams that are created by the sender.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
@@ -294,7 +294,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Emits a {SetLockupCustomFeeUSD} event.
     ///
     /// Notes:
-    /// - The custom USD fee will apply to all streams that are created by the sender in the future.
+    /// - The custom USD fee will apply to all streams that are created by the sender.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.

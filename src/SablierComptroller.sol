@@ -3,8 +3,8 @@ pragma solidity >=0.8.22;
 
 import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
-import { Errors } from "./libraries/Errors.sol";
 import { ISablierComptroller } from "./interfaces/ISablierComptroller.sol";
+import { Errors } from "./libraries/Errors.sol";
 import { RoleAdminable } from "./RoleAdminable.sol";
 
 /// @title SablierComptroller
@@ -354,7 +354,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
                             PRIVATE READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev See the documentation for the user-facing functions that call this internal function.
+    /// @dev See the documentation for the user-facing functions that call this private function.
     function _calculateMinFeeWei(uint256 minFeeUSD) private view returns (uint256) {
         // If the oracle is not set, return 0.
         if (oracle == address(0)) {
@@ -405,19 +405,19 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         return minFeeUSD * 1e18 / price8D;
     }
 
-    /// @dev See the documentation for the user-facing functions that call this internal function.
+    /// @dev See the documentation for the user-facing functions that call this private function.
     function _getAirdropsMinFeeUSDFor(address campaignCreator) private view returns (uint256) {
         ISablierComptroller.CustomFeeUSD memory customFee = airdropsFees.customFeesUSD[campaignCreator];
         return customFee.enabled ? customFee.fee : airdropsFees.minFeeUSD;
     }
 
-    /// @dev See the documentation for the user-facing functions that call this internal function.
+    /// @dev See the documentation for the user-facing functions that call this private function.
     function _getFlowMinFeeUSDFor(address sender) private view returns (uint256) {
         ISablierComptroller.CustomFeeUSD memory customFee = flowFees.customFeesUSD[sender];
         return customFee.enabled ? customFee.fee : flowFees.minFeeUSD;
     }
 
-    /// @dev See the documentation for the user-facing functions that call this internal function.
+    /// @dev See the documentation for the user-facing functions that call this private function.
     function _getLockupMinFeeUSDFor(address sender) private view returns (uint256) {
         ISablierComptroller.CustomFeeUSD memory customFee = lockupFees.customFeesUSD[sender];
         return customFee.enabled ? customFee.fee : lockupFees.minFeeUSD;
@@ -436,7 +436,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
                           PRIVATE STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev See the documentation for the user-facing functions that call this internal function.
+    /// @dev See the documentation for the user-facing functions that call this private function.
     function _setOracle(address newOracle) private {
         // Check: oracle implements the `latestRoundData` function.
         if (newOracle != address(0)) {

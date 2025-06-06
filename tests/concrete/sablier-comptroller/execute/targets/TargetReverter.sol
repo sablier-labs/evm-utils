@@ -20,8 +20,4 @@ contract TargetReverter {
     function withReasonString() external pure {
         revert("You shall not pass");
     }
-
-    function notPayable() external pure returns (uint256) {
-        return 0;
-    }
 }
