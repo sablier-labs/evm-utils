@@ -11,19 +11,6 @@ abstract contract SablierComptroller_Unit_Concrete_Test is Unit_Test {
                                      CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    uint256 internal constant AIRDROP_MIN_FEE_USD = 3e8; // equivalent to $3
-    uint256 public constant AIRDROP_MIN_FEE_WEI = (1e18 * AIRDROP_MIN_FEE_USD) / 3000e8; // at $3000 per ETH
-    uint256 internal constant AIRDROPS_CUSTOM_FEE_USD = 0.5e8; // equivalent to $0.5
-    uint256 internal constant AIRDROPS_CUSTOM_FEE_WEI = (1e18 * AIRDROPS_CUSTOM_FEE_USD) / 3000e8; // at $3000 per ETH
-    uint256 internal constant FLOW_MIN_FEE_USD = 1e8; // equivalent to $1
-    uint256 internal constant FLOW_MIN_FEE_WEI = (1e18 * FLOW_MIN_FEE_USD) / 3000e8; // at $3000 per ETH
-    uint256 internal constant FLOW_CUSTOM_FEE_USD = 0.1e8; // equivalent to $0.1
-    uint256 internal constant FLOW_CUSTOM_FEE_WEI = (1e18 * FLOW_CUSTOM_FEE_USD) / 3000e8; // at $3000 per ETH
-    uint256 internal constant LOCKUP_MIN_FEE_USD = 1e8; // equivalent to $1
-    uint256 internal constant LOCKUP_MIN_FEE_WEI = (1e18 * LOCKUP_MIN_FEE_USD) / 3000e8; // at $3000 per ETH
-    uint256 internal constant LOCKUP_CUSTOM_FEE_USD = 0.1e8; // equivalent to $0.1
-    uint256 internal constant LOCKUP_CUSTOM_FEE_WEI = (1e18 * LOCKUP_CUSTOM_FEE_USD) / 3000e8; // at $3000 per ETH
-    uint256 internal constant MAX_FEE_USD = 100e8; // equivalent to $100
     uint40 public constant FEB_1_2025 = 1_738_368_000;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -31,9 +18,7 @@ abstract contract SablierComptroller_Unit_Concrete_Test is Unit_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     address internal campaignCreator;
-    SablierComptroller internal comptroller;
     SablierComptroller internal comptrollerZero;
-    ChainlinkOracleMock internal oracle;
     address internal sender;
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -49,12 +34,7 @@ abstract contract SablierComptroller_Unit_Concrete_Test is Unit_Test {
         campaignCreator = createUser("campaignCreator", noSpenders);
         sender = createUser("sender", noSpenders);
 
-        // Deploy the mock Chainlink Oracle.
-        oracle = new ChainlinkOracleMock();
-
-        // Deploy the Sablier Comptroller with minimum fees and the mock oracle.
-        comptroller =
-            new SablierComptroller(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
+        // Deploy the Sablier Comptroller with zero values.
         comptrollerZero = new SablierComptroller(admin, 0, 0, 0, address(0));
 
         // Grant role to the accountant.

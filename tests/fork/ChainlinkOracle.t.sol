@@ -8,17 +8,14 @@ import { BaseTest } from "src/tests/BaseTest.sol";
 import { SablierComptroller } from "src/SablierComptroller.sol";
 
 contract ChainlinkOracle_Fork_Test is BaseScript, BaseTest, StdAssertions {
-    SablierComptroller internal comptroller;
-
     /// @notice A modifier that runs the forked test for a given chain
     modifier initForkTest(string memory chainName) {
         // Fork chain on the latest block number.
         vm.createSelectFork({ urlOrAlias: chainName });
 
         // Deploy the Merkle Instant factory and create a new campaign.
-        comptroller = new SablierComptroller(
-            makeAddr("admin"), initialMinFeeUSD(), initialMinFeeUSD(), initialMinFeeUSD(), chainlinkOracle()
-        );
+        comptroller =
+            new SablierComptroller(admin, initialMinFeeUSD(), initialMinFeeUSD(), initialMinFeeUSD(), chainlinkOracle());
 
         // Assert that the Chainlink returns a non-zero price by checking the value of min fee in wei.
         assertLt(0, comptroller.calculateMinFeeWeiAirdrops(), "min fee wei");

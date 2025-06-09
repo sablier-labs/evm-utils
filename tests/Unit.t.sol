@@ -7,7 +7,6 @@ import { Modifiers } from "./utils/Modifiers.sol";
 
 abstract contract Unit_Test is BaseTest, Modifiers, StdAssertions {
     address internal accountant;
-    address internal admin;
     address internal alice;
     address internal eve;
     address[] internal noSpenders;
@@ -16,7 +15,6 @@ abstract contract Unit_Test is BaseTest, Modifiers, StdAssertions {
         BaseTest.setUp();
 
         accountant = createUser("accountant", noSpenders);
-        admin = createUser("admin", noSpenders);
         alice = createUser("alice", noSpenders);
         eve = createUser("eve", noSpenders);
 
