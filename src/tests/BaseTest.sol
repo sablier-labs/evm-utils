@@ -67,7 +67,7 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         contractWithReceive = new ContractWithReceive();
 
         // Create the admin user.
-        admin = makeAddr("admin");
+        admin = payable(makeAddr({ name: "Admin" }));
         vm.label(admin, "Admin");
 
         // Deploy the Sablier Comptroller.
