@@ -13,6 +13,14 @@
   src = "src"
   test = "tests"
 
+# Compile only the production code and the test mocks with via IR
+[profile.optimized]
+  optimizer = true
+  optimizer_runs = 100_000_000
+  out = "out-optimized"
+  test = "src"
+  via_ir = true
+
 [fmt]
   bracket_spacing = true
   int_types = "long"

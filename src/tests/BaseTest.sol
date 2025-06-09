@@ -178,6 +178,7 @@ contract BaseTest is StdBase, StdCheats, StdUtils {
         }
     }
 
+    /// @dev Function to deploy the Sablier Comptroller with the given parameters.
     function deployComptroller(
         address admin_,
         uint256 airdropMinFeeUSD,

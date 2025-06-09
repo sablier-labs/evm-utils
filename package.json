@@ -43,6 +43,7 @@
   "repository": "sablier-labs/evm-utils",
   "scripts": {
     "build": "forge build",
+    "build:optimized": "FOUNDRY_PROFILE=optimized forge build",
     "clean": "rm -rf broadcast cache out out-*",
     "forge:check": "forge fmt --check",
     "forge:write": "forge fmt",
