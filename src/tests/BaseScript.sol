@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// solhint-disable code-complexity
 // solhint-disable no-console
 pragma solidity >=0.8.22;
 

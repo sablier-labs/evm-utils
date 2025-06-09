@@ -7,7 +7,7 @@ import { ComptrollerManager } from "src/ComptrollerManager.sol";
 import { Unit_Test } from "../../Unit.t.sol";
 
 contract ComptrollerManager_Unit_Concrete_Test is Unit_Test {
-    IComptrollerManager comptrollerManager;
+    IComptrollerManager internal comptrollerManager;
 
     function setUp() public virtual override {
         Unit_Test.setUp();

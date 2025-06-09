@@ -2,7 +2,6 @@
 pragma solidity >=0.8.22;
 
 import { SablierComptroller } from "src/SablierComptroller.sol";
-import { ChainlinkOracleMock } from "src/mocks/ChainlinkMocks.sol";
 
 import { Unit_Test } from "../../Unit.t.sol";
 
