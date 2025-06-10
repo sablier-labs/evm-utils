@@ -11,6 +11,15 @@ interface ISablierComptroller is IRoleAdminable {
                                        TYPES
     //////////////////////////////////////////////////////////////////////////*/
 
+    /// @notice Struct encapsulating the minimum fee for the Merkle campaigns and the custom fees for each creator.
+    /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices, where 1e8
+    /// is $1.
+    /// @param customFees A mapping of custom fees mapped by campaign creator addresses.
+    struct AirdropsFees {
+        uint256 minFeeUSD;
+        mapping(address campaignCreator => CustomFeeUSD) customFeesUSD;
+    }
+
     /// @notice Struct encapsulating the parameters of a custom USD fee.
     /// @param enabled Whether the fee is enabled. If false, the min USD fee will apply instead.
     /// @param fee The fee amount.
@@ -19,29 +28,19 @@ interface ISablierComptroller is IRoleAdminable {
         uint256 fee;
     }
 
-    /// @notice Struct encapsulating the mininum fee for the Merkle campaigns and the custom fees for each creator.
-    /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices,
-    /// where 1e8 is $1.
-    /// @param customFees A mapping of custom fees mapped by campaign creator addresses.
-    struct AirdropsFees {
-        uint256 minFeeUSD;
-        mapping(address campaignCreator => CustomFeeUSD) customFeesUSD;
-    }
-
-    /// @notice Struct encapsulating the mininum fee for the {SablierFlow} contract and the custom fees
-    /// for each sender.
-    /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices,
-    /// where 1e8 is $1.
+    /// @notice Struct encapsulating the minimum fee for the {SablierFlow} contract and the custom fees for each sender.
+    /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices, where 1e8
+    /// is $1.
     /// @param customFees A mapping of custom fees mapped by senders.
     struct FlowFees {
         uint256 minFeeUSD;
         mapping(address sender => CustomFeeUSD) customFeesUSD;
     }
 
-    /// @notice Struct encapsulating the mininum fee for the {SablierLockup} contract and the custom fees
-    /// for each sender.
-    /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices,
-    /// where 1e8 is $1.
+    /// @notice Struct encapsulating the minimum fee for the {SablierLockup} contract and the custom fees for each
+    /// sender.
+    /// @param minFeeUSD The minimum fee in USD, denominated in Chainlink's 8-decimal format for USD prices, where 1e8
+    /// is $1.
     /// @param customFees A mapping of custom fees mapped by senders.
     struct LockupFees {
         uint256 minFeeUSD;
@@ -68,7 +67,7 @@ interface ISablierComptroller is IRoleAdminable {
     event DisableLockupCustomFeeUSD(address indexed sender);
 
     /// @notice Emitted when a target contract is called.
-    event Execute(address indexed target, bytes data, bytes response);
+    event Execute(address indexed target, bytes data, bytes result);
 
     /// @notice Emitted when the admin sets an airdrops custom USD fee for the provided campaign creator.
     event SetAirdropsCustomFeeUSD(address indexed campaignCreator, uint256 customFeeUSD);
@@ -229,13 +228,13 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev Emits an {Execute} event.
     ///
     /// Requirements:
-    /// - The caller must be the admin.
+    /// - `msg.sender` must be the admin.
     /// - `target` must be a contract.
     ///
-    /// @param target The address of the target contract.
+    /// @param target The address of the target contract on which the data is executed.
     /// @param data Function selector plus ABI encoded data.
-    /// @return response The response received from the target contract, if any.
-    function execute(address target, bytes calldata data) external returns (bytes memory response);
+    /// @return result The result from the call.
+    function execute(address target, bytes calldata data) external returns (bytes memory result);
 
     /// @notice Sets a custom USD fee for the provided campaign creator.
     /// @dev Emits a {SetAirdropsCustomFeeUSD} event.
