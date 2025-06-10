@@ -3,8 +3,9 @@ pragma solidity >=0.8.22;
 
 import { IRoleAdminable } from "./IRoleAdminable.sol";
 
-/// @notice Contract that manages fees for all Sablier protocols.
-/// @dev No state-changing functions are accessible to external users, but only for the admin and the fee manager.
+/// @title ISablierComptroller
+/// @notice Manage fees across all Sablier protocols. State-changing functions are only accessible to the admin and the
+/// fee manager.
 interface ISablierComptroller is IRoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                        TYPES

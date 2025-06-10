@@ -12,14 +12,18 @@ library Errors {
     error CallerNotAdmin(address admin, address caller);
 
     /*//////////////////////////////////////////////////////////////////////////
-                                    COMPTROLLER
+                                COMPTROLLER-MANAGER
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when `msg.sender` is not the comptroller.
     error ComptrollerManager_CallerNotComptroller(address comptroller, address caller);
 
-    /// @notice Thrown when trying to set a comptroller address that is zero.
-    error ComptrollerManager_InvalidComptrollerAddress();
+    /// @notice Thrown when trying to set zero as the comptroller address.
+    error ComptrollerManager_ZeroAddress();
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                    COMPTROLLER
+    //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when a target contract reverts without a specified reason.
     error SablierComptroller_ExecutionFailed();
