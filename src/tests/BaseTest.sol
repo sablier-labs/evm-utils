@@ -17,7 +17,7 @@ import { ERC20Mock } from "../mocks/erc20/ERC20Mock.sol";
 import { ContractWithoutReceive, ContractWithReceive } from "../mocks/Receive.sol";
 import { SablierComptroller } from "../SablierComptroller.sol";
 
-contract BaseTest is StdBase, StdCheats, StdUtils {
+abstract contract BaseTest is StdBase, StdCheats, StdUtils {
     /*//////////////////////////////////////////////////////////////////////////
                                    CONSTANTS
     //////////////////////////////////////////////////////////////////////////*/
