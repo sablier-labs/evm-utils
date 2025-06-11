@@ -78,7 +78,7 @@ contract Execute_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     function test_WhenTheExceptionIsAnError() external whenCallerAdmin whenTargetContract whenTheCallCallReverts {
         // It should revert with an empty revert statement
         data = bytes.concat(targets.reverter.withNothing.selector);
-        vm.expectRevert(Errors.SablierComptroller_ExecutionFailed.selector);
+        vm.expectRevert(Errors.SablierComptroller_ExecutionFailedSilently.selector);
         comptroller.execute(address(targets.reverter), data);
 
         // It should revert with a custom error
@@ -100,7 +100,7 @@ contract Execute_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     function test_WhenTheCallDoesNotRevert() external whenCallerAdmin whenTargetContract {
         // it should emit an {Execute} event
         vm.expectEmit({ emitter: address(comptroller) });
-        emit ISablierComptroller.Execute({ target: address(targets.adminable), data: data, response: "" });
+        emit ISablierComptroller.Execute({ target: address(targets.adminable), data: data, result: "" });
 
         assertEq(
             targets.adminable.admin(), address(comptroller), "The admin of the target should be set to the comptroller"
