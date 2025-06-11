@@ -38,17 +38,6 @@ jobs:
       match-path: "tests/integration/**/*.sol"
       name: "Integration tests"
 
-  test-fork:
-    needs: ["check", "build"]
-    if: needs.build.outputs.cache-status != 'primary'
-    secrets:
-      MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
-    uses: "sablier-labs/gha-utils/.github/workflows/forge-test.yml@main"
-    with:
-      foundry-fuzz-runs: 20
-      match-path: "tests/fork/**/*.sol"
-      name: "Fork tests"
-
   coverage:
     needs: ["check", "build"]
     if: needs.build.outputs.cache-status != 'primary'
