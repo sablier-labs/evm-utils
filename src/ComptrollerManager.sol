@@ -30,9 +30,9 @@ contract ComptrollerManager is IComptrollerManager {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @param initialComptroller The address of the initial comptroller contract.
-    constructor(ISablierComptroller initialComptroller) {
+    constructor(address initialComptroller) {
         // Set the initial comptroller.
-        _setComptroller(initialComptroller);
+        _setComptroller(ISablierComptroller(initialComptroller));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
