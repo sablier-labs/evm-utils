@@ -70,7 +70,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
                                   RECEIVE FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev We need to receive native tokens.
+    /// @dev Receive function to accept native tokens.
     receive() external payable { }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     function disableAirdropsCustomFeeUSD(address campaignCreator) external override onlyRole(FEE_MANAGEMENT_ROLE) {
         delete _airdropsFees.customFeesUSD[campaignCreator];
 
-        // Log the reset.
+        // Log the update.
         emit DisableAirdropsCustomFeeUSD(campaignCreator);
     }
 
@@ -184,7 +184,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     function disableFlowCustomFeeUSD(address sender) external override onlyRole(FEE_MANAGEMENT_ROLE) {
         delete _flowFees.customFeesUSD[sender];
 
-        // Log the reset.
+        // Log the update.
         emit DisableFlowCustomFeeUSD(sender);
     }
 
@@ -192,7 +192,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     function disableLockupCustomFeeUSD(address sender) external override onlyRole(FEE_MANAGEMENT_ROLE) {
         delete _lockupFees.customFeesUSD[sender];
 
-        // Log the reset.
+        // Log the update.
         emit DisableLockupCustomFeeUSD(sender);
     }
 

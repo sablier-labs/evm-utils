@@ -95,7 +95,7 @@ interface ISablierComptroller is IRoleAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Retrieves the maximum USD fee that can be set for claiming an airdrop or withdrawing from a stream.
-    /// @dev The returned value is 100e8, which is equivalent to $100.
+    /// @dev This is a constant state variable and is 100e8, which is equivalent to $100.
     function MAX_FEE_USD() external view returns (uint256);
 
     /// @notice Calculates the minimum fee in wei to claim from an airdrop.
@@ -123,8 +123,7 @@ interface ISablierComptroller is IRoleAdminable {
     function calculateLockupMinFeeWeiFor(address sender) external view returns (uint256);
 
     /// @notice Calculates the minimum fee in wei required to either claim an airdrop or to withdraw from a stream.
-    ///
-    /// The price is considered to be 0 if:
+    /// @dev The price is considered to be 0 if:
     /// 1. The oracle is not set.
     /// 2. The min USD fee is 0.
     /// 3. The oracle price is ≤ 0.
@@ -169,6 +168,7 @@ interface ISablierComptroller is IRoleAdminable {
     function getLockupMinFeeUSDFor(address sender) external view returns (uint256);
 
     /// @notice Retrieves the oracle contract address, which provides price data for the native token.
+    /// @dev A zero address indicates that the oracle is not set.
     function oracle() external view returns (address);
 
     /*//////////////////////////////////////////////////////////////////////////
