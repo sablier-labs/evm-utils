@@ -14,20 +14,15 @@ contract SetComptroller_ComptrollerManager_Concrete_Test is Base_Test {
         super.setUp();
 
         // Deploy a new comptroller.
-        newComptroller = ISablierComptroller(admin);
+        newComptroller = ISablierComptroller(users.admin);
     }
 
     function test_RevertWhen_CallerNotCurrentComptroller() external {
-        setMsgSender(admin);
+        setMsgSender(users.admin);
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.ComptrollerManager_CallerNotComptroller.selector, comptroller, admin)
+            abi.encodeWithSelector(Errors.ComptrollerManager_CallerNotComptroller.selector, comptroller, users.admin)
         );
         comptrollerManagerMock.setComptroller(newComptroller);
-    }
-
-    modifier whenCallerCurrentComptroller() {
-        setMsgSender(address(comptroller));
-        _;
     }
 
     function test_RevertWhen_NewComptrollerZeroAddress() external whenCallerCurrentComptroller {

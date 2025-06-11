@@ -36,21 +36,13 @@ contract Execute_Concrete_Test is SablierComptroller_Concrete_Test {
     }
 
     function test_RevertWhen_CallerNotAdmin() external {
-        setMsgSender(eve);
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
+        setMsgSender(users.eve);
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
         comptroller.execute({ target: address(comptrollerManagerMock), data: data });
     }
 
     function test_RevertWhen_TargetNotContract() external whenCallerAdmin {
         comptroller.execute({ target: address(0), data: data });
-    }
-
-    modifier whenTargetContract() {
-        _;
-    }
-
-    modifier whenTheCallCallReverts() {
-        _;
     }
 
     function test_WhenTheExceptionIsAPanic() external whenCallerAdmin whenTargetContract whenTheCallCallReverts {

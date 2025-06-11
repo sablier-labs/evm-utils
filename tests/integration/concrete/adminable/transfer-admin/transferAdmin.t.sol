@@ -9,33 +9,33 @@ import { Base_Test } from "../../../../Base.t.sol";
 contract TransferAdmin_Adminable_Concrete_Test is Base_Test {
     function test_RevertWhen_CallerNotAdmin() external {
         // Make Eve the caller in this test.
-        setMsgSender(eve);
+        setMsgSender(users.eve);
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
-        adminableMock.transferAdmin(eve);
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
+        adminableMock.transferAdmin(users.eve);
     }
 
     function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
         // Transfer the admin to the same admin.
-        _testTransferAdmin(admin, admin);
+        _testTransferAdmin({ newAdmin: users.admin });
     }
 
     function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
         // Transfer the admin to zero address.
-        _testTransferAdmin(admin, address(0));
+        _testTransferAdmin({ newAdmin: address(0) });
     }
 
     function test_WhenNewAdminNotZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
         // Transfer the admin to Alice.
-        _testTransferAdmin(admin, alice);
+        _testTransferAdmin({ newAdmin: users.alice });
     }
 
     /// @dev Private function to test transfer admin.
-    function _testTransferAdmin(address oldAdmin, address newAdmin) private {
+    function _testTransferAdmin(address newAdmin) private {
         // It should emit {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
-        emit IAdminable.TransferAdmin(oldAdmin, newAdmin);
+        emit IAdminable.TransferAdmin(users.admin, newAdmin);
 
         // Transfer the admin.
         adminableMock.transferAdmin(newAdmin);

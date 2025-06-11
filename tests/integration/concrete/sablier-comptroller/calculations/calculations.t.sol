@@ -30,13 +30,15 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
 
     function test_CalculateAirdropsMinFeeWeiForGivenCustomFeeNotSet() external view {
         assertEq(
-            comptrollerZero.calculateAirdropsMinFeeWeiFor(campaignCreator), 0, "min fee wei airdrops custom not set"
+            comptrollerZero.calculateAirdropsMinFeeWeiFor(users.campaignCreator),
+            0,
+            "min fee wei airdrops custom not set"
         );
     }
 
     function test_CalculateAirdropsMinFeeWeiForGivenCustomFeeSet() external view {
         assertEq(
-            comptroller.calculateAirdropsMinFeeWeiFor(campaignCreator),
+            comptroller.calculateAirdropsMinFeeWeiFor(users.campaignCreator),
             AIRDROPS_CUSTOM_FEE_WEI,
             "min fee wei airdrops custom set"
         );
@@ -59,11 +61,13 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function test_CalculateFlowMinFeeWeiForGivenCustomFeeNotSet() external view {
-        assertEq(comptrollerZero.calculateFlowMinFeeWeiFor(sender), 0, "min fee wei flow custom not set");
+        assertEq(comptrollerZero.calculateFlowMinFeeWeiFor(users.sender), 0, "min fee wei flow custom not set");
     }
 
     function test_CalculateFlowMinFeeWeiForGivenCustomFeeSet() external view {
-        assertEq(comptroller.calculateFlowMinFeeWeiFor(sender), FLOW_CUSTOM_FEE_WEI, "min fee wei flow custom set");
+        assertEq(
+            comptroller.calculateFlowMinFeeWeiFor(users.sender), FLOW_CUSTOM_FEE_WEI, "min fee wei flow custom set"
+        );
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -83,12 +87,14 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function test_CalculateLockupMinFeeWeiForGivenCustomFeeNotSet() external view {
-        assertEq(comptrollerZero.calculateLockupMinFeeWeiFor(sender), 0, "min fee wei lockup custom not set");
+        assertEq(comptrollerZero.calculateLockupMinFeeWeiFor(users.sender), 0, "min fee wei lockup custom not set");
     }
 
     function test_CalculateLockupMinFeeWeiForGivenCustomFeeSet() external view {
         assertEq(
-            comptroller.calculateLockupMinFeeWeiFor(sender), LOCKUP_CUSTOM_FEE_WEI, "min fee wei lockup custom set"
+            comptroller.calculateLockupMinFeeWeiFor(users.sender),
+            LOCKUP_CUSTOM_FEE_WEI,
+            "min fee wei lockup custom set"
         );
     }
 
@@ -103,17 +109,9 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
         assertEq(comptrollerZero.calculateMinFeeWei(AIRDROP_MIN_FEE_USD), 0, "min fee wei");
     }
 
-    modifier givenOracleNotZero() {
-        _;
-    }
-
     function test_CalculateMinFeeWeiWhenMinFeeUSDZero() external view givenOracleNotZero {
         // It should return zero.
         assertEq(comptroller.calculateMinFeeWei(0), 0, "min fee wei");
-    }
-
-    modifier whenMinFeeUSDNotZero() {
-        _;
     }
 
     function test_CalculateMinFeeWeiWhenOracleUpdatedTimeInFuture() external givenOracleNotZero whenMinFeeUSDNotZero {
@@ -121,10 +119,6 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
 
         // It should return zero.
         assertEq(comptroller.calculateMinFeeWei(AIRDROP_MIN_FEE_USD), 0, "min fee wei");
-    }
-
-    modifier whenOracleUpdatedTimeNotInFuture() {
-        _;
     }
 
     function test_CalculateMinFeeWeiWhenOraclePriceOutdated()
@@ -139,10 +133,6 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
         assertEq(comptroller.calculateMinFeeWei(AIRDROP_MIN_FEE_USD), 0, "min fee wei");
     }
 
-    modifier whenOraclePriceNotOutdated() {
-        _;
-    }
-
     function test_CalculateMinFeeWeiWhenOraclePriceZero()
         external
         givenOracleNotZero
@@ -154,10 +144,6 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
 
         // It should return zero.
         assertEq(comptroller.calculateMinFeeWei(AIRDROP_MIN_FEE_USD), 0, "min fee wei");
-    }
-
-    modifier whenOraclePriceNotZero() {
-        _;
     }
 
     function test_CalculateMinFeeWeiWhenOraclePriceHasEightDecimals()

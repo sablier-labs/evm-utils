@@ -1,7 +1,28 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-abstract contract Modifiers {
+import { BaseTest } from "src/tests/BaseTest.sol";
+import { Users } from "./Types.sol";
+
+abstract contract Modifiers is BaseTest {
+    Users private users;
+
+    function setUsers(Users memory users_) internal {
+        users = users_;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                       GIVEN
+    //////////////////////////////////////////////////////////////////////////*/
+
+    modifier givenOracleNotZero() {
+        _;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                                        WHEN
+    //////////////////////////////////////////////////////////////////////////*/
+
     modifier whenAccountHasRole() {
         _;
     }
@@ -15,6 +36,7 @@ abstract contract Modifiers {
     }
 
     modifier whenCallerAdmin() {
+        setMsgSender(users.admin);
         _;
     }
 
@@ -22,11 +44,36 @@ abstract contract Modifiers {
         _;
     }
 
+    modifier whenCallerCurrentComptroller() {
+        setMsgSender(address(comptroller));
+        _;
+    }
+
+    modifier whenCallerWithoutFeeCollectorRole() {
+        _;
+    }
+
+    modifier whenFeeRecipientContract() {
+        _;
+    }
+
     modifier whenFunctionExists() {
         _;
     }
 
+    modifier whenMinFeeUSDNotZero() {
+        _;
+    }
+
     modifier whenNewAdminNotSameAsCurrentAdmin() {
+        _;
+    }
+
+    modifier whenNewFeeNotExceedMaxFee() {
+        _;
+    }
+
+    modifier whenNewOracleNotZero() {
         _;
     }
 
@@ -38,11 +85,31 @@ abstract contract Modifiers {
         _;
     }
 
+    modifier whenOraclePriceNotOutdated() {
+        _;
+    }
+
+    modifier whenOraclePriceNotZero() {
+        _;
+    }
+
+    modifier whenOracleUpdatedTimeNotInFuture() {
+        _;
+    }
+
     modifier whenPayable() {
         _;
     }
 
     modifier whenStateChangingFunction() {
+        _;
+    }
+
+    modifier whenTargetContract() {
+        _;
+    }
+
+    modifier whenTheCallCallReverts() {
         _;
     }
 }

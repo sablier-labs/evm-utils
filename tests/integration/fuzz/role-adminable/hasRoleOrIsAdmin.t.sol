@@ -11,12 +11,12 @@ contract HasRoleOrIsAdmin_RoleAdminable_Fuzz_Test is Base_Test {
     /// - When role is granted to an account, the role check returns `true` for that account.
     /// - When role is revoked from an account, the role check returns `false` for that account.
     function testFuzz_HasRoleOrIsAdmin(address newAdmin, address newAccountant, bytes32 role) external {
-        vm.assume(newAdmin != admin && newAdmin != accountant);
-        vm.assume(newAccountant != admin && newAccountant != accountant);
+        vm.assume(newAdmin != users.admin && newAdmin != users.accountant);
+        vm.assume(newAccountant != users.admin && newAccountant != users.accountant);
         vm.assume(newAdmin != newAccountant);
 
         // Assert that it returns true with existing admin.
-        bool actualHasRole = roleAdminableMock.hasRoleOrIsAdmin({ role: role, account: admin });
+        bool actualHasRole = roleAdminableMock.hasRoleOrIsAdmin({ role: role, account: users.admin });
         assertTrue(actualHasRole, "hasRoleOrIsAdmin admin");
 
         // Transfer the ownership to the `newAdmin`.
@@ -26,7 +26,7 @@ contract HasRoleOrIsAdmin_RoleAdminable_Fuzz_Test is Base_Test {
         setMsgSender(newAdmin);
 
         // Assert that it returns false with old admin.
-        actualHasRole = roleAdminableMock.hasRoleOrIsAdmin({ role: role, account: admin });
+        actualHasRole = roleAdminableMock.hasRoleOrIsAdmin({ role: role, account: users.admin });
         assertFalse(actualHasRole, "hasRoleOrIsAdmin oldAdmin");
 
         // Assert that it returns true with new admin.

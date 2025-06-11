@@ -8,14 +8,14 @@ import { Base_Test } from "../../../Base.t.sol";
 
 contract GrantRole_RoleAdminable_Fuzz_Test is Base_Test {
     function testFuzz_RevertWhen_CallerNotAdmin(address eve) external {
-        vm.assume(eve != address(0) && eve != admin);
+        vm.assume(eve != address(0) && eve != users.admin);
 
         // Make Eve the caller in this test.
         setMsgSender(eve);
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
-        roleAdminableMock.grantRole(FEE_COLLECTOR_ROLE, accountant);
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, eve));
+        roleAdminableMock.grantRole(FEE_COLLECTOR_ROLE, users.accountant);
     }
 
     function testFuzz_RevertWhen_AccountHasRole(address account, bytes32 role) external whenCallerAdmin {
@@ -30,11 +30,11 @@ contract GrantRole_RoleAdminable_Fuzz_Test is Base_Test {
     }
 
     function testFuzz_GrantRole(address account, bytes32 role) external whenCallerAdmin whenAccountNotHaveRole {
-        vm.assume(account != address(0) && account != accountant && account != admin);
+        vm.assume(account != address(0) && account != users.accountant && account != users.admin);
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IRoleAdminable.RoleGranted({ admin: admin, account: account, role: role });
+        emit IRoleAdminable.RoleGranted({ admin: users.admin, account: account, role: role });
 
         // Grant the role to account.
         roleAdminableMock.grantRole(role, account);

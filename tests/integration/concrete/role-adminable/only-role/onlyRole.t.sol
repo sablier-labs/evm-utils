@@ -11,14 +11,14 @@ contract OnlyRole_RoleAdminable_Concrete_Test is Base_Test {
     }
 
     function test_RevertWhen_CallerNotHaveRole() external whenCallerNotAdmin {
-        setMsgSender(eve);
+        setMsgSender(users.eve);
 
-        vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_COLLECTOR_ROLE));
+        vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, users.eve, FEE_COLLECTOR_ROLE));
         roleAdminableMock.restrictedToRole();
     }
 
     function test_WhenCallerHasRole() external whenCallerNotAdmin {
-        setMsgSender(accountant);
+        setMsgSender(users.accountant);
 
         // It should execute the function.
         roleAdminableMock.restrictedToRole();

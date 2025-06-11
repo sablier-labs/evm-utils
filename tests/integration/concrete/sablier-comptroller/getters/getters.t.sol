@@ -21,12 +21,14 @@ contract Getters_Concrete_Test is SablierComptroller_Concrete_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function test_GetAirdropsMinFeeUSDForGivenCustomFeeUSDNotSet() external view {
-        assertEq(comptrollerZero.getAirdropsMinFeeUSDFor(campaignCreator), 0, "airdrop custom fee USD not set");
+        assertEq(comptrollerZero.getAirdropsMinFeeUSDFor(users.campaignCreator), 0, "airdrop custom fee USD not set");
     }
 
     function test_GetAirdropsMinFeeUSDForGivenCustomFeeUSDSet() external view {
         assertEq(
-            comptroller.getAirdropsMinFeeUSDFor(campaignCreator), AIRDROPS_CUSTOM_FEE_USD, "airdrop custom fee USD set"
+            comptroller.getAirdropsMinFeeUSDFor(users.campaignCreator),
+            AIRDROPS_CUSTOM_FEE_USD,
+            "airdrop custom fee USD set"
         );
     }
 
@@ -47,11 +49,11 @@ contract Getters_Concrete_Test is SablierComptroller_Concrete_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function test_GetFlowMinFeeUSDForGivenCustomFeeUSDNotSet() external view {
-        assertEq(comptrollerZero.getFlowMinFeeUSDFor(sender), 0, "flow custom fee USD not set");
+        assertEq(comptrollerZero.getFlowMinFeeUSDFor(users.sender), 0, "flow custom fee USD not set");
     }
 
     function test_GetFlowMinFeeUSDForGivenCustomFeeUSDSet() external view {
-        assertEq(comptroller.getFlowMinFeeUSDFor(sender), FLOW_CUSTOM_FEE_USD, "flow custom fee USD set");
+        assertEq(comptroller.getFlowMinFeeUSDFor(users.sender), FLOW_CUSTOM_FEE_USD, "flow custom fee USD set");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -71,11 +73,11 @@ contract Getters_Concrete_Test is SablierComptroller_Concrete_Test {
     //////////////////////////////////////////////////////////////////////////*/
 
     function test_GetLockupMinFeeUSDForGivenCustomFeeUSDNotSet() external view {
-        assertEq(comptrollerZero.getLockupMinFeeUSDFor(sender), 0, "lockup custom fee USD not set");
+        assertEq(comptrollerZero.getLockupMinFeeUSDFor(users.sender), 0, "lockup custom fee USD not set");
     }
 
     function test_GetLockupMinFeeUSDForGivenCustomFeeUSDSet() external view {
-        assertEq(comptroller.getLockupMinFeeUSDFor(sender), LOCKUP_CUSTOM_FEE_USD, "lockup custom fee USD set");
+        assertEq(comptroller.getLockupMinFeeUSDFor(users.sender), LOCKUP_CUSTOM_FEE_USD, "lockup custom fee USD set");
     }
 
     /*//////////////////////////////////////////////////////////////////////////

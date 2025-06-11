@@ -18,34 +18,28 @@ contract CollectFees_Concrete_Test is SablierComptroller_Concrete_Test {
 
     function test_WhenCallerWithFeeCollectorRole() external whenCallerNotAdmin {
         // Change the caller to the accountant which has the fee collector role.
-        setMsgSender(accountant);
+        setMsgSender(users.accountant);
 
         // It should transfer fee to the fee recipient.
         _test_CollectFees(_feeRecipient);
     }
 
-    modifier whenCallerWithoutFeeCollectorRole() {
-        _;
-    }
-
     function test_RevertWhen_FeeRecipientNotAdmin() external whenCallerNotAdmin whenCallerWithoutFeeCollectorRole {
-        setMsgSender(alice);
-        vm.expectRevert(abi.encodeWithSelector(Errors.SablierComptroller_FeeRecipientNotAdmin.selector, eve, admin));
-        comptroller.collectFees({ feeRecipient: eve });
+        setMsgSender(users.alice);
+        vm.expectRevert(
+            abi.encodeWithSelector(Errors.SablierComptroller_FeeRecipientNotAdmin.selector, users.eve, users.admin)
+        );
+        comptroller.collectFees({ feeRecipient: users.eve });
     }
 
     function test_WhenFeeRecipientAdmin() external whenCallerNotAdmin whenCallerWithoutFeeCollectorRole {
         // It should transfer fee to the admin.
-        _test_CollectFees({ feeRecipient: admin });
+        _test_CollectFees({ feeRecipient: users.admin });
     }
 
     function test_WhenFeeRecipientNotContract() external whenCallerAdmin {
         // It should transfer fee to the fee recipient.
         _test_CollectFees(_feeRecipient);
-    }
-
-    modifier whenFeeRecipientContract() {
-        _;
     }
 
     function test_RevertWhen_FeeRecipientDoesNotImplementReceiveFunction()
@@ -73,7 +67,11 @@ contract CollectFees_Concrete_Test is SablierComptroller_Concrete_Test {
 
         // It should emit a {CollectFees} event.
         vm.expectEmit({ emitter: address(comptroller) });
-        emit ISablierComptroller.CollectFees({ admin: admin, feeRecipient: feeRecipient, feeAmount: AIRDROP_MIN_FEE_WEI });
+        emit ISablierComptroller.CollectFees({
+            admin: users.admin,
+            feeRecipient: feeRecipient,
+            feeAmount: AIRDROP_MIN_FEE_WEI
+        });
 
         comptroller.collectFees({ feeRecipient: feeRecipient });
 

@@ -10,6 +10,7 @@ import { RoleAdminableMock } from "src/mocks/RoleAdminableMock.sol";
 import { BaseTest } from "src/tests/BaseTest.sol";
 
 import { Modifiers } from "./utils/Modifiers.sol";
+import { Users } from "./utils/Types.sol";
 
 /// @notice Base test contract with common logic needed by all tests.
 abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
@@ -23,12 +24,7 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
                                      TEST-USERS
     //////////////////////////////////////////////////////////////////////////*/
 
-    address internal accountant;
-    address internal alice;
-    address internal campaignCreator;
-    address internal eve;
-    address[] internal noSpenders;
-    address internal sender;
+    Users internal users;
 
     /*//////////////////////////////////////////////////////////////////////////
                                    MOCK-CONTRACTS
@@ -47,12 +43,18 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
     function setUp() public virtual override {
         BaseTest.setUp();
 
+        users.admin = admin;
+
         // Create the test users.
-        accountant = createUser("accountant", noSpenders);
-        alice = createUser("alice", noSpenders);
-        campaignCreator = createUser("campaignCreator", noSpenders);
-        eve = createUser("eve", noSpenders);
-        sender = createUser("sender", noSpenders);
+        address[] memory noSpenders;
+        users.accountant = createUser("accountant", noSpenders);
+        users.alice = createUser("alice", noSpenders);
+        users.campaignCreator = createUser("campaignCreator", noSpenders);
+        users.eve = createUser("eve", noSpenders);
+        users.sender = createUser("sender", noSpenders);
+
+        // Set users in modifiers.
+        setUsers(users);
 
         // Deploy mock contracts.
         adminableMock = new AdminableMock(admin);
@@ -65,8 +67,8 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
         setMsgSender(admin);
 
         // Grant all the roles to the accountant.
-        grantAllRoles({ account: accountant, target: address(comptroller) });
-        grantAllRoles({ account: accountant, target: address(roleAdminableMock) });
+        grantAllRoles({ account: users.accountant, target: address(comptroller) });
+        grantAllRoles({ account: users.accountant, target: address(roleAdminableMock) });
 
         // Warp to Feb 1, 2025 at 00:00 UTC to provide a more realistic testing environment.
         vm.warp({ newTimestamp: FEB_1_2025 });

@@ -11,9 +11,9 @@ contract OnlyAdmin_Adminable_Concrete_Test is Base_Test {
     }
 
     function test_RevertWhen_CallerNotAdmin() external whenCallerNotAdmin {
-        setMsgSender(eve);
+        setMsgSender(users.eve);
 
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
         adminableMock.restrictedToAdmin();
     }
 }
