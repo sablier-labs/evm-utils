@@ -10,10 +10,10 @@ import { SablierComptroller_Unit_Concrete_Test } from "../SablierComptroller.t.s
 
 contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     /*//////////////////////////////////////////////////////////////////////////
-                                      AIRDROPS
+                          DISABLE-AIRDROPS-CUSTOM-FEE-USD
     //////////////////////////////////////////////////////////////////////////*/
 
-    function test_DisableAirdropsCustomFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+    function test_DisableAirdropsCustomFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(accountant);
 
         // Enable the custom fee.
@@ -30,13 +30,13 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         _disableAirdropsCustomFeeUSD();
     }
 
-    function test_DisableAirdropsCustomFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+    function test_DisableAirdropsCustomFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
         comptroller.disableAirdropsCustomFeeUSD({ campaignCreator: campaignCreator });
     }
 
-    function test_DisableAirdropsCustomFeeUSD_WhenNotEnabled() external whenCallerAdmin {
+    function test_DisableAirdropsCustomFeeUSDWhenNotEnabled() external whenCallerAdmin {
         // Disable the custom fee.
         comptroller.disableAirdropsCustomFeeUSD({ campaignCreator: campaignCreator });
 
@@ -51,7 +51,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         _disableAirdropsCustomFeeUSD();
     }
 
-    function test_DisableAirdropsCustomFeeUSD_WhenEnabled() external whenCallerAdmin {
+    function test_DisableAirdropsCustomFeeUSDWhenEnabled() external whenCallerAdmin {
         // Enable the custom fee.
         comptroller.setAirdropsCustomFeeUSD({ campaignCreator: campaignCreator, customFeeUSD: 0.5e8 });
 
@@ -80,20 +80,146 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         );
     }
 
-    function test_SetAirdropsCustomFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+    /*//////////////////////////////////////////////////////////////////////////
+                            DISABLE-FLOW-CUSTOM-FEE-USD
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_DisableFlowCustomFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+        setMsgSender(accountant);
+
+        // Enable the custom fee.
+        comptroller.setFlowCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
+
+        // Check that custom fee is enabled.
+        assertNotEq(
+            comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD not enabled"
+        );
+
+        // Disable the custom fee.
+        _disableFlowCustomFeeUSD();
+    }
+
+    function test_DisableFlowCustomFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+        setMsgSender(eve);
+        vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
+        comptroller.disableFlowCustomFeeUSD({ sender: sender });
+    }
+
+    function test_DisableFlowCustomFeeUSDWhenNotEnabled() external whenCallerAdmin {
+        // Disable the custom fee.
+        comptroller.disableFlowCustomFeeUSD({ sender: sender });
+
+        // Check that custom fee is not enabled.
+        assertEq(comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD enabled");
+
+        // Disable the custom fee.
+        _disableFlowCustomFeeUSD();
+    }
+
+    function test_DisableFlowCustomFeeUSDWhenEnabled() external whenCallerAdmin {
+        // Enable the custom fee.
+        comptroller.setFlowCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
+
+        // Check that custom fee is enabled.
+        assertNotEq(
+            comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD not enabled"
+        );
+
+        // Disable the custom fee.
+        _disableFlowCustomFeeUSD();
+    }
+
+    function _disableFlowCustomFeeUSD() private {
+        // It should emit a {DisableFlowCustomFeeUSD} event.
+        vm.expectEmit({ emitter: address(comptroller) });
+        emit ISablierComptroller.DisableFlowCustomFeeUSD({ sender: sender });
+
+        // Disable the custom fee.
+        comptroller.disableFlowCustomFeeUSD({ sender: sender });
+
+        // It should return the min USD fee.
+        assertEq(comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD");
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                           DISABLE-LOCKUP-CUSTOM-FEE-USD
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_DisableLockupCustomFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+        setMsgSender(accountant);
+
+        // Enable the custom fee.
+        comptroller.setLockupCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
+
+        // Check that custom fee is enabled.
+        assertNotEq(
+            comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD not enabled"
+        );
+
+        // Disable the custom fee.
+        _disableLockupCustomFeeUSD();
+    }
+
+    function test_DisableLockupCustomFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+        setMsgSender(eve);
+        vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
+        comptroller.disableLockupCustomFeeUSD({ sender: sender });
+    }
+
+    function test_DisableLockupCustomFeeUSDWhenNotEnabled() external whenCallerAdmin {
+        // Disable the custom fee.
+        comptroller.disableLockupCustomFeeUSD({ sender: sender });
+
+        // Check that custom fee is not enabled.
+        assertEq(comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD enabled");
+
+        // Disable the custom fee.
+        _disableLockupCustomFeeUSD();
+    }
+
+    function test_DisableLockupCustomFeeUSDWhenEnabled() external whenCallerAdmin {
+        // Enable the custom fee.
+        comptroller.setLockupCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
+
+        // Check that custom fee is enabled.
+        assertNotEq(
+            comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD not enabled"
+        );
+
+        // Disable the custom fee.
+        _disableLockupCustomFeeUSD();
+    }
+
+    function _disableLockupCustomFeeUSD() private {
+        // It should emit a {DisableLockupCustomFeeUSD} event.
+        vm.expectEmit({ emitter: address(comptroller) });
+        emit ISablierComptroller.DisableLockupCustomFeeUSD({ sender: sender });
+
+        // Disable the custom fee.
+        comptroller.disableLockupCustomFeeUSD({ sender: sender });
+
+        // It should return the min USD fee.
+        assertEq(comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD");
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            SET-AIRDROPS-CUSTOM-FEE-USD
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_SetAirdropsCustomFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(accountant);
 
         // Set the custom fee.
         _setAirdropsCustomFeeUSD();
     }
 
-    function test_SetAirdropsCustomFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetAirdropsCustomFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
         comptroller.setAirdropsCustomFeeUSD({ campaignCreator: campaignCreator, customFeeUSD: 0 });
     }
 
-    function test_SetAirdropsCustomFeeUSD_RevertWhen_NewFeeExceedsMaxFee() external whenCallerAdmin {
+    function test_SetAirdropsCustomFeeUSDRevertWhen_NewFeeExceedsMaxFee() external whenCallerAdmin {
         uint256 customFeeUSD = MAX_FEE_USD + 1;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_MaxFeeUSDExceeded.selector, customFeeUSD, MAX_FEE_USD)
@@ -105,7 +231,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         _;
     }
 
-    function test_SetAirdropsCustomFeeUSD_WhenNotEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
+    function test_SetAirdropsCustomFeeUSDWhenNotEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
         comptroller.disableAirdropsCustomFeeUSD(campaignCreator);
 
         // Check that custom fee is not enabled for user.
@@ -119,7 +245,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         _setAirdropsCustomFeeUSD();
     }
 
-    function test_SetAirdropsCustomFeeUSD_WhenEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
+    function test_SetAirdropsCustomFeeUSDWhenEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
         // Enable the custom fee.
         comptroller.setAirdropsCustomFeeUSD({ campaignCreator: campaignCreator, customFeeUSD: 0.5e8 });
 
@@ -149,20 +275,24 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         assertEq(comptroller.getAirdropsMinFeeUSDFor(campaignCreator), customFeeUSD, "custom fee USD");
     }
 
-    function test_SetAirdropsMinFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+    /*//////////////////////////////////////////////////////////////////////////
+                              SET-AIRDROPS-MIN-FEE-USD
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_SetAirdropsMinFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(accountant);
 
         // Set the min fee USD.
         _setAirdropsMinFeeUSD();
     }
 
-    function test_SetAirdropsMinFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetAirdropsMinFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
         comptroller.setAirdropsMinFeeUSD(0.001e18);
     }
 
-    function test_SetAirdropsMinFeeUSD_RevertWhen_NewMinFeeExceedsMaxFee() external whenCallerAdmin {
+    function test_SetAirdropsMinFeeUSDRevertWhen_NewMinFeeExceedsMaxFee() external whenCallerAdmin {
         uint256 newMinFeeUSD = MAX_FEE_USD + 1;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_MaxFeeUSDExceeded.selector, newMinFeeUSD, MAX_FEE_USD)
@@ -170,7 +300,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setAirdropsMinFeeUSD(newMinFeeUSD);
     }
 
-    function test_SetAirdropsMinFeeUSD_WhenNewMinFeeNotExceedMaxFee() external whenCallerAdmin {
+    function test_SetAirdropsMinFeeUSDWhenNewMinFeeNotExceedMaxFee() external whenCallerAdmin {
         // Set the min fee USD.
         _setAirdropsMinFeeUSD();
     }
@@ -192,80 +322,23 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                        FLOW
+                              SET-FLOW-CUSTOM-FEE-USD
     //////////////////////////////////////////////////////////////////////////*/
 
-    function test_DisableFlowCustomFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
-        setMsgSender(accountant);
-
-        // Enable the custom fee.
-        comptroller.setFlowCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
-
-        // Check that custom fee is enabled.
-        assertNotEq(
-            comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD not enabled"
-        );
-
-        // Disable the custom fee.
-        _disableFlowCustomFeeUSD();
-    }
-
-    function test_DisableFlowCustomFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
-        setMsgSender(eve);
-        vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
-        comptroller.disableFlowCustomFeeUSD({ sender: sender });
-    }
-
-    function test_DisableFlowCustomFeeUSD_WhenNotEnabled() external whenCallerAdmin {
-        // Disable the custom fee.
-        comptroller.disableFlowCustomFeeUSD({ sender: sender });
-
-        // Check that custom fee is not enabled.
-        assertEq(comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD enabled");
-
-        // Disable the custom fee.
-        _disableFlowCustomFeeUSD();
-    }
-
-    function test_DisableFlowCustomFeeUSD_WhenEnabled() external whenCallerAdmin {
-        // Enable the custom fee.
-        comptroller.setFlowCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
-
-        // Check that custom fee is enabled.
-        assertNotEq(
-            comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD not enabled"
-        );
-
-        // Disable the custom fee.
-        _disableFlowCustomFeeUSD();
-    }
-
-    function _disableFlowCustomFeeUSD() private {
-        // It should emit a {DisableFlowCustomFeeUSD} event.
-        vm.expectEmit({ emitter: address(comptroller) });
-        emit ISablierComptroller.DisableFlowCustomFeeUSD({ sender: sender });
-
-        // Disable the custom fee.
-        comptroller.disableFlowCustomFeeUSD({ sender: sender });
-
-        // It should return the min USD fee.
-        assertEq(comptroller.getFlowMinFeeUSDFor(sender), comptroller.getFlowMinFeeUSD(), "custom fee USD");
-    }
-
-    function test_SetFlowCustomFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetFlowCustomFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(accountant);
 
         // Set the custom fee.
         _setFlowCustomFeeUSD();
     }
 
-    function test_SetFlowCustomFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetFlowCustomFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
         comptroller.setFlowCustomFeeUSD(sender, 0);
     }
 
-    function test_SetFlowCustomFeeUSD_RevertWhen_NewFeeExceedsMaxFee() external whenCallerAdmin {
+    function test_SetFlowCustomFeeUSDRevertWhen_NewFeeExceedsMaxFee() external whenCallerAdmin {
         uint256 customFeeUSD = MAX_FEE_USD + 1;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_MaxFeeUSDExceeded.selector, customFeeUSD, MAX_FEE_USD)
@@ -273,7 +346,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setFlowCustomFeeUSD(sender, customFeeUSD);
     }
 
-    function test_SetFlowCustomFeeUSD_WhenNotEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
+    function test_SetFlowCustomFeeUSDWhenNotEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
         comptroller.disableFlowCustomFeeUSD(sender);
 
         // Check that custom fee is not enabled for user.
@@ -283,7 +356,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         _setFlowCustomFeeUSD();
     }
 
-    function test_SetFlowCustomFeeUSD_WhenEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
+    function test_SetFlowCustomFeeUSDWhenEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
         // Enable the custom fee.
         comptroller.setFlowCustomFeeUSD(sender, 0.5e8);
 
@@ -311,20 +384,24 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         assertEq(comptroller.getFlowMinFeeUSDFor(sender), customFeeUSD, "custom fee USD");
     }
 
-    function test_SetFlowMinFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+    /*//////////////////////////////////////////////////////////////////////////
+                                SET-FLOW-MIN-FEE-USD
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_SetFlowMinFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(accountant);
 
         // Set the min fee USD.
         _setFlowMinFeeUSD();
     }
 
-    function test_SetFlowMinFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetFlowMinFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
         comptroller.setFlowMinFeeUSD(0.001e18);
     }
 
-    function test_SetFlowMinFeeUSD_RevertWhen_NewMinFeeExceedsMaxFee() external whenCallerAdmin {
+    function test_SetFlowMinFeeUSDRevertWhen_NewMinFeeExceedsMaxFee() external whenCallerAdmin {
         uint256 newMinFeeUSD = MAX_FEE_USD + 1;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_MaxFeeUSDExceeded.selector, newMinFeeUSD, MAX_FEE_USD)
@@ -332,7 +409,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setFlowMinFeeUSD(newMinFeeUSD);
     }
 
-    function test_SetFlowMinFeeUSD_WhenNewMinFeeNotExceedMaxFee() external whenCallerAdmin {
+    function test_SetFlowMinFeeUSDWhenNewMinFeeNotExceedMaxFee() external whenCallerAdmin {
         // Set the min fee USD.
         _setFlowMinFeeUSD();
     }
@@ -351,80 +428,23 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                       LOCKUP
+                             SET-LOCKUP-CUSTOM-FEE-USD
     //////////////////////////////////////////////////////////////////////////*/
 
-    function test_DisableLockupCustomFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
-        setMsgSender(accountant);
-
-        // Enable the custom fee.
-        comptroller.setLockupCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
-
-        // Check that custom fee is enabled.
-        assertNotEq(
-            comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD not enabled"
-        );
-
-        // Disable the custom fee.
-        _disableLockupCustomFeeUSD();
-    }
-
-    function test_DisableLockupCustomFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
-        setMsgSender(eve);
-        vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
-        comptroller.disableLockupCustomFeeUSD({ sender: sender });
-    }
-
-    function test_DisableLockupCustomFeeUSD_WhenNotEnabled() external whenCallerAdmin {
-        // Disable the custom fee.
-        comptroller.disableLockupCustomFeeUSD({ sender: sender });
-
-        // Check that custom fee is not enabled.
-        assertEq(comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD enabled");
-
-        // Disable the custom fee.
-        _disableLockupCustomFeeUSD();
-    }
-
-    function test_DisableLockupCustomFeeUSD_WhenEnabled() external whenCallerAdmin {
-        // Enable the custom fee.
-        comptroller.setLockupCustomFeeUSD({ sender: sender, customFeeUSD: 0.5e8 });
-
-        // Check that custom fee is enabled.
-        assertNotEq(
-            comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD not enabled"
-        );
-
-        // Disable the custom fee.
-        _disableLockupCustomFeeUSD();
-    }
-
-    function _disableLockupCustomFeeUSD() private {
-        // It should emit a {DisableLockupCustomFeeUSD} event.
-        vm.expectEmit({ emitter: address(comptroller) });
-        emit ISablierComptroller.DisableLockupCustomFeeUSD({ sender: sender });
-
-        // Disable the custom fee.
-        comptroller.disableLockupCustomFeeUSD({ sender: sender });
-
-        // It should return the min USD fee.
-        assertEq(comptroller.getLockupMinFeeUSDFor(sender), comptroller.getLockupMinFeeUSD(), "custom fee USD");
-    }
-
-    function test_SetLockupCustomFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetLockupCustomFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(accountant);
 
         // Set the custom fee.
         _setLockupCustomFeeUSD();
     }
 
-    function test_SetLockupCustomFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetLockupCustomFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
         comptroller.setLockupCustomFeeUSD(sender, 0);
     }
 
-    function test_SetLockupCustomFeeUSD_RevertWhen_NewFeeExceedsMaxFee() external whenCallerAdmin {
+    function test_SetLockupCustomFeeUSDRevertWhen_NewFeeExceedsMaxFee() external whenCallerAdmin {
         uint256 customFeeUSD = MAX_FEE_USD + 1;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_MaxFeeUSDExceeded.selector, customFeeUSD, MAX_FEE_USD)
@@ -432,7 +452,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setLockupCustomFeeUSD(sender, customFeeUSD);
     }
 
-    function test_SetLockupCustomFeeUSD_WhenNotEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
+    function test_SetLockupCustomFeeUSDWhenNotEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
         comptroller.disableLockupCustomFeeUSD(sender);
 
         // Check that custom fee is not enabled for user.
@@ -442,7 +462,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         _setLockupCustomFeeUSD();
     }
 
-    function test_SetLockupCustomFeeUSD_WhenEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
+    function test_SetLockupCustomFeeUSDWhenEnabled() external whenCallerAdmin whenNewFeeNotExceedMaxFee {
         // Enable the custom fee.
         comptroller.setLockupCustomFeeUSD(sender, 0.5e8);
 
@@ -470,20 +490,24 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         assertEq(comptroller.getLockupMinFeeUSDFor(sender), customFeeUSD, "custom fee USD");
     }
 
-    function test_SetLockupMinFeeUSD_WhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
+    /*//////////////////////////////////////////////////////////////////////////
+                               SET-LOCKUP-MIN-FEE-USD
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_SetLockupMinFeeUSDWhenCallerWithFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(accountant);
 
         // Set the min fee USD.
         _setLockupMinFeeUSD();
     }
 
-    function test_SetLockupMinFeeUSD_RevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
+    function test_SetLockupMinFeeUSDRevertWhen_CallerWithoutFeeManagementRole() external whenCallerNotAdmin {
         setMsgSender(eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, eve, FEE_MANAGEMENT_ROLE));
         comptroller.setLockupMinFeeUSD(0.001e18);
     }
 
-    function test_SetLockupMinFeeUSD_RevertWhen_NewMinFeeExceedsMaxFee() external whenCallerAdmin {
+    function test_SetLockupMinFeeUSDRevertWhen_NewMinFeeExceedsMaxFee() external whenCallerAdmin {
         uint256 newMinFeeUSD = MAX_FEE_USD + 1;
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_MaxFeeUSDExceeded.selector, newMinFeeUSD, MAX_FEE_USD)
@@ -491,7 +515,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setLockupMinFeeUSD(newMinFeeUSD);
     }
 
-    function test_SetLockupMinFeeUSD_WhenNewMinFeeNotExceedMaxFee() external whenCallerAdmin {
+    function test_SetLockupMinFeeUSDWhenNewMinFeeNotExceedMaxFee() external whenCallerAdmin {
         // Set the min fee USD.
         _setLockupMinFeeUSD();
     }
@@ -510,10 +534,10 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                       ORACLE
+                                     SET-ORACLE
     //////////////////////////////////////////////////////////////////////////*/
 
-    function test_SetOracle_RevertWhen_CallerNotAdmin() external {
+    function test_SetOracleRevertWhen_CallerNotAdmin() external {
         setMsgSender(eve);
 
         // It should revert.
@@ -521,7 +545,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setOracle(address(0));
     }
 
-    function test_SetOracle_WhenNewOracleZero() external whenCallerAdmin {
+    function test_SetOracleWhenNewOracleZero() external whenCallerAdmin {
         // It should emit a {SetOracle} event.
         vm.expectEmit({ emitter: address(comptroller) });
         emit ISablierComptroller.SetOracle(admin, address(0), address(oracle));
@@ -535,7 +559,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         _;
     }
 
-    function test_SetOracle_RevertWhen_NewOracleWithoutImplementation() external whenCallerAdmin whenNewOracleNotZero {
+    function test_SetOracleRevertWhen_NewOracleWithoutImplementation() external whenCallerAdmin whenNewOracleNotZero {
         Noop noop = new Noop();
 
         // It should revert.
@@ -543,7 +567,7 @@ contract Setters_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
         comptroller.setOracle(address(noop));
     }
 
-    function test_SetOracle_WhenNewOracleWithImplementation() external whenCallerAdmin whenNewOracleNotZero {
+    function test_SetOracleWhenNewOracleWithImplementation() external whenCallerAdmin whenNewOracleNotZero {
         ChainlinkOracleMock newOracleWithImpl = new ChainlinkOracleMock();
 
         // It should emit a {SetOracle} event.

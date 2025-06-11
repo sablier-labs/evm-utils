@@ -6,7 +6,7 @@ import { Errors } from "src/libraries/Errors.sol";
 
 import { SablierComptroller_Unit_Concrete_Test } from "../SablierComptroller.t.sol";
 
-contract CollectFees_Integration_Test is SablierComptroller_Unit_Concrete_Test {
+contract CollectFees_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
     address internal _feeRecipient;
 
     function setUp() public override {

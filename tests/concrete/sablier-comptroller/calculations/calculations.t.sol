@@ -12,6 +12,10 @@ import {
 import { SablierComptroller_Unit_Concrete_Test } from "../SablierComptroller.t.sol";
 
 contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Test {
+    /*//////////////////////////////////////////////////////////////////////////
+                               CALCULATE-MIN-FEE-WEI
+    //////////////////////////////////////////////////////////////////////////*/
+
     function test_CalculateMinFeeWeiGivenOracleZero() external {
         comptroller.setOracle(address(0));
 
@@ -23,7 +27,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         _;
     }
 
-    function test_CalculateMinFeeWei_WhenMinFeeUSDZero() external view givenOracleNotZero {
+    function test_CalculateMinFeeWeiWhenMinFeeUSDZero() external view givenOracleNotZero {
         // It should return zero.
         assertEq(comptroller.calculateMinFeeWei(0), 0, "min fee wei");
     }
@@ -32,7 +36,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         _;
     }
 
-    function test_CalculateMinFeeWei_WhenOracleUpdatedTimeInFuture() external givenOracleNotZero whenMinFeeUSDNotZero {
+    function test_CalculateMinFeeWeiWhenOracleUpdatedTimeInFuture() external givenOracleNotZero whenMinFeeUSDNotZero {
         comptroller.setOracle(address(new ChainlinkOracleFuture()));
 
         // It should return zero.
@@ -43,7 +47,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         _;
     }
 
-    function test_CalculateMinFeeWei_WhenOraclePriceOutdated()
+    function test_CalculateMinFeeWeiWhenOraclePriceOutdated()
         external
         givenOracleNotZero
         whenMinFeeUSDNotZero
@@ -59,7 +63,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         _;
     }
 
-    function test_CalculateMinFeeWei_WhenOraclePriceZero()
+    function test_CalculateMinFeeWeiWhenOraclePriceZero()
         external
         givenOracleNotZero
         whenMinFeeUSDNotZero
@@ -76,7 +80,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         _;
     }
 
-    function test_CalculateMinFeeWei_WhenOraclePriceHasEightDecimals()
+    function test_CalculateMinFeeWeiWhenOraclePriceHasEightDecimals()
         external
         view
         givenOracleNotZero
@@ -89,7 +93,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         assertEq(comptroller.calculateMinFeeWei(AIRDROP_MIN_FEE_USD), AIRDROP_MIN_FEE_WEI, "min fee wei");
     }
 
-    function test_CalculateMinFeeWei_WhenOraclePriceHasMoreThanEightDecimals()
+    function test_CalculateMinFeeWeiWhenOraclePriceHasMoreThanEightDecimals()
         external
         givenOracleNotZero
         whenMinFeeUSDNotZero
@@ -103,7 +107,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         assertEq(comptroller.calculateMinFeeWei(AIRDROP_MIN_FEE_USD), AIRDROP_MIN_FEE_WEI, "min fee wei");
     }
 
-    function test_CalculateMinFeeWei_WhenOraclePriceHasLessThanEightDecimals()
+    function test_CalculateMinFeeWeiWhenOraclePriceHasLessThanEightDecimals()
         external
         givenOracleNotZero
         whenMinFeeUSDNotZero
@@ -118,7 +122,7 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                      AIRDROPS
+                           CALCULATE-MIN-FEE-WEI-AIRDROPS
     //////////////////////////////////////////////////////////////////////////*/
 
     function test_CalculateMinFeeWeiAirdropsGivenMinFeeNotSet() external view {
@@ -129,13 +133,17 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
         assertEq(comptroller.calculateMinFeeWeiAirdrops(), AIRDROP_MIN_FEE_WEI, "min fee wei airdrops set");
     }
 
-    function test_CalculateMinFeeWeiAirdropsFor_GivenCustomFeeNotSet() external view {
+    /*//////////////////////////////////////////////////////////////////////////
+                         CALCULATE-MIN-FEE-WEI-AIRDROPS-FOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateMinFeeWeiAirdropsForGivenCustomFeeNotSet() external view {
         assertEq(
             comptrollerZero.calculateMinFeeWeiAirdropsFor(campaignCreator), 0, "min fee wei airdrops custom not set"
         );
     }
 
-    function test_CalculateMinFeeWeiAirdropsFor_GivenCustomFeeSet() external view {
+    function test_CalculateMinFeeWeiAirdropsForGivenCustomFeeSet() external view {
         assertEq(
             comptroller.calculateMinFeeWeiAirdropsFor(campaignCreator),
             AIRDROPS_CUSTOM_FEE_WEI,
@@ -144,42 +152,50 @@ contract Calculations_Unit_Concrete_Test is SablierComptroller_Unit_Concrete_Tes
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                        FLOW
+                             CALCULATE-MIN-FEE-WEI-FLOW
     //////////////////////////////////////////////////////////////////////////*/
 
-    function test_CalculateMinFeeWeiFlow_GivenMinFeeNotSet() external view {
+    function test_CalculateMinFeeWeiFlowGivenMinFeeNotSet() external view {
         assertEq(comptrollerZero.calculateMinFeeWeiFlow(), 0, "min fee wei flow not set");
     }
 
-    function test_CalculateMinFeeWeiFlow_GivenMinFeeSet() external view {
+    function test_CalculateMinFeeWeiFlowGivenMinFeeSet() external view {
         assertEq(comptroller.calculateMinFeeWeiFlow(), FLOW_MIN_FEE_WEI, "min fee wei flow set");
     }
 
-    function test_CalculateMinFeeWeiFlowFor_GivenCustomFeeNotSet() external view {
+    /*//////////////////////////////////////////////////////////////////////////
+                           CALCULATE-MIN-FEE-WEI-FLOW-FOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateMinFeeWeiFlowForGivenCustomFeeNotSet() external view {
         assertEq(comptrollerZero.calculateMinFeeWeiFlowFor(sender), 0, "min fee wei flow custom not set");
     }
 
-    function test_CalculateMinFeeWeiFlowFor_GivenCustomFeeSet() external view {
+    function test_CalculateMinFeeWeiFlowForGivenCustomFeeSet() external view {
         assertEq(comptroller.calculateMinFeeWeiFlowFor(sender), FLOW_CUSTOM_FEE_WEI, "min fee wei flow custom set");
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                                       LOCKUP
+                            CALCULATE-MIN-FEE-WEI-LOCKUP
     //////////////////////////////////////////////////////////////////////////*/
 
-    function test_CalculateMinFeeWeiLockup_GivenMinFeeNotSet() external view {
+    function test_CalculateMinFeeWeiLockupGivenMinFeeNotSet() external view {
         assertEq(comptrollerZero.calculateMinFeeWeiLockup(), 0, "min fee wei lockup not set");
     }
 
-    function test_CalculateMinFeeWeiLockup_GivenMinFeeSet() external view {
+    function test_CalculateMinFeeWeiLockupGivenMinFeeSet() external view {
         assertEq(comptroller.calculateMinFeeWeiLockup(), LOCKUP_MIN_FEE_WEI, "min fee wei lockup set");
     }
 
-    function test_CalculateMinFeeWeiLockupFor_GivenCustomFeeNotSet() external view {
+    /*//////////////////////////////////////////////////////////////////////////
+                          CALCULATE-MIN-FEE-WEI-LOCKUP-FOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateMinFeeWeiLockupForGivenCustomFeeNotSet() external view {
         assertEq(comptrollerZero.calculateMinFeeWeiLockupFor(sender), 0, "min fee wei lockup custom not set");
     }
 
-    function test_CalculateMinFeeWeiLockupFor_GivenCustomFeeSet() external view {
+    function test_CalculateMinFeeWeiLockupForGivenCustomFeeSet() external view {
         assertEq(
             comptroller.calculateMinFeeWeiLockupFor(sender), LOCKUP_CUSTOM_FEE_WEI, "min fee wei lockup custom set"
         );

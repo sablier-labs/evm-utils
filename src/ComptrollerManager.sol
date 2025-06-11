@@ -7,7 +7,7 @@ import { Errors } from "./libraries/Errors.sol";
 
 /// @title ComptrollerManager
 /// @notice See the documentation in {IComptrollerManager}.
-contract ComptrollerManager is IComptrollerManager {
+abstract contract ComptrollerManager is IComptrollerManager {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
