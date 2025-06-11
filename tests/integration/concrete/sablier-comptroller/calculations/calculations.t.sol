@@ -13,6 +13,86 @@ import { SablierComptroller_Concrete_Test } from "../SablierComptroller.t.sol";
 
 contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
     /*//////////////////////////////////////////////////////////////////////////
+                           CALCULATE-AIRDROPS-MIN-FEE-WEI
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateAirdropsMinFeeWeiGivenMinFeeNotSet() external view {
+        assertEq(comptrollerZero.calculateAirdropsMinFeeWei(), 0, "min fee wei airdrops not set");
+    }
+
+    function test_CalculateAirdropsMinFeeWeiGivenMinFeeSet() external view {
+        assertEq(comptroller.calculateAirdropsMinFeeWei(), AIRDROP_MIN_FEE_WEI, "min fee wei airdrops set");
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                         CALCULATE-AIRDROPS-MIN-FEE-WEI-FOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateAirdropsMinFeeWeiForGivenCustomFeeNotSet() external view {
+        assertEq(
+            comptrollerZero.calculateAirdropsMinFeeWeiFor(campaignCreator), 0, "min fee wei airdrops custom not set"
+        );
+    }
+
+    function test_CalculateAirdropsMinFeeWeiForGivenCustomFeeSet() external view {
+        assertEq(
+            comptroller.calculateAirdropsMinFeeWeiFor(campaignCreator),
+            AIRDROPS_CUSTOM_FEE_WEI,
+            "min fee wei airdrops custom set"
+        );
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                             CALCULATE-FLOW-MIN-FEE-WEI
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateFlowMinFeeWeiGivenMinFeeNotSet() external view {
+        assertEq(comptrollerZero.calculateFlowMinFeeWei(), 0, "min fee wei flow not set");
+    }
+
+    function test_CalculateFlowMinFeeWeiGivenMinFeeSet() external view {
+        assertEq(comptroller.calculateFlowMinFeeWei(), FLOW_MIN_FEE_WEI, "min fee wei flow set");
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                           CALCULATE-FLOW-MIN-FEE-WEI-FOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateFlowMinFeeWeiForGivenCustomFeeNotSet() external view {
+        assertEq(comptrollerZero.calculateFlowMinFeeWeiFor(sender), 0, "min fee wei flow custom not set");
+    }
+
+    function test_CalculateFlowMinFeeWeiForGivenCustomFeeSet() external view {
+        assertEq(comptroller.calculateFlowMinFeeWeiFor(sender), FLOW_CUSTOM_FEE_WEI, "min fee wei flow custom set");
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            CALCULATE-LOCKUP-MIN-FEE-WEI
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateLockupMinFeeWeiGivenMinFeeNotSet() external view {
+        assertEq(comptrollerZero.calculateLockupMinFeeWei(), 0, "min fee wei lockup not set");
+    }
+
+    function test_CalculateLockupMinFeeWeiGivenMinFeeSet() external view {
+        assertEq(comptroller.calculateLockupMinFeeWei(), LOCKUP_MIN_FEE_WEI, "min fee wei lockup set");
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                          CALCULATE-LOCKUP-MIN-FEE-WEI-FOR
+    //////////////////////////////////////////////////////////////////////////*/
+
+    function test_CalculateLockupMinFeeWeiForGivenCustomFeeNotSet() external view {
+        assertEq(comptrollerZero.calculateLockupMinFeeWeiFor(sender), 0, "min fee wei lockup custom not set");
+    }
+
+    function test_CalculateLockupMinFeeWeiForGivenCustomFeeSet() external view {
+        assertEq(
+            comptroller.calculateLockupMinFeeWeiFor(sender), LOCKUP_CUSTOM_FEE_WEI, "min fee wei lockup custom set"
+        );
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
                                CALCULATE-MIN-FEE-WEI
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -119,85 +199,5 @@ contract Calculations_Concrete_Test is SablierComptroller_Concrete_Test {
 
         // It should calculate the min fee in wei.
         assertEq(comptroller.calculateMinFeeWei(AIRDROP_MIN_FEE_USD), AIRDROP_MIN_FEE_WEI, "min fee wei");
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                           CALCULATE-MIN-FEE-WEI-AIRDROPS
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function test_CalculateMinFeeWeiAirdropsGivenMinFeeNotSet() external view {
-        assertEq(comptrollerZero.calculateMinFeeWeiAirdrops(), 0, "min fee wei airdrops not set");
-    }
-
-    function test_CalculateMinFeeWeiAirdropsGivenMinFeeSet() external view {
-        assertEq(comptroller.calculateMinFeeWeiAirdrops(), AIRDROP_MIN_FEE_WEI, "min fee wei airdrops set");
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                         CALCULATE-MIN-FEE-WEI-AIRDROPS-FOR
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function test_CalculateMinFeeWeiAirdropsForGivenCustomFeeNotSet() external view {
-        assertEq(
-            comptrollerZero.calculateMinFeeWeiAirdropsFor(campaignCreator), 0, "min fee wei airdrops custom not set"
-        );
-    }
-
-    function test_CalculateMinFeeWeiAirdropsForGivenCustomFeeSet() external view {
-        assertEq(
-            comptroller.calculateMinFeeWeiAirdropsFor(campaignCreator),
-            AIRDROPS_CUSTOM_FEE_WEI,
-            "min fee wei airdrops custom set"
-        );
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                             CALCULATE-MIN-FEE-WEI-FLOW
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function test_CalculateMinFeeWeiFlowGivenMinFeeNotSet() external view {
-        assertEq(comptrollerZero.calculateMinFeeWeiFlow(), 0, "min fee wei flow not set");
-    }
-
-    function test_CalculateMinFeeWeiFlowGivenMinFeeSet() external view {
-        assertEq(comptroller.calculateMinFeeWeiFlow(), FLOW_MIN_FEE_WEI, "min fee wei flow set");
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                           CALCULATE-MIN-FEE-WEI-FLOW-FOR
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function test_CalculateMinFeeWeiFlowForGivenCustomFeeNotSet() external view {
-        assertEq(comptrollerZero.calculateMinFeeWeiFlowFor(sender), 0, "min fee wei flow custom not set");
-    }
-
-    function test_CalculateMinFeeWeiFlowForGivenCustomFeeSet() external view {
-        assertEq(comptroller.calculateMinFeeWeiFlowFor(sender), FLOW_CUSTOM_FEE_WEI, "min fee wei flow custom set");
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                            CALCULATE-MIN-FEE-WEI-LOCKUP
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function test_CalculateMinFeeWeiLockupGivenMinFeeNotSet() external view {
-        assertEq(comptrollerZero.calculateMinFeeWeiLockup(), 0, "min fee wei lockup not set");
-    }
-
-    function test_CalculateMinFeeWeiLockupGivenMinFeeSet() external view {
-        assertEq(comptroller.calculateMinFeeWeiLockup(), LOCKUP_MIN_FEE_WEI, "min fee wei lockup set");
-    }
-
-    /*//////////////////////////////////////////////////////////////////////////
-                          CALCULATE-MIN-FEE-WEI-LOCKUP-FOR
-    //////////////////////////////////////////////////////////////////////////*/
-
-    function test_CalculateMinFeeWeiLockupForGivenCustomFeeNotSet() external view {
-        assertEq(comptrollerZero.calculateMinFeeWeiLockupFor(sender), 0, "min fee wei lockup custom not set");
-    }
-
-    function test_CalculateMinFeeWeiLockupForGivenCustomFeeSet() external view {
-        assertEq(
-            comptroller.calculateMinFeeWeiLockupFor(sender), LOCKUP_CUSTOM_FEE_WEI, "min fee wei lockup custom set"
-        );
     }
 }

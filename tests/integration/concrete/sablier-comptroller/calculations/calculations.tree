@@ -1,3 +1,39 @@
+Calculations_Concrete_Test::calculateAirdropsMinFeeWei
+├── given min fee not set
+│  └── it should return zero
+└── given min fee set
+   └── it should calculate the min fee in wei
+
+Calculations_Concrete_Test::calculateAirdropsMinFeeWeiFor
+├── given custom fee not set
+│  └── it should return zero
+└── given custom fee set
+   └── it should calculate the min fee in wei
+
+Calculations_Concrete_Test::calculateFlowMinFeeWei
+├── given min fee not set
+│  └── it should return zero
+└── given min fee set
+   └── it should calculate the min fee in wei
+
+Calculations_Concrete_Test::calculateFlowMinFeeWeiFor
+├── given custom fee not set
+│  └── it should return zero
+└── given custom fee set
+   └── it should calculate the min fee in wei
+
+Calculations_Concrete_Test::calculateLockupMinFeeWei
+├── given min fee not set
+│  └── it should return zero
+└── given min fee set
+   └── it should calculate the min fee in wei
+
+Calculations_Concrete_Test::calculateLockupMinFeeWeiFor
+├── given custom fee not set
+│  └── it should return zero
+└── given custom fee set
+   └── it should calculate the min fee in wei
+
 Calculations_Concrete_Test::calculateMinFeeWei
 ├── given oracle zero
 │  └── it should return zero
@@ -20,45 +56,3 @@ Calculations_Concrete_Test::calculateMinFeeWei
                │  └── it should calculate the min fee in wei
                └── when oracle price has less than eight decimals
                   └── it should calculate the min fee in wei
-
-
-Calculations_Concrete_Test::calculateMinFeeWeiAirdrops
-├── given min fee not set
-│  └── it should return zero
-└── given min fee set
-   └── it should calculate the min fee in wei
-
-
-Calculations_Concrete_Test::calculateMinFeeWeiAirdropsFor
-├── given custom fee not set
-│  └── it should return zero
-└── given custom fee set
-   └── it should calculate the min fee in wei
-
-
-Calculations_Concrete_Test::calculateMinFeeWeiFlow
-├── given min fee not set
-│  └── it should return zero
-└── given min fee set
-   └── it should calculate the min fee in wei
-
-
-Calculations_Concrete_Test::calculateMinFeeWeiFlowFor
-├── given custom fee not set
-│  └── it should return zero
-└── given custom fee set
-   └── it should calculate the min fee in wei
-
-
-Calculations_Concrete_Test::calculateMinFeeWeiLockup
-├── given min fee not set
-│  └── it should return zero
-└── given min fee set
-   └── it should calculate the min fee in wei
-
-
-Calculations_Concrete_Test::calculateMinFeeWeiLockupFor
-├── given custom fee not set
-│  └── it should return zero
-└── given custom fee set
-   └── it should calculate the min fee in wei

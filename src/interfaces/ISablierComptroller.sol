@@ -98,6 +98,30 @@ interface ISablierComptroller is IRoleAdminable {
     /// @dev The returned value is 100e8, which is equivalent to $100.
     function MAX_FEE_USD() external view returns (uint256);
 
+    /// @notice Calculates the minimum fee in wei to claim from an airdrop.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateAirdropsMinFeeWei() external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei applicable for the provided campaign creator.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateAirdropsMinFeeWeiFor(address campaignCreator) external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei required to withdraw from a flow stream.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateFlowMinFeeWei() external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei applicable for the provided sender.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateFlowMinFeeWeiFor(address sender) external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei required to withdraw from a lockup stream.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateLockupMinFeeWei() external view returns (uint256);
+
+    /// @notice Calculates the minimum fee in wei applicable for the provided sender.
+    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
+    function calculateLockupMinFeeWeiFor(address sender) external view returns (uint256);
+
     /// @notice Calculates the minimum fee in wei required to either claim an airdrop or to withdraw from a stream.
     ///
     /// The price is considered to be 0 if:
@@ -110,30 +134,6 @@ interface ISablierComptroller is IRoleAdminable {
     /// @param minFeeUSD The min USD fee, denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
     /// @return The minimum fee in wei, denominated in 18 decimals (1e18 = 1 native token).
     function calculateMinFeeWei(uint256 minFeeUSD) external view returns (uint256);
-
-    /// @notice Calculates the minimum fee in wei to claim from an airdrop.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiAirdrops() external view returns (uint256);
-
-    /// @notice Calculates the minimum fee in wei applicable for the provided campaign creator.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view returns (uint256);
-
-    /// @notice Calculates the minimum fee in wei required to withdraw from a flow stream.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiFlow() external view returns (uint256);
-
-    /// @notice Calculates the minimum fee in wei applicable for the provided sender.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiFlowFor(address sender) external view returns (uint256);
-
-    /// @notice Calculates the minimum fee in wei required to withdraw from a lockup stream.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiLockup() external view returns (uint256);
-
-    /// @notice Calculates the minimum fee in wei applicable for the provided sender.
-    /// @dev Refer to `calculateMinFeeWei(uint256 minFeeUSD)` for more details on how the fee is calculated.
-    function calculateMinFeeWeiLockupFor(address sender) external view returns (uint256);
 
     /// @notice Retrieves the min USD fee required to claim an airdrop, paid in the native token of the chain, e.g.,
     /// ETH for Ethereum Mainnet.

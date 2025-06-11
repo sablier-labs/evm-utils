@@ -78,40 +78,40 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWei(uint256 minFeeUSD) external view override returns (uint256) {
-        return _calculateMinFeeWei(minFeeUSD);
-    }
-
-    /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiAirdrops() external view override returns (uint256) {
+    function calculateAirdropsMinFeeWei() external view override returns (uint256) {
         return _calculateMinFeeWei(_airdropsFees.minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view override returns (uint256) {
+    function calculateAirdropsMinFeeWeiFor(address campaignCreator) external view override returns (uint256) {
         uint256 minFeeUSD = _getAirdropsMinFeeUSDFor(campaignCreator);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiFlow() external view override returns (uint256) {
+    function calculateFlowMinFeeWei() external view override returns (uint256) {
         return _calculateMinFeeWei(_flowFees.minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiFlowFor(address sender) external view override returns (uint256) {
+    function calculateFlowMinFeeWeiFor(address sender) external view override returns (uint256) {
         uint256 minFeeUSD = _getFlowMinFeeUSDFor(sender);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiLockup() external view override returns (uint256) {
+    function calculateLockupMinFeeWei() external view override returns (uint256) {
         return _calculateMinFeeWei(_lockupFees.minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiLockupFor(address sender) external view override returns (uint256) {
+    function calculateLockupMinFeeWeiFor(address sender) external view override returns (uint256) {
         uint256 minFeeUSD = _getLockupMinFeeUSDFor(sender);
+        return _calculateMinFeeWei(minFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function calculateMinFeeWei(uint256 minFeeUSD) external view override returns (uint256) {
         return _calculateMinFeeWei(minFeeUSD);
     }
 
