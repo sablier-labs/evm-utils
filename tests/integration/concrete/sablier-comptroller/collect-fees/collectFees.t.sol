@@ -67,11 +67,7 @@ contract CollectFees_Concrete_Test is SablierComptroller_Concrete_Test {
 
         // It should emit a {CollectFees} event.
         vm.expectEmit({ emitter: address(comptroller) });
-        emit ISablierComptroller.CollectFees({
-            admin: users.admin,
-            feeRecipient: feeRecipient,
-            feeAmount: AIRDROP_MIN_FEE_WEI
-        });
+        emit ISablierComptroller.CollectFees({ feeRecipient: feeRecipient, feeAmount: AIRDROP_MIN_FEE_WEI });
 
         comptroller.collectFees({ feeRecipient: feeRecipient });
 

@@ -51,8 +51,8 @@ interface ISablierComptroller is IRoleAdminable {
                                        EVENTS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Emitted when the accrued fees are collected.
-    event CollectFees(address indexed admin, address indexed feeRecipient, uint256 feeAmount);
+    /// @notice Emitted when the admin or the fee collector collects the accrued fees.
+    event CollectFees(address indexed feeRecipient, uint256 feeAmount);
 
     /// @notice Emitted when the admin or the fee manager resets the airdrops custom USD fee for the provided campaign
     /// creator to the minimum fee.
@@ -69,19 +69,20 @@ interface ISablierComptroller is IRoleAdminable {
     /// @notice Emitted when a target contract is called.
     event Execute(address indexed target, bytes data, bytes result);
 
-    /// @notice Emitted when the admin sets an airdrops custom USD fee for the provided campaign creator.
+    /// @notice Emitted when the admin or the fee manager sets an airdrops custom USD fee for the provided campaign
+    /// creator.
     event SetAirdropsCustomFeeUSD(address indexed campaignCreator, uint256 customFeeUSD);
 
     /// @notice Emitted when the airdrops min USD fee is set by the admin or the fee manager.
     event SetAirdropsMinFeeUSD(uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
 
-    /// @notice Emitted when the admin sets a flow custom USD fee for the provided sender.
+    /// @notice Emitted when the admin or the fee manager sets a flow custom USD fee for the provided sender.
     event SetFlowCustomFeeUSD(address indexed sender, uint256 customFeeUSD);
 
     /// @notice Emitted when the flow min USD fee is set by the admin or the fee manager.
     event SetFlowMinFeeUSD(uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
 
-    /// @notice Emitted when the admin sets a lockup custom USD fee for the provided sender.
+    /// @notice Emitted when the admin or the fee manager sets a lockup custom USD fee for the provided sender.
     event SetLockupCustomFeeUSD(address indexed sender, uint256 customFeeUSD);
 
     /// @notice Emitted when the lockup min USD fee is set by the admin or the fee manager.
@@ -326,4 +327,20 @@ interface ISablierComptroller is IRoleAdminable {
     ///
     /// @param newOracle The new oracle contract address. It can be the zero address.
     function setOracle(address newOracle) external;
+
+    /// @notice Transfers the accrued fees from the Lockup and Flow protocols, and then collects the fees.
+    /// @dev Emits a {CollectFees} event.
+    ///
+    /// Notes:
+    /// - {execute} can also be used for this, but the purpose of this function is to provide a single entry point
+    /// for collecting all fees.
+    /// - Declares the calldata and uses `.call` to avoid recursive imports.
+    ///
+    /// Requirements:
+    /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_COLLECTOR_ROLE} role.
+    ///
+    /// @param flow The address of the {SablierFlow} contract.
+    /// @param lockup The address of the {SablierLockup} contract.
+    /// @param feeRecipient The address to which the fees will be sent.
+    function transferAndCollectFees(address flow, address lockup, address feeRecipient) external;
 }

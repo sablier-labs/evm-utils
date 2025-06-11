@@ -158,18 +158,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             revert Errors.SablierComptroller_FeeRecipientNotAdmin({ feeRecipient: feeRecipient, admin: admin });
         }
 
-        uint256 feeAmount = address(this).balance;
-
-        // Effect: transfer the fees to the fee recipient.
-        (bool success,) = feeRecipient.call{ value: feeAmount }("");
-
-        // Revert if the call failed.
-        if (!success) {
-            revert Errors.SablierComptroller_FeeTransferFailed(feeRecipient, feeAmount);
-        }
-
-        // Log the fee withdrawal.
-        emit CollectFees(admin, feeRecipient, feeAmount);
+        // Effect: collect the fees.
+        _collectFees(feeRecipient);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -354,6 +344,39 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         emit SetOracle({ admin: msg.sender, newOracle: newOracle, previousOracle: currentOracle });
     }
 
+    /// @inheritdoc ISablierComptroller
+    function transferAndCollectFees(
+        address flow,
+        address lockup,
+        address feeRecipient
+    )
+        external
+        override
+        onlyRole(FEE_COLLECTOR_ROLE)
+    {
+        // Declare the calldata of the function.
+        bytes memory callData = abi.encodeWithSignature("transferFeesToComptroller()");
+
+        // Interactions: call the transfer function on the flow contract.
+        (bool success,) = flow.call(callData);
+
+        // Check: the call was successful.
+        if (!success) {
+            revert Errors.SablierComptroller_FeeTransferFailed(address(this), flow.balance);
+        }
+
+        // Interactions: call the transfer function on the lockup contract.
+        (success,) = lockup.call(callData);
+
+        // Check: the call was successful.
+        if (!success) {
+            revert Errors.SablierComptroller_FeeTransferFailed(address(this), lockup.balance);
+        }
+
+        // Effect: collect the fees.
+        _collectFees(feeRecipient);
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                             PRIVATE READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
@@ -439,6 +462,22 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                           PRIVATE STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev See the documentation for the user-facing functions that call this private function.
+    function _collectFees(address feeRecipient) private {
+        uint256 feeAmount = address(this).balance;
+
+        // Effect: transfer the fees to the fee recipient.
+        (bool success,) = feeRecipient.call{ value: feeAmount }("");
+
+        // Revert if the call failed.
+        if (!success) {
+            revert Errors.SablierComptroller_FeeTransferFailed(feeRecipient, feeAmount);
+        }
+
+        // Log the fee withdrawal.
+        emit CollectFees(feeRecipient, feeAmount);
+    }
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _setOracle(address newOracle) private {
