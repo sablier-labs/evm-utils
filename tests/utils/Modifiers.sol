@@ -105,4 +105,8 @@ abstract contract Modifiers is BaseTest {
     modifier whenTheCallCallReverts() {
         _;
     }
+
+    modifier whenTheFlowCallNotRevert() {
+        _;
+    }
 }
