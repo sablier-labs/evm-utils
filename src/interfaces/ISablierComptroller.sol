@@ -334,7 +334,6 @@ interface ISablierComptroller is IRoleAdminable {
     /// Notes:
     /// - {execute} can also be used for this, but the purpose of this function is to provide a single entry point for
     /// collecting all fees.
-    /// - Uses low-level calls to avoid recursive imports.
     /// - If `feeRecipient` is a contract, it must be able to receive native tokens, e.g., ETH for Ethereum Mainnet.
     ///
     /// Requirements:
