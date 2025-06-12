@@ -27,7 +27,7 @@ contract TransferAndCollectFees_Concrete_Test is SablierComptroller_Concrete_Tes
         comptroller.transferAndCollectFees(address(comptrollerManager), address(comptrollerManager), admin);
     }
 
-    function test_WhenCallerAdmin() external whenCallerAdmin whenTheFlowCallNotRevert {
+    function test_WhenCallerAdmin() external whenCallerAdmin whenFlowCallNotRevert {
         _test_TransferAndCollectFees(admin);
     }
 

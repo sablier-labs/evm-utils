@@ -52,10 +52,11 @@ abstract contract ComptrollerManager is IComptrollerManager {
         // Interaction: transfer the fees to the comptroller.
         (bool success,) = address(comptroller).call{ value: feeAmount }("");
 
-        // Silence the warning as comptroller is expected to implement `receive()` function.
+        // Dummy assignment to silence the compiler warning, because comptroller is expected to implement `receive()`
+        // function.
         success;
 
-        // Log the fee transfer to the comptroller.
+        // Log the fee transfer.
         emit IComptrollerManager.TransferFeesToComptroller(comptroller, feeAmount);
     }
 

@@ -6,27 +6,28 @@ import { IComptrollerManager } from "src/interfaces/IComptrollerManager.sol";
 import { Base_Test } from "../../../../Base.t.sol";
 
 contract TransferFeesToComptroller_Lockup_Integration_Concrete_Test is Base_Test {
-    function setUp() public virtual override {
-        Base_Test.setUp();
-    }
-
     function test_GivenFeeZero() external {
-        vm.expectEmit({ emitter: address(comptrollerManager) });
-        emit IComptrollerManager.TransferFeesToComptroller(comptroller, 0);
-        comptrollerManager.transferFeesToComptroller();
+        _test_TransferFeesToComptroller(0);
     }
 
     function test_GivenFeeNotZero() external {
-        vm.deal(address(comptrollerManager), LOCKUP_MIN_FEE_WEI);
+        _test_TransferFeesToComptroller(LOCKUP_MIN_FEE_WEI);
+    }
 
-        uint256 balanceBefore = address(comptroller).balance;
+    function _test_TransferFeesToComptroller(uint256 fee) private {
+        // Deal some ETH to the comptroller manager.
+        vm.deal(address(comptrollerManager), fee);
 
+        // Get the initial balance.
+        uint256 initialEthBalance = address(comptroller).balance;
+
+        // It should emit {TransferFeesToComptroller} event.
         vm.expectEmit({ emitter: address(comptrollerManager) });
-        emit IComptrollerManager.TransferFeesToComptroller(comptroller, LOCKUP_MIN_FEE_WEI);
+        emit IComptrollerManager.TransferFeesToComptroller(comptroller, fee);
+
+        // Call the function.
         comptrollerManager.transferFeesToComptroller();
 
-        assertEq(
-            address(comptroller).balance, balanceBefore + LOCKUP_MIN_FEE_WEI, "Fees not transferred to comptroller"
-        );
+        assertEq(address(comptroller).balance, initialEthBalance + fee, "eth balance");
     }
 }

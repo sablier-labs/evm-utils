@@ -45,7 +45,7 @@ contract Execute_Concrete_Test is SablierComptroller_Concrete_Test {
         comptroller.execute({ target: address(0), data: data });
     }
 
-    function test_WhenTheExceptionIsAPanic() external whenCallerAdmin whenTargetContract whenTheCallCallReverts {
+    function test_WhenCallPanics() external whenCallerAdmin whenTargetContract whenCallReverts {
         // It should panic due to a failed assertion.
         data = bytes.concat(targets.panic.failedAssertion.selector);
         vm.expectRevert(stdError.assertionError);
@@ -67,7 +67,7 @@ contract Execute_Concrete_Test is SablierComptroller_Concrete_Test {
         comptroller.execute(address(targets.panic), data);
     }
 
-    function test_WhenTheExceptionIsAnError() external whenCallerAdmin whenTargetContract whenTheCallCallReverts {
+    function test_WhenCallRevertsSilently() external whenCallerAdmin whenTargetContract whenCallReverts {
         // It should revert with an empty revert statement.
         data = bytes.concat(targets.reverter.withNothing.selector);
         vm.expectRevert(Errors.SablierComptroller_ExecutionFailedSilently.selector);
@@ -89,7 +89,7 @@ contract Execute_Concrete_Test is SablierComptroller_Concrete_Test {
         comptroller.execute(address(targets.reverter), data);
     }
 
-    function test_WhenTheCallDoesNotRevert() external whenCallerAdmin whenTargetContract {
+    function test_WhenCallDoesNotRevert() external whenCallerAdmin whenTargetContract {
         // It should emit an {Execute} event.
         vm.expectEmit({ emitter: address(comptroller) });
         emit ISablierComptroller.Execute({ target: address(comptrollerManager), data: data, result: "" });

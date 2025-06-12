@@ -355,10 +355,10 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         override
         onlyRole(FEE_COLLECTOR_ROLE)
     {
-        // Interactions: call the transfer function on the flow contract.
+        // Interactions: transfer fees from Flow to this contract.
         IComptrollerManager(flow).transferFeesToComptroller();
 
-        // Interactions: call the transfer function on the lockup contract.
+        // Interactions: transfer fees from Lockup to this contract.
         IComptrollerManager(lockup).transferFeesToComptroller();
 
         // Effect: collect the fees.

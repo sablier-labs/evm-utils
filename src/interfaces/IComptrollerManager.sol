@@ -13,9 +13,7 @@ interface IComptrollerManager {
     /// @notice Emitted when the comptroller address is set by the admin.
     event SetComptroller(ISablierComptroller newComptroller, ISablierComptroller oldComptroller);
 
-    /// @notice Emitted when the native token fees generated are transferred to the comptroller contract.
-    /// @param comptroller The address of the current comptroller.
-    /// @param feeAmount The amount of native tokens transferred, denoted in units of the native token's decimals.
+    /// @notice Emitted when the fees are transferred to the comptroller contract.
     event TransferFeesToComptroller(ISablierComptroller indexed comptroller, uint256 feeAmount);
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -38,7 +36,7 @@ interface IComptrollerManager {
     /// @param newComptroller The address of the new comptroller contract.
     function setComptroller(ISablierComptroller newComptroller) external;
 
-    /// @notice Transfers the fees accrued to the comptroller contract.
+    /// @notice Transfers the fees to the comptroller contract.
     /// @dev Emits a {TransferFeesToComptroller} event.
     function transferFeesToComptroller() external;
 }
