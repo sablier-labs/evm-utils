@@ -18,11 +18,11 @@ library Errors {
     /// @notice Thrown when `msg.sender` is not the comptroller.
     error ComptrollerManager_CallerNotComptroller(address comptroller, address caller);
 
-    /// @notice Thrown when trying to set zero as the comptroller address.
-    error ComptrollerManager_ZeroAddress();
-
     /// @notice Thrown when the fee transfer fails.
     error ComptrollerManager_FeeTransferFailed(address comptroller, uint256 feeAmount);
+
+    /// @notice Thrown when trying to set zero as the comptroller address.
+    error ComptrollerManager_ZeroAddress();
 
     /*//////////////////////////////////////////////////////////////////////////
                                     COMPTROLLER
