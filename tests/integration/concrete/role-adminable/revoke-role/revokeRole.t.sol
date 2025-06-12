@@ -10,7 +10,7 @@ contract RevokeRole_RoleAdminable_Concrete_Test is Base_Test {
         // Make Accountant the caller in this test.
         setMsgSender(users.accountant);
 
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.accountant));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, users.accountant));
         roleAdminableMock.revokeRole(FEE_COLLECTOR_ROLE, users.accountant);
     }
 
@@ -22,7 +22,7 @@ contract RevokeRole_RoleAdminable_Concrete_Test is Base_Test {
     function test_GivenAccountHasRole() external whenCallerAdmin {
         // It should emit {RoleRevoked} event.
         vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IRoleAdminable.RoleRevoked({ admin: users.admin, account: users.accountant, role: FEE_COLLECTOR_ROLE });
+        emit IRoleAdminable.RoleRevoked({ admin: admin, account: users.accountant, role: FEE_COLLECTOR_ROLE });
 
         // Revoke the role from accountant.
         roleAdminableMock.revokeRole(FEE_COLLECTOR_ROLE, users.accountant);

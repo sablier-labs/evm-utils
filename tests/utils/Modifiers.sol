@@ -2,15 +2,8 @@
 pragma solidity >=0.8.22;
 
 import { BaseTest } from "src/tests/BaseTest.sol";
-import { Users } from "./Types.sol";
 
 abstract contract Modifiers is BaseTest {
-    Users private users;
-
-    function setUsers(Users memory users_) internal {
-        users = users_;
-    }
-
     /*//////////////////////////////////////////////////////////////////////////
                                        GIVEN
     //////////////////////////////////////////////////////////////////////////*/
@@ -36,7 +29,7 @@ abstract contract Modifiers is BaseTest {
     }
 
     modifier whenCallerAdmin() {
-        setMsgSender(users.admin);
+        setMsgSender(admin);
         _;
     }
 

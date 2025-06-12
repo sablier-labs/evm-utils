@@ -6,7 +6,7 @@ import { Base_Test } from "../../../../Base.t.sol";
 contract HasRoleOrIsAdmin_RoleAdminable_Concrete_Test is Base_Test {
     function test_WhenAccountAdmin() external view {
         // It should return true.
-        bool actualHasRole = roleAdminableMock.hasRoleOrIsAdmin(FEE_COLLECTOR_ROLE, users.admin);
+        bool actualHasRole = roleAdminableMock.hasRoleOrIsAdmin(FEE_COLLECTOR_ROLE, admin);
         assertTrue(actualHasRole, "hasRoleOrIsAdmin");
     }
 

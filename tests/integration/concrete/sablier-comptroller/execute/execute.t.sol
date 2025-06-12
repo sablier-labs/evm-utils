@@ -37,7 +37,7 @@ contract Execute_Concrete_Test is SablierComptroller_Concrete_Test {
 
     function test_RevertWhen_CallerNotAdmin() external {
         setMsgSender(users.eve);
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, users.eve));
         comptroller.execute({ target: address(comptrollerManagerMock), data: data });
     }
 

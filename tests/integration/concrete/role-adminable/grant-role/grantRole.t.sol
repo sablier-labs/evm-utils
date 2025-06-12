@@ -10,7 +10,7 @@ contract GrantRole_RoleAdminable_Concrete_Test is Base_Test {
         // Make Accountant the caller in this test.
         setMsgSender(users.accountant);
 
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.accountant));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, users.accountant));
         roleAdminableMock.grantRole(FEE_COLLECTOR_ROLE, users.accountant);
     }
 
@@ -24,7 +24,7 @@ contract GrantRole_RoleAdminable_Concrete_Test is Base_Test {
     function test_GivenAccountNotHaveRole() external whenCallerAdmin {
         // It should emit {RoleGranted} event.
         vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IRoleAdminable.RoleGranted({ admin: users.admin, account: users.eve, role: FEE_COLLECTOR_ROLE });
+        emit IRoleAdminable.RoleGranted({ admin: admin, account: users.eve, role: FEE_COLLECTOR_ROLE });
 
         // Grant the role to Eve.
         roleAdminableMock.grantRole(FEE_COLLECTOR_ROLE, users.eve);

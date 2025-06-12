@@ -13,7 +13,7 @@ abstract contract SablierComptroller_Concrete_Test is Base_Test {
         Base_Test.setUp();
 
         // Deploy the Sablier Comptroller with zero values.
-        comptrollerZero = new SablierComptroller(users.admin, 0, 0, 0, address(0));
+        comptrollerZero = new SablierComptroller(admin, 0, 0, 0, address(0));
 
         // Set the custom fees.
         comptroller.setAirdropsCustomFeeUSD(users.campaignCreator, AIRDROPS_CUSTOM_FEE_USD);
@@ -23,7 +23,7 @@ abstract contract SablierComptroller_Concrete_Test is Base_Test {
 
     function test_Constructor() public view {
         // Assert the state variables.
-        assertEq(comptroller.admin(), users.admin, "admin");
+        assertEq(comptroller.admin(), admin, "admin");
         assertEq(comptroller.getAirdropsMinFeeUSD(), AIRDROP_MIN_FEE_USD, "airdrop min fee");
         assertEq(comptroller.getFlowMinFeeUSD(), FLOW_MIN_FEE_USD, "flow min fee");
         assertEq(comptroller.getLockupMinFeeUSD(), LOCKUP_MIN_FEE_USD, "lockup min fee");

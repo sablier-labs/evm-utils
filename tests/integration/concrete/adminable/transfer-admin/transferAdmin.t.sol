@@ -12,13 +12,13 @@ contract TransferAdmin_Adminable_Concrete_Test is Base_Test {
         setMsgSender(users.eve);
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, users.eve));
         adminableMock.transferAdmin(users.eve);
     }
 
     function test_WhenNewAdminSameAsCurrentAdmin() external whenCallerAdmin {
         // Transfer the admin to the same admin.
-        _testTransferAdmin({ newAdmin: users.admin });
+        _testTransferAdmin({ newAdmin: admin });
     }
 
     function test_WhenNewAdminZeroAddress() external whenCallerAdmin whenNewAdminNotSameAsCurrentAdmin {
@@ -35,7 +35,7 @@ contract TransferAdmin_Adminable_Concrete_Test is Base_Test {
     function _testTransferAdmin(address newAdmin) private {
         // It should emit {TransferAdmin} event.
         vm.expectEmit({ emitter: address(adminableMock) });
-        emit IAdminable.TransferAdmin(users.admin, newAdmin);
+        emit IAdminable.TransferAdmin(admin, newAdmin);
 
         // Transfer the admin.
         adminableMock.transferAdmin(newAdmin);

@@ -8,13 +8,13 @@ import { Base_Test } from "../../../Base.t.sol";
 
 contract RevokeRole_RoleAdminable_Fuzz_Test is Base_Test {
     function testFuzz_RevertWhen_CallerNotAdmin(address eve) external {
-        vm.assume(eve != address(0) && eve != users.admin);
+        vm.assume(eve != address(0) && eve != admin);
 
         // Make Eve the caller in this test.
         setMsgSender(eve);
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, eve));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
         roleAdminableMock.revokeRole(FEE_COLLECTOR_ROLE, users.accountant);
     }
 
@@ -27,14 +27,14 @@ contract RevokeRole_RoleAdminable_Fuzz_Test is Base_Test {
     }
 
     function testFuzz_RevokeRole(address account, bytes32 role) external whenCallerAdmin whenAccountHasRole {
-        vm.assume(account != address(0) && account != users.admin);
+        vm.assume(account != address(0) && account != admin);
 
         // Grant the role to the account as a precondition.
         roleAdminableMock.grantRole(role, account);
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(roleAdminableMock) });
-        emit IRoleAdminable.RoleRevoked({ admin: users.admin, account: account, role: role });
+        emit IRoleAdminable.RoleRevoked({ admin: admin, account: account, role: role });
 
         // Revoke the role from account.
         roleAdminableMock.revokeRole(role, account);

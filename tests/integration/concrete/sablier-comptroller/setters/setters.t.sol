@@ -553,14 +553,14 @@ contract Setters_Concrete_Test is SablierComptroller_Concrete_Test {
         setMsgSender(users.eve);
 
         // It should revert.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, users.eve));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, users.eve));
         comptroller.setOracle(address(0));
     }
 
     function test_SetOracleWhenNewOracleZero() external whenCallerAdmin {
         // It should emit a {SetOracle} event.
         vm.expectEmit({ emitter: address(comptroller) });
-        emit ISablierComptroller.SetOracle(users.admin, address(0), address(oracle));
+        emit ISablierComptroller.SetOracle(admin, address(0), address(oracle));
         comptroller.setOracle(address(0));
 
         // It should set the oracle to zero.
@@ -580,7 +580,7 @@ contract Setters_Concrete_Test is SablierComptroller_Concrete_Test {
 
         // It should emit a {SetOracle} event.
         vm.expectEmit({ emitter: address(comptroller) });
-        emit ISablierComptroller.SetOracle(users.admin, address(newOracleWithImpl), address(oracle));
+        emit ISablierComptroller.SetOracle(admin, address(newOracleWithImpl), address(oracle));
         comptroller.setOracle(address(newOracleWithImpl));
 
         // It should set the oracle.

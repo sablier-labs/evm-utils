@@ -4,8 +4,6 @@ pragma solidity >=0.8.22;
 struct Users {
     // User authorized for fee related actions.
     address payable accountant;
-    // Default admin.
-    address admin;
     // Impartial user.
     address payable alice;
     // A campaign creator.

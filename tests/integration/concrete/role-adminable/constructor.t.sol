@@ -6,7 +6,7 @@ import { Base_Test } from "../../../Base.t.sol";
 contract RoleAdminable_Constructor_Concrete_Test is Base_Test {
     function test_Constructor() public view {
         // Assert the state variables.
-        assertEq(roleAdminableMock.admin(), users.admin, "admin");
+        assertEq(roleAdminableMock.admin(), admin, "admin");
         assertEq(roleAdminableMock.FEE_COLLECTOR_ROLE(), FEE_COLLECTOR_ROLE, "fee collector role");
         assertEq(roleAdminableMock.FEE_MANAGEMENT_ROLE(), FEE_MANAGEMENT_ROLE, "fee management role");
 

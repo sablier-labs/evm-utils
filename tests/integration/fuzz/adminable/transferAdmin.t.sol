@@ -8,13 +8,13 @@ import { Base_Test } from "../../../Base.t.sol";
 
 contract TransferAdmin_Adminable_Fuzz_Test is Base_Test {
     function testFuzz_RevertWhen_CallerNotAdmin(address eve) external {
-        vm.assume(eve != address(0) && eve != users.admin);
+        vm.assume(eve != address(0) && eve != admin);
 
         // Make Eve the caller in this test.
         setMsgSender(eve);
 
         // Run the test.
-        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, users.admin, eve));
+        vm.expectRevert(abi.encodeWithSelector(Errors.CallerNotAdmin.selector, admin, eve));
         adminableMock.transferAdmin(eve);
     }
 
@@ -23,7 +23,7 @@ contract TransferAdmin_Adminable_Fuzz_Test is Base_Test {
 
         // Expect the relevant event to be emitted.
         vm.expectEmit({ emitter: address(adminableMock) });
-        emit IAdminable.TransferAdmin({ oldAdmin: users.admin, newAdmin: newAdmin });
+        emit IAdminable.TransferAdmin({ oldAdmin: admin, newAdmin: newAdmin });
 
         // Transfer the admin.
         adminableMock.transferAdmin(newAdmin);

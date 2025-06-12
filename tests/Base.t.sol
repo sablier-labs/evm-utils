@@ -43,8 +43,6 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
     function setUp() public virtual override {
         BaseTest.setUp();
 
-        users.admin = admin;
-
         // Create the test users.
         address[] memory noSpenders;
         users.accountant = createUser("accountant", noSpenders);
@@ -52,9 +50,6 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
         users.campaignCreator = createUser("campaignCreator", noSpenders);
         users.eve = createUser("eve", noSpenders);
         users.sender = createUser("sender", noSpenders);
-
-        // Set users in modifiers.
-        setUsers(users);
 
         // Deploy mock contracts.
         adminableMock = new AdminableMock(admin);

@@ -27,14 +27,14 @@ contract CollectFees_Concrete_Test is SablierComptroller_Concrete_Test {
     function test_RevertWhen_FeeRecipientNotAdmin() external whenCallerNotAdmin whenCallerWithoutFeeCollectorRole {
         setMsgSender(users.alice);
         vm.expectRevert(
-            abi.encodeWithSelector(Errors.SablierComptroller_FeeRecipientNotAdmin.selector, users.eve, users.admin)
+            abi.encodeWithSelector(Errors.SablierComptroller_FeeRecipientNotAdmin.selector, users.eve, admin)
         );
         comptroller.collectFees({ feeRecipient: users.eve });
     }
 
     function test_WhenFeeRecipientAdmin() external whenCallerNotAdmin whenCallerWithoutFeeCollectorRole {
         // It should transfer fee to the admin.
-        _test_CollectFees({ feeRecipient: users.admin });
+        _test_CollectFees({ feeRecipient: admin });
     }
 
     function test_WhenFeeRecipientNotContract() external whenCallerAdmin {
