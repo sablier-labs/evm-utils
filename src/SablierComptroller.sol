@@ -17,17 +17,17 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     /// @inheritdoc ISablierComptroller
     uint256 public constant override MAX_FEE_USD = 100e8;
 
-    /// @dev A struct to hold the fees for airdrops.
-    AirdropsFees private airdropsFees;
-
-    /// @dev A struct to hold the fees for flow streams.
-    FlowFees private flowFees;
-
-    /// @dev A struct to hold the fees for lockup streams.
-    LockupFees private lockupFees;
-
     /// @inheritdoc ISablierComptroller
     address public override oracle;
+
+    /// @dev A struct to hold the fees for airdrops.
+    AirdropsFees private _airdropsFees;
+
+    /// @dev A struct to hold the fees for flow streams.
+    FlowFees private _flowFees;
+
+    /// @dev A struct to hold the fees for lockup streams.
+    LockupFees private _lockupFees;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      MODIFIERS
@@ -57,9 +57,9 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     )
         RoleAdminable(initialAdmin)
     {
-        airdropsFees.minFeeUSD = initialAirdropMinFeeUSD;
-        flowFees.minFeeUSD = initialFlowMinFeeUSD;
-        lockupFees.minFeeUSD = initialLockupMinFeeUSD;
+        _airdropsFees.minFeeUSD = initialAirdropMinFeeUSD;
+        _flowFees.minFeeUSD = initialFlowMinFeeUSD;
+        _lockupFees.minFeeUSD = initialLockupMinFeeUSD;
 
         if (initialOracle != address(0)) {
             _setOracle(initialOracle);
@@ -70,7 +70,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
                                   RECEIVE FUNCTION
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev We need to receive native tokens.
+    /// @dev Receive function to accept native tokens.
     receive() external payable { }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -78,46 +78,46 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWei(uint256 minFeeUSD) external view override returns (uint256) {
-        return _calculateMinFeeWei(minFeeUSD);
+    function calculateAirdropsMinFeeWei() external view override returns (uint256) {
+        return _calculateMinFeeWei(_airdropsFees.minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiAirdrops() external view override returns (uint256) {
-        return _calculateMinFeeWei(airdropsFees.minFeeUSD);
-    }
-
-    /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiAirdropsFor(address campaignCreator) external view override returns (uint256) {
+    function calculateAirdropsMinFeeWeiFor(address campaignCreator) external view override returns (uint256) {
         uint256 minFeeUSD = _getAirdropsMinFeeUSDFor(campaignCreator);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiFlow() external view override returns (uint256) {
-        return _calculateMinFeeWei(flowFees.minFeeUSD);
+    function calculateFlowMinFeeWei() external view override returns (uint256) {
+        return _calculateMinFeeWei(_flowFees.minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiFlowFor(address sender) external view override returns (uint256) {
+    function calculateFlowMinFeeWeiFor(address sender) external view override returns (uint256) {
         uint256 minFeeUSD = _getFlowMinFeeUSDFor(sender);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiLockup() external view override returns (uint256) {
-        return _calculateMinFeeWei(lockupFees.minFeeUSD);
+    function calculateLockupMinFeeWei() external view override returns (uint256) {
+        return _calculateMinFeeWei(_lockupFees.minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function calculateMinFeeWeiLockupFor(address sender) external view override returns (uint256) {
+    function calculateLockupMinFeeWeiFor(address sender) external view override returns (uint256) {
         uint256 minFeeUSD = _getLockupMinFeeUSDFor(sender);
         return _calculateMinFeeWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
+    function calculateMinFeeWei(uint256 minFeeUSD) external view override returns (uint256) {
+        return _calculateMinFeeWei(minFeeUSD);
+    }
+
+    /// @inheritdoc ISablierComptroller
     function getAirdropsMinFeeUSD() external view override returns (uint256) {
-        return airdropsFees.minFeeUSD;
+        return _airdropsFees.minFeeUSD;
     }
 
     /// @inheritdoc ISablierComptroller
@@ -127,7 +127,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @inheritdoc ISablierComptroller
     function getFlowMinFeeUSD() external view override returns (uint256) {
-        return flowFees.minFeeUSD;
+        return _flowFees.minFeeUSD;
     }
 
     /// @inheritdoc ISablierComptroller
@@ -137,7 +137,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @inheritdoc ISablierComptroller
     function getLockupMinFeeUSD() external view override returns (uint256) {
-        return lockupFees.minFeeUSD;
+        return _lockupFees.minFeeUSD;
     }
 
     /// @inheritdoc ISablierComptroller
@@ -158,68 +158,62 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             revert Errors.SablierComptroller_FeeRecipientNotAdmin({ feeRecipient: feeRecipient, admin: admin });
         }
 
-        uint256 feeAmount = address(this).balance;
-
-        // Effect: transfer the fees to the fee recipient.
-        (bool success,) = feeRecipient.call{ value: feeAmount }("");
-
-        // Revert if the call failed.
-        if (!success) {
-            revert Errors.SablierComptroller_FeeTransferFailed(feeRecipient, feeAmount);
-        }
-
-        // Log the fee withdrawal.
-        emit CollectFees(admin, feeRecipient, feeAmount);
+        // Effect: collect the fees.
+        _collectFees(feeRecipient);
     }
 
     /// @inheritdoc ISablierComptroller
     function disableAirdropsCustomFeeUSD(address campaignCreator) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        delete airdropsFees.customFeesUSD[campaignCreator];
+        delete _airdropsFees.customFeesUSD[campaignCreator];
 
-        // Log the reset.
+        // Log the update.
         emit DisableAirdropsCustomFeeUSD(campaignCreator);
     }
 
     /// @inheritdoc ISablierComptroller
     function disableFlowCustomFeeUSD(address sender) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        delete flowFees.customFeesUSD[sender];
+        delete _flowFees.customFeesUSD[sender];
 
-        // Log the reset.
+        // Log the update.
         emit DisableFlowCustomFeeUSD(sender);
     }
 
     /// @inheritdoc ISablierComptroller
     function disableLockupCustomFeeUSD(address sender) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        delete lockupFees.customFeesUSD[sender];
+        delete _lockupFees.customFeesUSD[sender];
 
-        // Log the reset.
+        // Log the update.
         emit DisableLockupCustomFeeUSD(sender);
     }
 
     /// @inheritdoc ISablierComptroller
-    function execute(address target, bytes calldata data) external override onlyAdmin returns (bytes memory response) {
+    function execute(address target, bytes calldata data) external override onlyAdmin returns (bytes memory result) {
         bool success;
 
         // Interactions: call the target contract with the provided data.
-        (success, response) = target.call(data);
+        (success, result) = target.call(data);
 
-        // Log the execution.
-        emit Execute(target, data, response);
-
-        // Check if the call was successful or not.
+        // Check whether the call was successful or not.
         if (!success) {
-            // If there is return data, the call reverted with a reason or a custom error, which we bubble up.
-            if (response.length > 0) {
+            // If there is result, bubble it up and revert.
+            if (result.length > 0) {
                 // solhint-disable-next-line no-inline-assembly
                 assembly {
-                    // The length of the data is at `response`, while the actual data is at `response + 32`.
-                    let returndata_size := mload(response)
-                    revert(add(response, 32), returndata_size)
+                    // Get the length of the result stored in the first 32 bytes.
+                    let resultSize := mload(result)
+
+                    // Forward the pointer by 32 bytes to skip the length argument, and revert with the result.
+                    revert(add(result, 32), resultSize)
                 }
-            } else {
-                revert Errors.SablierComptroller_ExecutionFailed();
+            }
+            // Otherwise, revert with custom error.
+            else {
+                revert Errors.SablierComptroller_ExecutionFailedSilently();
             }
         }
+
+        // Log the execution.
+        emit Execute(target, data, result);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -233,12 +227,12 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(customFeeUSD)
     {
         // Effect: enable the custom fee for the user if it is not already enabled.
-        if (!airdropsFees.customFeesUSD[campaignCreator].enabled) {
-            airdropsFees.customFeesUSD[campaignCreator].enabled = true;
+        if (!_airdropsFees.customFeesUSD[campaignCreator].enabled) {
+            _airdropsFees.customFeesUSD[campaignCreator].enabled = true;
         }
 
         // Effect: update the custom fee for the provided campaign creator.
-        airdropsFees.customFeesUSD[campaignCreator].fee = customFeeUSD;
+        _airdropsFees.customFeesUSD[campaignCreator].fee = customFeeUSD;
 
         // Log the update.
         emit SetAirdropsCustomFeeUSD(campaignCreator, customFeeUSD);
@@ -252,10 +246,10 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(newMinFeeUSD)
     {
         // Load what the previous fee will be.
-        uint256 previousMinFeeUSD = airdropsFees.minFeeUSD;
+        uint256 previousMinFeeUSD = _airdropsFees.minFeeUSD;
 
         // Effect: update the airdrops min USD fee.
-        airdropsFees.minFeeUSD = newMinFeeUSD;
+        _airdropsFees.minFeeUSD = newMinFeeUSD;
 
         // Log the update.
         emit SetAirdropsMinFeeUSD(newMinFeeUSD, previousMinFeeUSD);
@@ -272,12 +266,12 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(customFeeUSD)
     {
         // Effect: enable the custom fee for the user if it is not already enabled.
-        if (!flowFees.customFeesUSD[sender].enabled) {
-            flowFees.customFeesUSD[sender].enabled = true;
+        if (!_flowFees.customFeesUSD[sender].enabled) {
+            _flowFees.customFeesUSD[sender].enabled = true;
         }
 
         // Effect: update the custom fee for the provided sender.
-        flowFees.customFeesUSD[sender].fee = customFeeUSD;
+        _flowFees.customFeesUSD[sender].fee = customFeeUSD;
 
         // Log the update.
         emit SetFlowCustomFeeUSD(sender, customFeeUSD);
@@ -291,10 +285,10 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(newMinFeeUSD)
     {
         // Load what the previous fee will be.
-        uint256 previousMinFeeUSD = flowFees.minFeeUSD;
+        uint256 previousMinFeeUSD = _flowFees.minFeeUSD;
 
         // Effect: update the flow min USD fee.
-        flowFees.minFeeUSD = newMinFeeUSD;
+        _flowFees.minFeeUSD = newMinFeeUSD;
 
         // Log the update.
         emit SetFlowMinFeeUSD(newMinFeeUSD, previousMinFeeUSD);
@@ -311,12 +305,12 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(customFeeUSD)
     {
         // Effect: enable the custom fee for the user if it is not already enabled.
-        if (!lockupFees.customFeesUSD[sender].enabled) {
-            lockupFees.customFeesUSD[sender].enabled = true;
+        if (!_lockupFees.customFeesUSD[sender].enabled) {
+            _lockupFees.customFeesUSD[sender].enabled = true;
         }
 
         // Effect: update the custom fee for the provided sender.
-        lockupFees.customFeesUSD[sender].fee = customFeeUSD;
+        _lockupFees.customFeesUSD[sender].fee = customFeeUSD;
 
         // Log the update.
         emit SetLockupCustomFeeUSD(sender, customFeeUSD);
@@ -330,10 +324,10 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         notExceedMaxFeeUSD(newMinFeeUSD)
     {
         // Load what the previous fee will be.
-        uint256 previousMinFeeUSD = lockupFees.minFeeUSD;
+        uint256 previousMinFeeUSD = _lockupFees.minFeeUSD;
 
         // Effect: update the lockup min USD fee.
-        lockupFees.minFeeUSD = newMinFeeUSD;
+        _lockupFees.minFeeUSD = newMinFeeUSD;
 
         // Log the update.
         emit SetLockupMinFeeUSD(newMinFeeUSD, previousMinFeeUSD);
@@ -348,6 +342,39 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
         // Log the update.
         emit SetOracle({ admin: msg.sender, newOracle: newOracle, previousOracle: currentOracle });
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function transferAndCollectFees(
+        address flow,
+        address lockup,
+        address feeRecipient
+    )
+        external
+        override
+        onlyRole(FEE_COLLECTOR_ROLE)
+    {
+        // Declare the calldata of the function.
+        bytes memory callData = abi.encodeWithSignature("transferFeesToComptroller()");
+
+        // Interactions: call the transfer function on the flow contract.
+        (bool success,) = flow.call(callData);
+
+        // Check: the call was successful.
+        if (!success) {
+            revert Errors.SablierComptroller_FeeTransferFailed(address(this), flow.balance);
+        }
+
+        // Interactions: call the transfer function on the lockup contract.
+        (success,) = lockup.call(callData);
+
+        // Check: the call was successful.
+        if (!success) {
+            revert Errors.SablierComptroller_FeeTransferFailed(address(this), lockup.balance);
+        }
+
+        // Effect: collect the fees.
+        _collectFees(feeRecipient);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -407,20 +434,20 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _getAirdropsMinFeeUSDFor(address campaignCreator) private view returns (uint256) {
-        ISablierComptroller.CustomFeeUSD memory customFee = airdropsFees.customFeesUSD[campaignCreator];
-        return customFee.enabled ? customFee.fee : airdropsFees.minFeeUSD;
+        ISablierComptroller.CustomFeeUSD memory customFee = _airdropsFees.customFeesUSD[campaignCreator];
+        return customFee.enabled ? customFee.fee : _airdropsFees.minFeeUSD;
     }
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _getFlowMinFeeUSDFor(address sender) private view returns (uint256) {
-        ISablierComptroller.CustomFeeUSD memory customFee = flowFees.customFeesUSD[sender];
-        return customFee.enabled ? customFee.fee : flowFees.minFeeUSD;
+        ISablierComptroller.CustomFeeUSD memory customFee = _flowFees.customFeesUSD[sender];
+        return customFee.enabled ? customFee.fee : _flowFees.minFeeUSD;
     }
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _getLockupMinFeeUSDFor(address sender) private view returns (uint256) {
-        ISablierComptroller.CustomFeeUSD memory customFee = lockupFees.customFeesUSD[sender];
-        return customFee.enabled ? customFee.fee : lockupFees.minFeeUSD;
+        ISablierComptroller.CustomFeeUSD memory customFee = _lockupFees.customFeesUSD[sender];
+        return customFee.enabled ? customFee.fee : _lockupFees.minFeeUSD;
     }
 
     /// @dev A private function is used instead of inlining this logic in a modifier because Solidity copies modifiers
@@ -435,6 +462,22 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                           PRIVATE STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Transfers native tokens from this contract to the `feeRecipient`.
+    function _collectFees(address feeRecipient) private {
+        uint256 feeAmount = address(this).balance;
+
+        // Effect: transfer the fees to the fee recipient.
+        (bool success,) = feeRecipient.call{ value: feeAmount }("");
+
+        // Revert if the call failed.
+        if (!success) {
+            revert Errors.SablierComptroller_FeeTransferFailed(feeRecipient, feeAmount);
+        }
+
+        // Log the fee withdrawal.
+        emit CollectFees(feeRecipient, feeAmount);
+    }
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _setOracle(address newOracle) private {

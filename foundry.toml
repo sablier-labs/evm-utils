@@ -3,7 +3,7 @@
   fs_permissions = [
     { access = "read", path = "package.json" },
   ]
-  fuzz = { runs = 1_000 }
+  fuzz = { runs = 1000 }
   gas_reports = ["*"]
   optimizer = true
   optimizer_runs = 10_000

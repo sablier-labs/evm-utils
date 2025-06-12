@@ -7,6 +7,7 @@ import { BaseScript } from "src/tests/BaseScript.sol";
 import { BaseTest } from "src/tests/BaseTest.sol";
 import { SablierComptroller } from "src/SablierComptroller.sol";
 
+// TODO: uncomment this later.
 contract ChainlinkOracle_Fork_Test is BaseScript, BaseTest, StdAssertions {
     /// @notice A modifier that runs the forked test for a given chain
     modifier initForkTest(string memory chainName) {
@@ -18,9 +19,9 @@ contract ChainlinkOracle_Fork_Test is BaseScript, BaseTest, StdAssertions {
             new SablierComptroller(admin, initialMinFeeUSD(), initialMinFeeUSD(), initialMinFeeUSD(), chainlinkOracle());
 
         // Assert that the Chainlink returns a non-zero price by checking the value of min fee in wei.
-        assertLt(0, comptroller.calculateMinFeeWeiAirdrops(), "min fee wei");
-        assertLt(0, comptroller.calculateMinFeeWeiFlow(), "min fee wei");
-        assertLt(0, comptroller.calculateMinFeeWeiLockup(), "min fee wei");
+        assertLt(0, comptroller.calculateAirdropsMinFeeWei(), "min fee wei");
+        assertLt(0, comptroller.calculateFlowMinFeeWei(), "min fee wei");
+        assertLt(0, comptroller.calculateLockupMinFeeWei(), "min fee wei");
 
         _;
     }

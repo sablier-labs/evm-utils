@@ -7,13 +7,13 @@ import { Errors } from "./libraries/Errors.sol";
 
 /// @title ComptrollerManager
 /// @notice See the documentation in {IComptrollerManager}.
-contract ComptrollerManager is IComptrollerManager {
+abstract contract ComptrollerManager is IComptrollerManager {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IComptrollerManager
-    ISablierComptroller public comptroller;
+    ISablierComptroller public override comptroller;
 
     /*//////////////////////////////////////////////////////////////////////////
                                      MODIFIERS
@@ -32,7 +32,7 @@ contract ComptrollerManager is IComptrollerManager {
     /// @param initialComptroller The address of the initial comptroller contract.
     constructor(address initialComptroller) {
         // Set the initial comptroller.
-        _setComptroller(initialComptroller);
+        _setComptroller(ISablierComptroller(initialComptroller));
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -40,8 +40,8 @@ contract ComptrollerManager is IComptrollerManager {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc IComptrollerManager
-    function setComptroller(address newComptroller) external onlyComptroller {
-        // Check, Effect: set the new comptroller.
+    function setComptroller(ISablierComptroller newComptroller) external override onlyComptroller {
+        // Checks and Effects: set the new comptroller.
         _setComptroller(newComptroller);
     }
 
@@ -50,24 +50,28 @@ contract ComptrollerManager is IComptrollerManager {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this private function.
-    function _checkComptroller() internal view {
+    function _checkComptroller() private view {
         if (msg.sender != address(comptroller)) {
             revert Errors.ComptrollerManager_CallerNotComptroller(address(comptroller), msg.sender);
         }
     }
 
+    /*//////////////////////////////////////////////////////////////////////////
+                          PRIVATE STATE-CHANGING FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
     /// @dev See the documentation for the user-facing functions that call this private function.
-    function _setComptroller(address newComptroller) internal {
+    function _setComptroller(ISablierComptroller newComptroller) private {
         // Check: the new comptroller address is not zero.
-        if (newComptroller == address(0)) {
-            revert Errors.ComptrollerManager_InvalidComptrollerAddress();
+        if (address(newComptroller) == address(0)) {
+            revert Errors.ComptrollerManager_ZeroAddress();
         }
 
-        // Load the previous comptroller address.
-        address previousComptroller = address(comptroller);
+        // Load the current comptroller address.
+        ISablierComptroller previousComptroller = comptroller;
 
         // Effect: set the new comptroller.
-        comptroller = ISablierComptroller(newComptroller);
+        comptroller = newComptroller;
 
         // Log the change.
         emit SetComptroller(newComptroller, previousComptroller);
