@@ -176,8 +176,8 @@ interface ISablierComptroller is IRoleAdminable {
                               STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice Collects the accrued fees. If `feeRecipient` is a contract, it must be able to receive native tokens,
-    /// e.g., ETH for Ethereum Mainnet.
+    /// @notice Collects fees from this contract. If `feeRecipient` is a contract, it must be able to receive native
+    /// tokens, e.g., ETH for Ethereum Mainnet.
     ///
     /// @dev Emits a {CollectFees} event.
     ///
@@ -328,13 +328,14 @@ interface ISablierComptroller is IRoleAdminable {
     /// @param newOracle The new oracle contract address. It can be the zero address.
     function setOracle(address newOracle) external;
 
-    /// @notice Transfers the accrued fees from the Lockup and Flow protocols, and then collects the fees.
+    /// @notice Transfers fees from the Lockup and Flow protocols, and then collects fees from this contract.
     /// @dev Emits a {CollectFees} event.
     ///
     /// Notes:
-    /// - {execute} can also be used for this, but the purpose of this function is to provide a single entry point
-    /// for collecting all fees.
-    /// - Declares the calldata and uses `.call` to avoid recursive imports.
+    /// - {execute} can also be used for this, but the purpose of this function is to provide a single entry point for
+    /// collecting all fees.
+    /// - Uses low-level calls to avoid recursive imports.
+    /// - If `feeRecipient` is a contract, it must be able to receive native tokens, e.g., ETH for Ethereum Mainnet.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_COLLECTOR_ROLE} role.

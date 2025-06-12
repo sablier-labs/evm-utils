@@ -463,7 +463,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
                           PRIVATE STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev See the documentation for the user-facing functions that call this private function.
+    /// @dev Transfers native tokens from this contract to the `feeRecipient`.
     function _collectFees(address feeRecipient) private {
         uint256 feeAmount = address(this).balance;
 
