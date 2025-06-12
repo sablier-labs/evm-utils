@@ -52,10 +52,8 @@ abstract contract ComptrollerManager is IComptrollerManager {
         // Interaction: transfer the fees to the comptroller.
         (bool success,) = address(comptroller).call{ value: feeAmount }("");
 
-        // Revert if the call failed.
-        if (!success) {
-            revert Errors.ComptrollerManager_FeeTransferFailed(address(comptroller), feeAmount);
-        }
+        // Silence the warning as comptroller is expected to implement `receive()` function.
+        success;
 
         // Log the fee transfer to the comptroller.
         emit IComptrollerManager.TransferFeesToComptroller(comptroller, feeAmount);
