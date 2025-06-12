@@ -32,7 +32,7 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
 
     AdminableMock internal adminableMock;
     BatchMock internal batchMock;
-    ComptrollerManagerMock internal comptrollerManagerMock;
+    ComptrollerManagerMock internal comptrollerManager;
     NoDelegateCallMock internal noDelegateCallMock;
     RoleAdminableMock internal roleAdminableMock;
 
@@ -54,7 +54,7 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
         // Deploy mock contracts.
         adminableMock = new AdminableMock(admin);
         batchMock = new BatchMock();
-        comptrollerManagerMock = new ComptrollerManagerMock(address(comptroller));
+        comptrollerManager = new ComptrollerManagerMock(address(comptroller));
         noDelegateCallMock = new NoDelegateCallMock();
         roleAdminableMock = new RoleAdminableMock(admin);
 

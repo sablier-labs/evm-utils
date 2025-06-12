@@ -45,6 +45,22 @@ abstract contract ComptrollerManager is IComptrollerManager {
         _setComptroller(newComptroller);
     }
 
+    /// @inheritdoc IComptrollerManager
+    function transferFeesToComptroller() external override {
+        uint256 feeAmount = address(this).balance;
+
+        // Interaction: transfer the fees to the comptroller.
+        (bool success,) = address(comptroller).call{ value: feeAmount }("");
+
+        // Revert if the call failed.
+        if (!success) {
+            revert Errors.ComptrollerManager_FeeTransferFailed(address(comptroller), feeAmount);
+        }
+
+        // Log the fee transfer to the comptroller.
+        emit IComptrollerManager.TransferFeesToComptroller(comptroller, feeAmount);
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
                             PRIVATE READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/

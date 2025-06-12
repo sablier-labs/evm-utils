@@ -3,25 +3,22 @@ pragma solidity >=0.8.22;
 
 import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
 import { Errors } from "src/libraries/Errors.sol";
-import { ComptrollerManagerMock } from "src/mocks/ComptrollerManagerMock.sol";
 
 import { SablierComptroller_Concrete_Test } from "../SablierComptroller.t.sol";
 
 contract TransferAndCollectFees_Concrete_Test is SablierComptroller_Concrete_Test {
-    SablierFlowAndLockupMock internal flowAndLockup;
-    SablierFlowAndLockupMockRevert internal flowAndLockupRevert;
+    SabliercomptrollerManagerMockRevert internal comptrollerManagerRevert;
 
     function setUp() public override {
         SablierComptroller_Concrete_Test.setUp();
 
-        flowAndLockup = new SablierFlowAndLockupMock(address(comptroller));
-        flowAndLockupRevert = new SablierFlowAndLockupMockRevert();
+        comptrollerManagerRevert = new SabliercomptrollerManagerMockRevert();
 
         // Fund the comptroller with some ETH to collect fees.
         deal(address(comptroller), AIRDROP_MIN_FEE_WEI);
 
-        // Fund the SablierFlowAndLockupMock with some ETH to transfer fees.
-        deal(address(flowAndLockup), LOCKUP_MIN_FEE_WEI + FLOW_MIN_FEE_WEI);
+        // Fund the ComptrollerManager with some ETH to transfer fees.
+        deal(address(comptrollerManager), LOCKUP_MIN_FEE_WEI + FLOW_MIN_FEE_WEI);
     }
 
     function test_WhenCallerWithFeeCollectorRole() external whenCallerNotAdmin {
@@ -31,7 +28,7 @@ contract TransferAndCollectFees_Concrete_Test is SablierComptroller_Concrete_Tes
     function test_RevertWhen_CallerWithoutFeeCollectorRole() external whenCallerNotAdmin {
         setMsgSender(users.eve);
         vm.expectRevert(abi.encodeWithSelector(Errors.UnauthorizedAccess.selector, users.eve, FEE_COLLECTOR_ROLE));
-        comptroller.transferAndCollectFees(address(flowAndLockup), address(flowAndLockup), admin);
+        comptroller.transferAndCollectFees(address(comptrollerManager), address(comptrollerManager), admin);
     }
 
     function test_RevertWhen_TheFlowCallReverts() external whenCallerAdmin {
@@ -39,7 +36,7 @@ contract TransferAndCollectFees_Concrete_Test is SablierComptroller_Concrete_Tes
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_FeeTransferFailed.selector, address(comptroller), 0)
         );
-        comptroller.transferAndCollectFees(address(flowAndLockupRevert), address(flowAndLockup), admin);
+        comptroller.transferAndCollectFees(address(comptrollerManagerRevert), address(comptrollerManager), admin);
     }
 
     function test_RevertWhen_TheLockupCallReverts() external whenCallerAdmin whenTheFlowCallNotRevert {
@@ -47,7 +44,7 @@ contract TransferAndCollectFees_Concrete_Test is SablierComptroller_Concrete_Tes
         vm.expectRevert(
             abi.encodeWithSelector(Errors.SablierComptroller_FeeTransferFailed.selector, address(comptroller), 0)
         );
-        comptroller.transferAndCollectFees(address(flowAndLockup), address(flowAndLockupRevert), admin);
+        comptroller.transferAndCollectFees(address(comptrollerManager), address(comptrollerManagerRevert), admin);
     }
 
     function test_WhenTheLockupCallNotRevert() external whenCallerAdmin whenTheFlowCallNotRevert {
@@ -64,34 +61,15 @@ contract TransferAndCollectFees_Concrete_Test is SablierComptroller_Concrete_Tes
         vm.expectEmit({ emitter: address(comptroller) });
         emit ISablierComptroller.CollectFees({ feeRecipient: admin, feeAmount: totalFeeAmount });
 
-        comptroller.transferAndCollectFees(address(flowAndLockup), address(flowAndLockup), admin);
+        comptroller.transferAndCollectFees(address(comptrollerManager), address(comptrollerManager), admin);
 
-        assertEq(address(flowAndLockup).balance, 0, "Flow and Lockup contract balance should be zero");
+        assertEq(address(comptrollerManager).balance, 0, "Flow and Lockup contract balance should be zero");
         assertEq(address(comptroller).balance, 0, "Comptroller balance should be zero");
         assertEq(admin.balance, previousAdminBalance + totalFeeAmount, "Admin balance should be increased");
     }
 }
 
-/// @dev A mock contract to mirror the flow and lockup `transferFeesToComptroller` function.
-contract SablierFlowAndLockupMock is ComptrollerManagerMock {
-    error SablierLockup_FeeTransferFailed(address comptroller, uint256 feeAmount);
-
-    constructor(address initialComptroller) ComptrollerManagerMock(initialComptroller) { }
-
-    function transferFeesToComptroller() external {
-        uint256 feeAmount = address(this).balance;
-
-        // Interaction: transfer the fees to the comptroller.
-        (bool success,) = address(comptroller).call{ value: feeAmount }("");
-
-        // Revert if the call failed.
-        if (!success) {
-            revert SablierLockup_FeeTransferFailed(address(comptroller), feeAmount);
-        }
-    }
-}
-
-contract SablierFlowAndLockupMockRevert {
+contract SabliercomptrollerManagerMockRevert {
     function transferFeesToComptroller() external pure {
         revert();
     }
