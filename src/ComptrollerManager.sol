@@ -56,6 +56,10 @@ abstract contract ComptrollerManager is IComptrollerManager {
         }
     }
 
+    /*//////////////////////////////////////////////////////////////////////////
+                          PRIVATE STATE-CHANGING FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _setComptroller(ISablierComptroller newComptroller) private {
         // Check: the new comptroller address is not zero.
