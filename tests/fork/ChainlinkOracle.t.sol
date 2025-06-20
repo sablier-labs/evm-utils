@@ -1,27 +1,40 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
-import { StdAssertions } from "forge-std/src/StdAssertions.sol";
-
-import { BaseScript } from "src/tests/BaseScript.sol";
 import { BaseTest } from "src/tests/BaseTest.sol";
+import { BaseScript } from "src/tests/BaseScript.sol";
 import { SablierComptroller } from "src/SablierComptroller.sol";
 
-contract ChainlinkOracle_Fork_Test is BaseScript, BaseTest, StdAssertions {
+contract BaseScriptMock is BaseScript { }
+
+// TODO: uncomment this later.
+contract ChainlinkOracle_Fork_Test is BaseTest {
+    BaseScriptMock internal baseScriptMock;
+
     /// @notice A modifier that runs the forked test for a given chain
     modifier initForkTest(string memory chainName) {
         // Fork chain on the latest block number.
         vm.createSelectFork({ urlOrAlias: chainName });
 
-        // Deploy the Merkle Instant factory and create a new campaign.
-        comptroller = new SablierComptroller(
-            admin, getInitialMinFeeUSD(), getInitialMinFeeUSD(), getInitialMinFeeUSD(), getChainlinkOracle()
-        );
+        baseScriptMock = new BaseScriptMock();
 
-        // It should return non-zero values for the min fees.
-        assertGt(comptroller.calculateAirdropsMinFeeWei(), 0, "airdrop");
-        assertGt(comptroller.calculateFlowMinFeeWei(), 0, "flow");
-        assertGt(comptroller.calculateLockupMinFeeWei(), 0, "lockup");
+        // Get initial min fee USD and chainlink oracle address for `block.chainid`.
+        uint256 initialMinFeeUSD = baseScriptMock.getInitialMinFeeUSD();
+        address chainlinkOracle = baseScriptMock.getChainlinkOracle();
+
+        // Deploy the Merkle Instant factory and create a new campaign.
+        comptroller = new SablierComptroller({
+            initialAdmin: admin,
+            initialAirdropMinFeeUSD: initialMinFeeUSD,
+            initialFlowMinFeeUSD: initialMinFeeUSD,
+            initialLockupMinFeeUSD: initialMinFeeUSD,
+            initialOracle: chainlinkOracle
+        });
+
+        // Assert that the Chainlink returns a non-zero price by checking the value of min fee in wei.
+        vm.assertLt(0, comptroller.calculateAirdropsMinFeeWei(), "min fee wei");
+        vm.assertLt(0, comptroller.calculateFlowMinFeeWei(), "min fee wei");
+        vm.assertLt(0, comptroller.calculateLockupMinFeeWei(), "min fee wei");
 
         _;
     }
