@@ -2,20 +2,20 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+
 import { BaseScript } from "src/tests/BaseScript.sol";
+
 import { Base_Test } from "../Base.t.sol";
 
 contract BaseScriptMock is BaseScript { }
 
 contract ChainlinkOracle_Fork_Test is Base_Test {
-    BaseScriptMock internal baseScriptMock;
-
     /// @notice A modifier that runs the forked test for a given chain
     modifier initForkTest(string memory chainName) {
         // Fork chain on the latest block number.
         vm.createSelectFork({ urlOrAlias: chainName });
 
-        baseScriptMock = new BaseScriptMock();
+        BaseScriptMock baseScriptMock = new BaseScriptMock();
 
         // Get the Chainlink oracle address for the current chain.
         address oracle = baseScriptMock.getChainlinkOracle();
