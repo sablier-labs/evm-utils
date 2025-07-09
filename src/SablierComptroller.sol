@@ -188,7 +188,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         _protocolFees[protocol].minFeeUSD = newMinFeeUSD;
 
         // Log the update.
-        emit SetMinFeeUSD(protocol, newMinFeeUSD, previousMinFeeUSD);
+        emit SetMinFeeUSD(protocol, previousMinFeeUSD, newMinFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -199,7 +199,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         _setOracle(newOracle);
 
         // Log the update.
-        emit SetOracle({ admin: msg.sender, newOracle: newOracle, previousOracle: currentOracle });
+        emit SetOracle({ admin: msg.sender, previousOracle: currentOracle, newOracle: newOracle });
     }
 
     /// @inheritdoc ISablierComptroller
@@ -216,8 +216,19 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             IComptrollerable(protocolAddresses[i]).transferFeesToComptroller();
         }
 
-        // Effect: collect the fees.
-        _transferFeesTo(feeRecipient);
+        // Get this contract's balance.
+        uint256 feeAmount = address(this).balance;
+
+        // Effect: transfer the fees to the fee recipient.
+        (bool success,) = feeRecipient.call{ value: feeAmount }("");
+
+        // Revert if the call failed.
+        if (!success) {
+            revert Errors.SablierComptroller_FeeTransferFailed(feeRecipient, feeAmount);
+        }
+
+        // Log the fee withdrawal.
+        emit TransferFees(feeRecipient, feeAmount);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -314,21 +325,5 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
         // Effect: update the oracle.
         oracle = newOracle;
-    }
-
-    /// @dev Transfers fees in native tokens from this contract to the `feeRecipient`.
-    function _transferFeesTo(address feeRecipient) private {
-        uint256 feeAmount = address(this).balance;
-
-        // Effect: transfer the fees to the fee recipient.
-        (bool success,) = feeRecipient.call{ value: feeAmount }("");
-
-        // Revert if the call failed.
-        if (!success) {
-            revert Errors.SablierComptroller_FeeTransferFailed(feeRecipient, feeAmount);
-        }
-
-        // Log the fee withdrawal.
-        emit TransferFeesTo(feeRecipient, feeAmount);
     }
 }

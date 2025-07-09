@@ -50,13 +50,13 @@ interface ISablierComptroller is IRoleAdminable {
     event SetCustomFeeUSD(Protocol indexed protocol, address indexed user, uint256 customFeeUSD);
 
     /// @notice Emitted when the admin or the fee manager sets a new minimum USD fee.
-    event SetMinFeeUSD(Protocol indexed protocol, uint256 newMinFeeUSD, uint256 previousMinFeeUSD);
+    event SetMinFeeUSD(Protocol indexed protocol, uint256 previousMinFeeUSD, uint256 newMinFeeUSD);
 
     /// @notice Emitted when the oracle contract address is set by the admin.
-    event SetOracle(address indexed admin, address newOracle, address previousOracle);
+    event SetOracle(address indexed admin, address previousOracle, address newOracle);
 
     /// @notice Emitted when the admin or the fee collector transfers the accrued fees to the fee recipient.
-    event TransferFeesTo(address indexed feeRecipient, uint256 feeAmount);
+    event TransferFees(address indexed feeRecipient, uint256 feeAmount);
 
     /*//////////////////////////////////////////////////////////////////////////
                                 READ-ONLY FUNCTIONS
@@ -181,7 +181,7 @@ interface ISablierComptroller is IRoleAdminable {
 
     /// @notice Transfers fees from the given protocol addresses to this contract, and then transfer the entire balance
     /// of this contract to the fee recipient.
-    /// @dev Emits a {TransferFeesTo} event.
+    /// @dev Emits a {TransferFees} event.
     ///
     /// Notes:
     /// - If `feeRecipient` is a contract, it must be able to receive native tokens, e.g., ETH for Ethereum Mainnet.
