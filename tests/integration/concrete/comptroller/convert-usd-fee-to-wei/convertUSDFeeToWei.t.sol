@@ -11,7 +11,7 @@ import {
 
 import { Base_Test } from "tests/Base.t.sol";
 
-contract ConvertFeeToWei_Comptroller_Concrete_Test is Base_Test {
+contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
     function test_GivenOracleZero(uint128 feeUSD) external {
         comptroller.setOracle(address(0));
 

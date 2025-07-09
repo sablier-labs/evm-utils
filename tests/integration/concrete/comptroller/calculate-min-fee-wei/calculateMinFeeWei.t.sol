@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { ConvertFeeToWei_Comptroller_Concrete_Test } from "../convert-fee-to-wei/convertFeeToWei.t.sol";
+import { ConvertUSDFeeToWei_Comptroller_Concrete_Test } from "../convert-usd-fee-to-wei/convertUSDFeeToWei.t.sol";
 
 import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
 
-/// @dev It inherits from `ConvertFeeToWei_Comptroller_Concrete_Test` to avoid duplicating the common tests.
-contract CalculateMinFeeWei_Comptroller_Concrete_Test is ConvertFeeToWei_Comptroller_Concrete_Test {
+/// @dev It inherits from {ConvertUSDFeeToWei_Comptroller_Concrete_Test} to avoid duplicating the common tests.
+contract CalculateMinFeeWei_Comptroller_Concrete_Test is ConvertUSDFeeToWei_Comptroller_Concrete_Test {
     function test_GivenMinFeeNotSet(uint8 protocolIndex) external {
         ISablierComptroller.Protocol protocol = boundProtocolEnum(protocolIndex);
 

@@ -67,13 +67,13 @@ interface ISablierComptroller is IRoleAdminable {
     function MAX_FEE_USD() external view returns (uint256);
 
     /// @notice Calculates the minimum fee in wei for the given protocol.
-    /// @dev See the documentation for {convertFeeToWei} for more details.
+    /// @dev See the documentation for {convertUSDFeeToWei} for more details.
     /// @param protocol The protocol as defined in {Protocol} enum.
     function calculateMinFeeWei(Protocol protocol) external view returns (uint256);
 
     /// @notice Calculates the minimum fee in wei for the provided user for the given protocol.
     /// @dev If the custom fee is enabled, it returns the custom fee, otherwise it returns the default minimum fee. See
-    /// the documentation for {convertFeeToWei} for more details.
+    /// the documentation for {convertUSDFeeToWei} for more details.
     /// @param protocol The protocol as defined in {Protocol} enum.
     /// @param user The user address.
     function calculateMinFeeWeiFor(Protocol protocol, address user) external view returns (uint256);
