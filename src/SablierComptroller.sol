@@ -77,8 +77,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Get the minimum fee in USD.
         uint256 minFeeUSD = _protocolFees[protocol].minFeeUSD;
 
-        // Convert the minimum fee in USD to wei and return.
-        return _convertFeeToWei(minFeeUSD);
+        // Convert the minimum fee from USD to wei.
+        return _convertUSDFeeToWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -86,13 +86,13 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Get the minimum fee in USD.
         uint256 minFeeUSD = _getMinFeeUSDFor(protocol, user);
 
-        // Convert the minimum fee in USD to wei and return.
-        return _convertFeeToWei(minFeeUSD);
+        // Convert the minimum fee from USD to wei.
+        return _convertUSDFeeToWei(minFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
-    function convertFeeToWei(uint256 feeUSD) external view override returns (uint256) {
-        return _convertFeeToWei(feeUSD);
+    function convertUSDFeeToWei(uint256 feeUSD) external view override returns (uint256) {
+        return _convertUSDFeeToWei(feeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -111,11 +111,11 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @inheritdoc ISablierComptroller
     function disableCustomFeeUSDFor(Protocol protocol, address user) external override onlyRole(FEE_MANAGEMENT_ROLE) {
-        // Effect: delete the custom fee for the user.
+        // Effect: delete the custom fee for the provided protocol and user.
         delete _protocolFees[protocol].customFeesUSD[user];
 
         // Log the update.
-        emit DisableCustomFeeUSD(protocol, user);
+        emit ISablierComptroller.DisableCustomFeeUSD(protocol, user);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -145,7 +145,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         }
 
         // Log the execution.
-        emit Execute(target, data, result);
+        emit ISablierComptroller.Execute(target, data, result);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -159,16 +159,16 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         onlyRole(FEE_MANAGEMENT_ROLE)
         notExceedMaxFeeUSD(customFeeUSD)
     {
-        // Effect: enable the custom fee for the user if it is not already enabled.
+        // Effect: enable the custom fee, if it is not already enabled.
         if (!_protocolFees[protocol].customFeesUSD[user].enabled) {
             _protocolFees[protocol].customFeesUSD[user].enabled = true;
         }
 
-        // Effect: update the custom fee for the provided campaign creator.
+        // Effect: update the custom fee for the provided protocol and user.
         _protocolFees[protocol].customFeesUSD[user].fee = customFeeUSD;
 
         // Log the update.
-        emit SetCustomFeeUSD(protocol, user, customFeeUSD);
+        emit ISablierComptroller.SetCustomFeeUSD(protocol, user, customFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -184,11 +184,11 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Load what the previous fee will be.
         uint256 previousMinFeeUSD = _protocolFees[protocol].minFeeUSD;
 
-        // Effect: update the airdrops min USD fee.
+        // Effect: update the minimum USD fee for the provided protocol.
         _protocolFees[protocol].minFeeUSD = newMinFeeUSD;
 
         // Log the update.
-        emit SetMinFeeUSD(protocol, previousMinFeeUSD, newMinFeeUSD);
+        emit ISablierComptroller.SetMinFeeUSD(protocol, previousMinFeeUSD, newMinFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -199,7 +199,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         _setOracle(newOracle);
 
         // Log the update.
-        emit SetOracle({ admin: msg.sender, previousOracle: currentOracle, newOracle: newOracle });
+        emit ISablierComptroller.SetOracle({ admin: msg.sender, previousOracle: currentOracle, newOracle: newOracle });
     }
 
     /// @inheritdoc ISablierComptroller
@@ -211,7 +211,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             revert Errors.SablierComptroller_FeeRecipientNotAdmin({ feeRecipient: feeRecipient, admin: admin });
         }
 
-        // Effect: transfer the fees from the given protocol addresses to this contract.
+        // Interactions: transfer the fees from the provided protocol addresses to this contract.
         for (uint256 i = 0; i < protocolAddresses.length; ++i) {
             IComptrollerable(protocolAddresses[i]).transferFeesToComptroller();
         }
@@ -219,7 +219,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Get this contract's balance.
         uint256 feeAmount = address(this).balance;
 
-        // Effect: transfer the fees to the fee recipient.
+        // Interaction: transfer the fees to the fee recipient.
         (bool success,) = feeRecipient.call{ value: feeAmount }("");
 
         // Revert if the call failed.
@@ -236,7 +236,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this private function.
-    function _convertFeeToWei(uint256 minFeeUSD) private view returns (uint256) {
+    function _convertUSDFeeToWei(uint256 minFeeUSD) private view returns (uint256) {
         // If the oracle is not set, return 0.
         if (oracle == address(0)) {
             return 0;
@@ -286,6 +286,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         return minFeeUSD * 1e18 / price8D;
     }
 
+    /// @dev See the documentation for the user-facing functions that call this private function.
     function _getMinFeeUSDFor(Protocol protocol, address user) private view returns (uint256) {
         // Get the custom fee for the user.
         ISablierComptroller.CustomFeeUSD memory customFee = _protocolFees[protocol].customFeesUSD[user];

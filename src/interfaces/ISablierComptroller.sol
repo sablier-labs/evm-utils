@@ -88,7 +88,7 @@ interface ISablierComptroller is IRoleAdminable {
     ///
     /// @param feeUSD The fee in USD, denominated in Chainlink's 8-decimal format for USD prices, where 1e8 is $1.
     /// @return The fee in wei, denominated in 18 decimals (1e18 = 1 native token).
-    function convertFeeToWei(uint256 feeUSD) external view returns (uint256);
+    function convertUSDFeeToWei(uint256 feeUSD) external view returns (uint256);
 
     /// @notice Get the minimum fee in USD for the given protocol, paid in the native token of the chain, e.g.,
     /// ETH for Ethereum Mainnet. Use {calculateMinFeeWei} to retrieve the fee in wei.
@@ -114,7 +114,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// Notes:
     /// - In case of airdrops, the new fee applies only to the future campaigns created by the user. Past campaigns are
     /// not affected.
-    //  - In case of streams, the new fee applies immediately to all the streams created by user.
+    /// - In case of streams, the new fee applies immediately to all the streams created by user.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
@@ -142,7 +142,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// Notes:
     /// - In case of airdrops, the new fee applies only to the future campaigns created by the user. Past campaigns are
     /// not affected.
-    //  - In case of streams, the new fee applies immediately to all the streams created by user.
+    /// - In case of streams, the new fee applies immediately to all the streams created by user.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
@@ -159,7 +159,7 @@ interface ISablierComptroller is IRoleAdminable {
     /// Notes:
     /// - In case of airdrops, the new fee applies only to the future campaigns created by the user. Past campaigns are
     /// not affected.
-    //  - In case of streams, the new fee applies immediately to all the streams created by user.
+    /// - In case of streams, the new fee applies immediately to all the streams created by user.
     ///
     /// Requirements:
     /// - `msg.sender` must be either the admin or have the {IRoleAdminable.FEE_MANAGEMENT_ROLE} role.
