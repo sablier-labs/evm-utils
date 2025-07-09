@@ -5,7 +5,7 @@ import { ConvertUSDFeeToWei_Comptroller_Concrete_Test } from "../convert-usd-fee
 
 import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
 
-/// @dev It inherits from `ConvertUSDFeeToWei_Comptroller_Concrete_Test` to avoid duplicating the common tests.
+/// @dev It inherits from {ConvertUSDFeeToWei_Comptroller_Concrete_Test} to avoid duplicating the common tests.
 contract CalculateMinFeeWeiFor_Comptroller_Concrete_Test is ConvertUSDFeeToWei_Comptroller_Concrete_Test {
     function test_GivenCustomFeeNotSet(uint8 protocolIndex, address user) external view {
         ISablierComptroller.Protocol protocol = boundProtocolEnum(protocolIndex);
