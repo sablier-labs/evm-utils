@@ -12,7 +12,7 @@ contract CalculateMinFeeWeiFor_Comptroller_Concrete_Test is ConvertUSDFeeToWei_C
 
         // It should return the min fee in wei.
         uint256 actualFeeInWei = comptroller.calculateMinFeeWeiFor(protocol, user);
-        uint256 expectedFeeInWei = comptroller.calculateMinFeeWei(protocol);
+        uint256 expectedFeeInWei = getFeeInWei(protocol);
         assertEq(actualFeeInWei, expectedFeeInWei, "custom fee not set");
     }
 

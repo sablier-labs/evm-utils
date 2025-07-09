@@ -42,7 +42,7 @@ contract DisableCustomFeeUSDFor_Comptroller_Concrete_Test is Base_Test {
     /// @dev Shared logic to test disabling the custom fee.
     function _disableCustomFeeUSDFor(ISablierComptroller.Protocol protocol) private {
         // Check that custom fee is set.
-        assertEq(comptroller.getMinFeeUSDFor(protocol, users.sender), 0, "custom fee set");
+        assertEq(comptroller.calculateMinFeeWeiFor(protocol, users.sender), 0, "custom fee set");
 
         // It should emit a {DisableCustomFeeUSD} event.
         vm.expectEmit({ emitter: address(comptroller) });
@@ -52,11 +52,7 @@ contract DisableCustomFeeUSDFor_Comptroller_Concrete_Test is Base_Test {
         comptroller.disableCustomFeeUSDFor(protocol, users.sender);
 
         // It should disable the custom fee.
-        assertEq(
-            comptroller.getMinFeeUSDFor(protocol, users.sender),
-            comptroller.getMinFeeUSD(protocol),
-            "custom fee not set"
-        );
-        assertNotEq(comptroller.getMinFeeUSDFor(protocol, users.sender), 0, "custom fee not disabled");
+        assertEq(comptroller.calculateMinFeeWeiFor(protocol, users.sender), getFeeInWei(protocol), "custom fee not set");
+        assertNotEq(comptroller.calculateMinFeeWeiFor(protocol, users.sender), 0, "custom fee not disabled");
     }
 }

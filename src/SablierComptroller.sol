@@ -277,6 +277,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         if (oracleDecimals == 8) {
             price8D = uint256(price);
         } else if (oracleDecimals < 8) {
+            // The price is assumed to be much less than the maximum value of `uint256` so it is safe to multiply.
             price8D = uint256(price) * 10 ** (8 - oracleDecimals);
         } else {
             price8D = uint256(price) / 10 ** (oracleDecimals - 8);

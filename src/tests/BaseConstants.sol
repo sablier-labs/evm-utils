@@ -22,8 +22,6 @@ abstract contract BaseConstants {
 
     uint256 public constant AIRDROP_MIN_FEE_USD = 3e8; // equivalent to $3
     uint256 public constant AIRDROP_MIN_FEE_WEI = (1e18 * AIRDROP_MIN_FEE_USD) / ETH_PRICE_USD;
-    uint256 public constant AIRDROPS_CUSTOM_FEE_USD = 0.5e8; // equivalent to $0.5
-    uint256 public constant AIRDROPS_CUSTOM_FEE_WEI = (1e18 * AIRDROPS_CUSTOM_FEE_USD) / ETH_PRICE_USD;
 
     /*//////////////////////////////////////////////////////////////////////////
                                         FLOW
@@ -31,8 +29,6 @@ abstract contract BaseConstants {
 
     uint256 public constant FLOW_MIN_FEE_USD = 1e8; // equivalent to $1
     uint256 public constant FLOW_MIN_FEE_WEI = (1e18 * FLOW_MIN_FEE_USD) / ETH_PRICE_USD;
-    uint256 public constant FLOW_CUSTOM_FEE_USD = 0.1e8; // equivalent to $0.1
-    uint256 public constant FLOW_CUSTOM_FEE_WEI = (1e18 * FLOW_CUSTOM_FEE_USD) / ETH_PRICE_USD;
 
     /*//////////////////////////////////////////////////////////////////////////
                                        LOCKUP
@@ -40,8 +36,6 @@ abstract contract BaseConstants {
 
     uint256 public constant LOCKUP_MIN_FEE_USD = 1e8; // equivalent to $1
     uint256 public constant LOCKUP_MIN_FEE_WEI = (1e18 * LOCKUP_MIN_FEE_USD) / ETH_PRICE_USD;
-    uint256 public constant LOCKUP_CUSTOM_FEE_USD = 0.1e8; // equivalent to $0.1
-    uint256 public constant LOCKUP_CUSTOM_FEE_WEI = (1e18 * LOCKUP_CUSTOM_FEE_USD) / ETH_PRICE_USD;
 
     /*//////////////////////////////////////////////////////////////////////////
                                       STAKING
@@ -49,6 +43,4 @@ abstract contract BaseConstants {
 
     uint256 public constant STAKING_MIN_FEE_USD = 10e8; // equivalent to $10
     uint256 public constant STAKING_MIN_FEE_WEI = (1e18 * STAKING_MIN_FEE_USD) / ETH_PRICE_USD;
-    uint256 public constant STAKING_CUSTOM_FEE_USD = 0.5e8; // equivalent to $0.5
-    uint256 public constant STAKING_CUSTOM_FEE_WEI = (1e18 * STAKING_CUSTOM_FEE_USD) / ETH_PRICE_USD;
 }

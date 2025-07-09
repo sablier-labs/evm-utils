@@ -73,9 +73,7 @@ contract SetCustomFeeUSDFor_Comptroller_Concrete_Test is Base_Test {
         customFeeUSD = boundUint128(customFeeUSD, 0, uint128(MAX_FEE_USD));
 
         // Check that custom fee is not enabled for user.
-        assertEq(
-            comptroller.getMinFeeUSDFor(protocol, user), comptroller.getMinFeeUSD(protocol), "custom fee USD enabled"
-        );
+        assertEq(comptroller.calculateMinFeeWeiFor(protocol, user), getFeeInWei(protocol), "custom fee USD enabled");
 
         // Set the custom fee.
         _setCustomFeeUSDFor(protocol, user, customFeeUSD);

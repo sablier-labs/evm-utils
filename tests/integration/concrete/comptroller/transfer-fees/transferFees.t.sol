@@ -28,28 +28,14 @@ contract TransferFees_Comptroller_Concrete_Test is Base_Test {
         protocolAddresses[0] = address(comptrollerableMock);
     }
 
-    function test_RevertWhen_AddressesNotImplementIComptrollerable() external {
-        address[] memory randomAddresses = new address[](1);
-        randomAddresses[0] = vm.randomAddress();
-
-        // It should revert.
-        vm.expectRevert();
-        comptroller.transferFees(randomAddresses, admin);
-    }
-
-    function test_WhenCallerWithFeeCollectorRole() external whenAddressesImplementIComptrollerable whenCallerNotAdmin {
+    function test_WhenCallerWithFeeCollectorRole() external whenCallerNotAdmin {
         setMsgSender(users.accountant);
 
         // Transfer fees to the fee recipient.
         _test_TransferFees(protocolAddresses, users.accountant);
     }
 
-    function test_RevertWhen_FeeRecipientNotAdmin()
-        external
-        whenAddressesImplementIComptrollerable
-        whenCallerNotAdmin
-        whenCallerWithoutFeeCollectorRole
-    {
+    function test_RevertWhen_FeeRecipientNotAdmin() external whenCallerNotAdmin whenCallerWithoutFeeCollectorRole {
         setMsgSender(users.eve);
 
         // It should revert.
@@ -59,16 +45,20 @@ contract TransferFees_Comptroller_Concrete_Test is Base_Test {
         comptroller.transferFees(protocolAddresses, users.accountant);
     }
 
-    function test_WhenFeeRecipientAdmin()
-        external
-        whenAddressesImplementIComptrollerable
-        whenCallerNotAdmin
-        whenCallerWithoutFeeCollectorRole
-    {
+    function test_WhenFeeRecipientAdmin() external whenCallerNotAdmin whenCallerWithoutFeeCollectorRole {
         setMsgSender(users.eve);
 
         // Transfer fees to the admin.
         _test_TransferFees(protocolAddresses, admin);
+    }
+
+    function test_RevertWhen_AddressesNotImplementIComptrollerable() external whenCallerAdmin {
+        address[] memory randomAddresses = new address[](1);
+        randomAddresses[0] = vm.randomAddress();
+
+        // It should revert.
+        vm.expectRevert();
+        comptroller.transferFees(randomAddresses, admin);
     }
 
     function test_WhenAddressesHaveZeroFee() external whenAddressesImplementIComptrollerable whenCallerAdmin {

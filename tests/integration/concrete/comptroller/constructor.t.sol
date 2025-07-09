@@ -13,7 +13,7 @@ contract Comptroller_Constructor_Concrete_Test is Base_Test {
     function test_Constructor() public view {
         // Constants and variables.
         assertEq(comptroller.admin(), admin, "admin");
-        assertEq(comptroller.MAX_FEE_USD(), 100e8, "max fee USD");
+        assertEq(comptroller.MAX_FEE_USD(), MAX_FEE_USD, "max fee USD");
         assertEq(comptroller.oracle(), address(oracle), "oracle");
     }
 
