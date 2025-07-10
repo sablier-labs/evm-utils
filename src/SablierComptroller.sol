@@ -115,7 +115,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         delete _protocolFees[protocol].customFeesUSD[user];
 
         // Log the update.
-        emit ISablierComptroller.DisableCustomFeeUSD(protocol, user);
+        emit ISablierComptroller.DisableCustomFeeUSD(protocol, msg.sender, user);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -168,7 +168,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         _protocolFees[protocol].customFeesUSD[user].fee = customFeeUSD;
 
         // Log the update.
-        emit ISablierComptroller.SetCustomFeeUSD(protocol, user, customFeeUSD);
+        emit ISablierComptroller.SetCustomFeeUSD(protocol, msg.sender, user, customFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -188,7 +188,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         _protocolFees[protocol].minFeeUSD = newMinFeeUSD;
 
         // Log the update.
-        emit ISablierComptroller.SetMinFeeUSD(protocol, previousMinFeeUSD, newMinFeeUSD);
+        emit ISablierComptroller.SetMinFeeUSD(protocol, msg.sender, previousMinFeeUSD, newMinFeeUSD);
     }
 
     /// @inheritdoc ISablierComptroller
