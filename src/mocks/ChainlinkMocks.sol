@@ -56,6 +56,34 @@ contract ChainlinkOracleFuture {
     }
 }
 
+/// @notice A mock Chainlink oracle that reverts when `decimals` is called.
+contract ChainlinkOracleDecimalsRevert {
+    function decimals() external pure returns (uint8) {
+        revert("Not gonna happen");
+    }
+
+    function latestRoundData()
+        external
+        view
+        returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
+    {
+        int256 answer_ = 3000e8;
+        uint256 updatedAt_ = block.timestamp;
+        return (0, answer_, 0, updatedAt_, 0);
+    }
+}
+
+/// @notice A mock Chainlink oracle that reverts when `latestRoundData` is called.
+contract ChainlinkOracleLatestRoundRevert {
+    function decimals() external pure returns (uint8) {
+        return DEFAULT_DECIMALS;
+    }
+
+    function latestRoundData() external pure returns (uint80, int256, uint256, uint256, uint80) {
+        revert("Not gonna happen");
+    }
+}
+
 /// @notice A mock Chainlink oracle that returns a $3000 price with 18 decimals.
 contract ChainlinkOracleWith18Decimals {
     function decimals() external pure returns (uint8) {

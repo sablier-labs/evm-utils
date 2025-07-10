@@ -262,14 +262,14 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             return 0;
         }
 
-        int256 price;
+        uint256 price;
         uint256 updatedAt;
 
         // Interactions: query the oracle price and the time at which it was updated.
         try AggregatorV3Interface(oracle).latestRoundData() returns (
             uint80, int256 _price, uint256, uint256 _updatedAt, uint80
         ) {
-            price = _price;
+            price = uint256(_price);
             updatedAt = _updatedAt;
         } // If the oracle call fails, return 0.
         catch {

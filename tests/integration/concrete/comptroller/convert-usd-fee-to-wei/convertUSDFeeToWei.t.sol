@@ -4,6 +4,8 @@ pragma solidity >=0.8.22;
 import {
     ChainlinkOracleOutdated,
     ChainlinkOracleFuture,
+    ChainlinkOracleDecimalsRevert,
+    ChainlinkOracleLatestRoundRevert,
     ChainlinkOracleWith18Decimals,
     ChainlinkOracleWith6Decimals,
     ChainlinkOracleZeroPrice
@@ -24,7 +26,32 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         assertEq(comptroller.convertUSDFeeToWei(0), 0, "zero fee");
     }
 
-    function test_WhenOracleUpdatedTimeInFuture(uint128 feeUSD) external givenOracleNotZero whenFeeUSDNotZero {
+    function test_WhenLatestRoundCallFails(uint128 feeUSD) external givenOracleNotZero whenFeeUSDNotZero {
+        address revertOracle = address(new ChainlinkOracleLatestRoundRevert());
+
+        // Try different slots until we find the right one (it should be at 2, but we use this approach in case it
+        // going to change)
+        for (uint256 slot = 0; slot < 10; ++slot) {
+            bytes32 currentValue = vm.load(address(comptroller), bytes32(slot));
+            if (address(uint160(uint256(currentValue))) == address(oracle)) {
+                // Use `vm.store` instead of `setOracle` as this function checks if `latestRoundData` call fails.
+                vm.store(address(comptroller), bytes32(slot), bytes32(uint256(uint160(revertOracle))));
+                break;
+            }
+        }
+
+        assertEq(comptroller.oracle(), revertOracle, "oracle not modified");
+
+        // It should return zero.
+        assertEq(comptroller.convertUSDFeeToWei(feeUSD), 0, "oracle call failed");
+    }
+
+    function test_WhenOracleUpdatedTimeInFuture(uint128 feeUSD)
+        external
+        givenOracleNotZero
+        whenFeeUSDNotZero
+        whenLatestRoundCallNotFail
+    {
         comptroller.setOracle(address(new ChainlinkOracleFuture()));
 
         // It should return zero.
@@ -35,6 +62,7 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         external
         givenOracleNotZero
         whenFeeUSDNotZero
+        whenLatestRoundCallNotFail
         whenOracleUpdatedTimeNotInFuture
     {
         comptroller.setOracle(address(new ChainlinkOracleOutdated()));
@@ -43,12 +71,28 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         assertEq(comptroller.convertUSDFeeToWei(feeUSD), 0, "outdated oracle");
     }
 
+    function test_WhenDecimalsCallFails(uint128 feeUSD)
+        external
+        givenOracleNotZero
+        whenFeeUSDNotZero
+        whenLatestRoundCallNotFail
+        whenOracleUpdatedTimeNotInFuture
+        whenOraclePriceNotOutdated
+    {
+        comptroller.setOracle(address(new ChainlinkOracleDecimalsRevert()));
+
+        // It should return zero.
+        assertEq(comptroller.convertUSDFeeToWei(feeUSD), 0, "decimals call failed");
+    }
+
     function test_WhenOraclePriceZero(uint128 feeUSD)
         external
         givenOracleNotZero
         whenFeeUSDNotZero
+        whenLatestRoundCallNotFail
         whenOracleUpdatedTimeNotInFuture
         whenOraclePriceNotOutdated
+        whenDecimalsCallNotFail
     {
         comptroller.setOracle(address(new ChainlinkOracleZeroPrice()));
 
@@ -61,8 +105,10 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         view
         givenOracleNotZero
         whenFeeUSDNotZero
+        whenLatestRoundCallNotFail
         whenOracleUpdatedTimeNotInFuture
         whenOraclePriceNotOutdated
+        whenDecimalsCallNotFail
         whenOraclePriceNotZero
     {
         // It should convert the fee to wei.
@@ -75,8 +121,10 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         external
         givenOracleNotZero
         whenFeeUSDNotZero
+        whenLatestRoundCallNotFail
         whenOracleUpdatedTimeNotInFuture
         whenOraclePriceNotOutdated
+        whenDecimalsCallNotFail
         whenOraclePriceNotZero
     {
         comptroller.setOracle(address(new ChainlinkOracleWith18Decimals()));
@@ -91,8 +139,10 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         external
         givenOracleNotZero
         whenFeeUSDNotZero
+        whenLatestRoundCallNotFail
         whenOracleUpdatedTimeNotInFuture
         whenOraclePriceNotOutdated
+        whenDecimalsCallNotFail
         whenOraclePriceNotZero
     {
         comptroller.setOracle(address(new ChainlinkOracleWith6Decimals()));
