@@ -262,8 +262,19 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             return 0;
         }
 
+        int256 price;
+        uint256 updatedAt;
+
         // Interactions: query the oracle price and the time at which it was updated.
-        (, int256 price,, uint256 updatedAt,) = AggregatorV3Interface(oracle).latestRoundData();
+        try AggregatorV3Interface(oracle).latestRoundData() returns (
+            uint80, int256 _price, uint256, uint256 _updatedAt, uint80
+        ) {
+            price = _price;
+            updatedAt = _updatedAt;
+        } // If the oracle call fails, return 0.
+        catch {
+            return 0;
+        }
 
         // If the price is not greater than 0, skip the calculations.
         if (price <= 0) {
@@ -284,8 +295,15 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             }
         }
 
+        uint8 oracleDecimals;
+
         // Interactions: query the oracle decimals.
-        uint8 oracleDecimals = AggregatorV3Interface(oracle).decimals();
+        try AggregatorV3Interface(oracle).decimals() returns (uint8 _decimals) {
+            oracleDecimals = _decimals;
+        } // If the oracle call fails, return 0.
+        catch {
+            return 0;
+        }
 
         // If the oracle decimals are 8, calculate the minimum fee in wei.
         if (oracleDecimals == 8) {
