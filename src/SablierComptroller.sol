@@ -287,8 +287,12 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Interactions: query the oracle decimals.
         uint8 oracleDecimals = AggregatorV3Interface(oracle).decimals();
 
-        // Calculate and return the value using the oracle decimals to avoid precision loss.
-        return minFeeUSD * 10 ** (10 + oracleDecimals) / uint256(price);
+        // Calculate and return the value.
+        if (oracleDecimals == 8) {
+            return minFeeUSD * 1e18 / uint256(price);
+        } else {
+            return minFeeUSD * 10 ** (10 + oracleDecimals) / uint256(price);
+        }
     }
 
     /// @dev See the documentation for the user-facing functions that call this private function.
