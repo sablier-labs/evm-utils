@@ -2,12 +2,12 @@
 pragma solidity >=0.8.22;
 
 import {
-    ChainlinkOracleOutdated,
-    ChainlinkOracleFuture,
-    ChainlinkOracleDecimalsRevert,
-    ChainlinkOracleLatestRoundRevert,
+    ChainlinkOracleFutureDatedPrice,
+    ChainlinkOracleOutdatedPrice,
     ChainlinkOracleWith18Decimals,
     ChainlinkOracleWith6Decimals,
+    ChainlinkOracleWithRevertingDecimals,
+    ChainlinkOracleWithRevertingPrice,
     ChainlinkOracleZeroPrice
 } from "src/mocks/ChainlinkMocks.sol";
 
@@ -27,7 +27,7 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
     }
 
     function test_WhenLatestRoundCallFails(uint128 feeUSD) external givenOracleNotZero whenFeeUSDNotZero {
-        address revertOracle = address(new ChainlinkOracleLatestRoundRevert());
+        address revertOracle = address(new ChainlinkOracleWithRevertingPrice());
 
         // Try different slots until we find the right one (it should be at 2, but we use this approach in case it
         // going to change)
@@ -52,7 +52,7 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         whenFeeUSDNotZero
         whenLatestRoundCallNotFail
     {
-        comptroller.setOracle(address(new ChainlinkOracleFuture()));
+        comptroller.setOracle(address(new ChainlinkOracleFutureDatedPrice()));
 
         // It should return zero.
         assertEq(comptroller.convertUSDFeeToWei(feeUSD), 0, "future oracle");
@@ -65,7 +65,7 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         whenLatestRoundCallNotFail
         whenOracleUpdatedTimeNotInFuture
     {
-        comptroller.setOracle(address(new ChainlinkOracleOutdated()));
+        comptroller.setOracle(address(new ChainlinkOracleOutdatedPrice()));
 
         // It should return zero.
         assertEq(comptroller.convertUSDFeeToWei(feeUSD), 0, "outdated oracle");
@@ -79,7 +79,7 @@ contract ConvertUSDFeeToWei_Comptroller_Concrete_Test is Base_Test {
         whenOracleUpdatedTimeNotInFuture
         whenOraclePriceNotOutdated
     {
-        comptroller.setOracle(address(new ChainlinkOracleDecimalsRevert()));
+        comptroller.setOracle(address(new ChainlinkOracleWithRevertingDecimals()));
 
         // It should return zero.
         assertEq(comptroller.convertUSDFeeToWei(feeUSD), 0, "decimals call failed");

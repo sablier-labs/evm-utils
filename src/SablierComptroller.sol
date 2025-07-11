@@ -271,8 +271,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         ) {
             price = uint256(_price);
             updatedAt = _updatedAt;
-        } // If the oracle call fails, return 0.
-        catch {
+        } catch {
+            // If the oracle call fails, return 0.
             return 0;
         }
 
@@ -300,8 +300,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Interactions: query the oracle decimals.
         try AggregatorV3Interface(oracle).decimals() returns (uint8 _decimals) {
             oracleDecimals = _decimals;
-        } // If the oracle call fails, return 0.
-        catch {
+        } catch {
+            // If the oracle call fails, return 0.
             return 0;
         }
 
@@ -311,7 +311,7 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         }
         // Otherwise, adjust the calculation to account for the oracle decimals.
         else {
-            // The price is assumed to be much less than the maximum value of `uint256` so it is safe to multiply.
+            // The USD fee is assumed to be much less than the maximum value of `uint256` so it is safe to multiply.
             return minFeeUSD * 10 ** (10 + oracleDecimals) / uint256(price);
         }
     }
