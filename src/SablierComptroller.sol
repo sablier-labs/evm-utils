@@ -287,10 +287,13 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         // Interactions: query the oracle decimals.
         uint8 oracleDecimals = AggregatorV3Interface(oracle).decimals();
 
-        // Calculate and return the value.
+        // If the oracle decimals are 8, calculate the minimum fee in wei.
         if (oracleDecimals == 8) {
             return minFeeUSD * 1e18 / uint256(price);
-        } else {
+        }
+        // Otherwise, adjust the calculation to account for the oracle decimals.
+        else {
+            // The price is assumed to be much less than the maximum value of `uint256` so it is safe to multiply.
             return minFeeUSD * 10 ** (10 + oracleDecimals) / uint256(price);
         }
     }
