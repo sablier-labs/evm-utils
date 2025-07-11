@@ -111,11 +111,20 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
 
     /// @inheritdoc ISablierComptroller
     function disableCustomFeeUSDFor(Protocol protocol, address user) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+        // Get the current min fee USD for user.
+        uint256 previousMinFeeUSD = _getMinFeeUSDFor(protocol, user);
+
         // Effect: delete the custom fee for the provided protocol and user.
         delete _protocolFees[protocol].customFeesUSD[user];
 
         // Log the update.
-        emit ISablierComptroller.DisableCustomFeeUSD({ protocol: protocol, caller: msg.sender, user: user });
+        emit ISablierComptroller.DisableCustomFeeUSD({
+            protocol: protocol,
+            caller: msg.sender,
+            user: user,
+            previousMinFeeUSD: previousMinFeeUSD,
+            newMinFeeUSD: _protocolFees[protocol].minFeeUSD
+        });
     }
 
     /// @inheritdoc ISablierComptroller
@@ -159,6 +168,9 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
         onlyRole(FEE_MANAGEMENT_ROLE)
         notExceedMaxFeeUSD(customFeeUSD)
     {
+        // Load the current min fee USD for user.
+        uint256 previousMinFeeUSD = _getMinFeeUSDFor(protocol, user);
+
         // Effect: enable the custom fee, if it is not already enabled.
         if (!_protocolFees[protocol].customFeesUSD[user].enabled) {
             _protocolFees[protocol].customFeesUSD[user].enabled = true;
@@ -172,7 +184,8 @@ contract SablierComptroller is ISablierComptroller, RoleAdminable {
             protocol: protocol,
             caller: msg.sender,
             user: user,
-            customFeeUSD: customFeeUSD
+            previousMinFeeUSD: previousMinFeeUSD,
+            newMinFeeUSD: customFeeUSD
         });
     }
 
