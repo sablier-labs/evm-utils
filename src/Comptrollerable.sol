@@ -31,6 +31,11 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @param initialComptroller The address of the initial comptroller contract.
     constructor(address initialComptroller) {
+        // Check: the initial comptroller address is not zero.
+        if (initialComptroller == address(0)) {
+            revert Errors.Comptrollerable_ZeroAddress();
+        }
+
         // Set the initial comptroller.
         _setComptroller(ISablierComptroller(initialComptroller));
     }
@@ -41,6 +46,13 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @inheritdoc IComptrollerable
     function setComptroller(ISablierComptroller newComptroller) external override onlyComptroller {
+        // Check: the new comptroller must support the core interface ID from the current comptroller.
+        if (!newComptroller.supportsInterface(comptroller.CORE_INTERFACE_ID())) {
+            revert Errors.SablierComptroller_UnsupportedInterfaceId(
+                address(comptroller), address(newComptroller), comptroller.CORE_INTERFACE_ID()
+            );
+        }
+
         // Checks and Effects: set the new comptroller.
         _setComptroller(newComptroller);
     }
@@ -77,11 +89,6 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _setComptroller(ISablierComptroller newComptroller) private {
-        // Check: the new comptroller address is not zero.
-        if (address(newComptroller) == address(0)) {
-            revert Errors.Comptrollerable_ZeroAddress();
-        }
-
         // Load the current comptroller address.
         ISablierComptroller previousComptroller = comptroller;
 

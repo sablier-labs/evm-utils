@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.8.22;
 
+import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { IRoleAdminable } from "./IRoleAdminable.sol";
 
 /// @title ISablierComptroller
 /// @notice Manage fees across all Sablier protocols. State-changing functions are only accessible to the admin and the
 /// fee manager.
-interface ISablierComptroller is IRoleAdminable {
+interface ISablierComptroller is IERC165, IRoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                        TYPES
     //////////////////////////////////////////////////////////////////////////*/
@@ -61,6 +62,14 @@ interface ISablierComptroller is IRoleAdminable {
     /*//////////////////////////////////////////////////////////////////////////
                                 READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @notice The core interface ID of the comptroller.
+    /// @dev Any new comptroller must support the core interface ID as a minimum. The core functions are:
+    /// 1. {calculateMinFeeWeiFor} - used by protocols inherited from {IComptrollerable}.
+    /// 2. {convertUSDFeeToWei}    - used by protocols inherited from {IComptrollerable}.
+    /// 3. {execute}               - used by comptroller admin to perform necessary operations.
+    /// 4. {getMinFeeUSDFor}       - used by protocols inherited from {IComptrollerable}.
+    function CORE_INTERFACE_ID() external view returns (bytes4);
 
     /// @notice Retrieves the maximum USD fee that can be set for claiming an airdrop or withdrawing from a stream.
     /// @dev This is a constant state variable and is 100e8, which is equivalent to $100.

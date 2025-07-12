@@ -54,6 +54,10 @@ abstract contract Modifiers is BaseTest {
         _;
     }
 
+    modifier whenComptrollerNotZeroAddress() {
+        _;
+    }
+
     modifier whenDecimalsCallNotFail() {
         _;
     }
