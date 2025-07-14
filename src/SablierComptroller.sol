@@ -16,10 +16,10 @@ import { RoleAdminable } from "./RoleAdminable.sol";
 /// @notice See the documentation in {ISablierComptroller}.
 contract SablierComptroller is
     ERC165, // 1 inherited component
-    Initializable,
-    ISablierComptroller, // 3 inherited interface
-    RoleAdminable, // 3 inherited component
-    UUPSUpgradeable
+    ISablierComptroller, // 3 inherited components
+    Initializable, // 0 inherited components
+    RoleAdminable, // 3 inherited components
+    UUPSUpgradeable // 1 inherited component
 {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
