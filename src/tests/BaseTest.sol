@@ -46,7 +46,9 @@ abstract contract BaseTest is BaseConstants, BaseUtils, StdCheats {
         // Deploy the Sablier Comptroller.
         oracle = new ChainlinkOracleMock();
         comptroller = ISablierComptroller(
-            deployComptroller(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle))
+            deployComptrollerWithProxy(
+                admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle)
+            )
         );
 
         // Deploy the tokens.
@@ -133,7 +135,7 @@ abstract contract BaseTest is BaseConstants, BaseUtils, StdCheats {
     }
 
     /// @dev Function to deploy the Sablier Comptroller using the UUPS proxy pattern.
-    function deployComptroller(
+    function deployComptrollerWithProxy(
         address admin_,
         uint256 airdropMinFeeUSD_,
         uint256 flowMinFeeUSD_,
