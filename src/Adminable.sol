@@ -31,8 +31,7 @@ abstract contract Adminable is IAdminable {
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial admin.
     constructor(address initialAdmin) {
-        admin = initialAdmin;
-        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+        initializeAdmin(initialAdmin);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -49,7 +48,17 @@ abstract contract Adminable is IAdminable {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                        CONTRACT-INTERNAL READ-ONLY FUNCTIONS
+                            INTERNAL READ-ONLY FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev An internal function to initialize the admin.
+    function initializeAdmin(address initialAdmin) internal {
+        admin = initialAdmin;
+        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            PRIVATE READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev A private function is used instead of inlining this logic in a modifier because Solidity copies modifiers
