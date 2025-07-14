@@ -4,6 +4,8 @@ pragma solidity >=0.8.22;
 import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import { ERC165 } from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
 import { IComptrollerable } from "./interfaces/IComptrollerable.sol";
 import { ISablierComptroller } from "./interfaces/ISablierComptroller.sol";
@@ -14,8 +16,10 @@ import { RoleAdminable } from "./RoleAdminable.sol";
 /// @notice See the documentation in {ISablierComptroller}.
 contract SablierComptroller is
     ERC165, // 1 inherited component
+    Initializable,
     ISablierComptroller, // 3 inherited interface
-    RoleAdminable // 3 inherited component
+    RoleAdminable, // 3 inherited component
+    UUPSUpgradeable
 {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
@@ -62,18 +66,11 @@ contract SablierComptroller is
     )
         RoleAdminable(initialAdmin)
     {
-        // Check: the initial minimum fees do not exceed the maximum allowed fee.
-        _notExceedMaxFeeUSD(initialAirdropMinFeeUSD);
-        _notExceedMaxFeeUSD(initialFlowMinFeeUSD);
-        _notExceedMaxFeeUSD(initialLockupMinFeeUSD);
+        // Initialize the initial parameters of the contract.
+        _initialize(initialAirdropMinFeeUSD, initialFlowMinFeeUSD, initialLockupMinFeeUSD, initialOracle);
 
-        _protocolFees[Protocol.Airdrops].minFeeUSD = initialAirdropMinFeeUSD;
-        _protocolFees[Protocol.Flow].minFeeUSD = initialFlowMinFeeUSD;
-        _protocolFees[Protocol.Lockup].minFeeUSD = initialLockupMinFeeUSD;
-
-        if (initialOracle != address(0)) {
-            _setOracle(initialOracle);
-        }
+        // Disable the initializers to prevent any future reinitialization.
+        _disableInitializers();
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -175,6 +172,25 @@ contract SablierComptroller is
 
         // Log the execution.
         emit ISablierComptroller.Execute(target, data, result);
+    }
+
+    /// @inheritdoc ISablierComptroller
+    function initialize(
+        address initialAdmin,
+        uint256 initialAirdropMinFeeUSD,
+        uint256 initialFlowMinFeeUSD,
+        uint256 initialLockupMinFeeUSD,
+        address initialOracle
+    )
+        public
+        initializer
+        onlyProxy
+    {
+        // Effect: set the initial admin.
+        initializeAdmin(initialAdmin);
+
+        // Check and Effect: initialize the initial parameters of the contract.
+        _initialize(initialAirdropMinFeeUSD, initialFlowMinFeeUSD, initialLockupMinFeeUSD, initialOracle);
     }
 
     /// @inheritdoc ISablierComptroller
@@ -280,6 +296,14 @@ contract SablierComptroller is
     }
 
     /*//////////////////////////////////////////////////////////////////////////
+                         INTERNAL STATE-CHANGING FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @inheritdoc UUPSUpgradeable
+    /// @dev This function is used to change the implementation of the proxy contract using {upgradeToAndCall} function.
+    function _authorizeUpgrade(address newImplementation) internal override onlyAdmin { }
+
+    /*//////////////////////////////////////////////////////////////////////////
                             PRIVATE READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
@@ -379,6 +403,31 @@ contract SablierComptroller is
     /*//////////////////////////////////////////////////////////////////////////
                           PRIVATE STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev See the documentation for the user-facing functions that call this private function.
+    function _initialize(
+        uint256 initialAirdropMinFeeUSD,
+        uint256 initialFlowMinFeeUSD,
+        uint256 initialLockupMinFeeUSD,
+        address initialOracle
+    )
+        private
+    {
+        // Check: the initial minimum fees do not exceed the maximum allowed fee.
+        _notExceedMaxFeeUSD(initialAirdropMinFeeUSD);
+        _notExceedMaxFeeUSD(initialFlowMinFeeUSD);
+        _notExceedMaxFeeUSD(initialLockupMinFeeUSD);
+
+        // Effect: set the initial fees.
+        _protocolFees[Protocol.Airdrops].minFeeUSD = initialAirdropMinFeeUSD;
+        _protocolFees[Protocol.Flow].minFeeUSD = initialFlowMinFeeUSD;
+        _protocolFees[Protocol.Lockup].minFeeUSD = initialLockupMinFeeUSD;
+
+        // Effect: set the initial oracle.
+        if (initialOracle != address(0)) {
+            _setOracle(initialOracle);
+        }
+    }
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _setOracle(address newOracle) private {

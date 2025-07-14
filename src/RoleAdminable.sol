@@ -83,16 +83,8 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                        CONTRACT-INTERNAL READ-ONLY FUNCTIONS
+                            INTERNAL READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev Checks whether `msg.sender` has the `role` or is the admin. This is used in the {onlyRole} modifier.
-    function _checkRoleOrIsAdmin(bytes32 role) private view {
-        // Check: `msg.sender` is the admin or has the `role`.
-        if (!_hasRoleOrIsAdmin(role, msg.sender)) {
-            revert Errors.UnauthorizedAccess({ caller: msg.sender, neededRole: role });
-        }
-    }
 
     /// @dev Returns `true` if `account` is the admin or has the `role`.
     function _hasRoleOrIsAdmin(bytes32 role, address account) internal view returns (bool) {
@@ -103,5 +95,17 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
 
         // Otherwise, return false.
         return false;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            PRIVATE READ-ONLY FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Checks whether `msg.sender` has the `role` or is the admin. This is used in the {onlyRole} modifier.
+    function _checkRoleOrIsAdmin(bytes32 role) private view {
+        // Check: `msg.sender` is the admin or has the `role`.
+        if (!_hasRoleOrIsAdmin(role, msg.sender)) {
+            revert Errors.UnauthorizedAccess({ caller: msg.sender, neededRole: role });
+        }
     }
 }

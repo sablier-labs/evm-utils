@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
+import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { StdCheats } from "forge-std/src/StdCheats.sol";
@@ -44,8 +45,9 @@ abstract contract BaseTest is BaseConstants, BaseUtils, StdCheats {
 
         // Deploy the Sablier Comptroller.
         oracle = new ChainlinkOracleMock();
-        comptroller =
-            new SablierComptroller(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
+        comptroller = ISablierComptroller(
+            deployComptroller(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle))
+        );
 
         // Deploy the tokens.
         dai = new ERC20Mock("Dai stablecoin", "DAI", 18);
@@ -130,18 +132,31 @@ abstract contract BaseTest is BaseConstants, BaseUtils, StdCheats {
         }
     }
 
-    /// @dev Function to deploy the Sablier Comptroller with the given parameters.
+    /// @dev Function to deploy the Sablier Comptroller using the UUPS proxy pattern.
     function deployComptroller(
         address admin_,
-        uint256 airdropMinFeeUSD,
-        uint256 flowMinFeeUSD,
-        uint256 lockupMinFeeUSD,
+        uint256 airdropMinFeeUSD_,
+        uint256 flowMinFeeUSD_,
+        uint256 lockupMinFeeUSD_,
         address oracle_
     )
         internal
         returns (address)
     {
-        return address(new SablierComptroller(admin_, airdropMinFeeUSD, flowMinFeeUSD, lockupMinFeeUSD, oracle_));
+        // Deploy the implementation.
+        address implementation =
+            address(new SablierComptroller(admin_, airdropMinFeeUSD_, flowMinFeeUSD_, lockupMinFeeUSD_, oracle_));
+
+        // Deploy the proxy and initialize the implementation.
+        address proxy = address(
+            new ERC1967Proxy({
+                implementation: implementation,
+                _data: abi.encodeCall(
+                    ISablierComptroller.initialize, (admin_, airdropMinFeeUSD_, flowMinFeeUSD_, lockupMinFeeUSD_, oracle_)
+                )
+            })
+        );
+        return proxy;
     }
 
     /// @dev Authorize `account` to take admin actions on `target` contract.
