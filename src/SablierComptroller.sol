@@ -300,7 +300,8 @@ contract SablierComptroller is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc UUPSUpgradeable
-    /// @dev This function is used to change the implementation of the proxy contract using {upgradeToAndCall} function.
+    /// @dev This function is called by {UUPSUpgradeable.upgradeToAndCall} when changing the implementation of the proxy
+    /// contract. Reverts if the caller is not the proxy admin.
     function _authorizeUpgrade(address newImplementation) internal override onlyAdmin { }
 
     /*//////////////////////////////////////////////////////////////////////////

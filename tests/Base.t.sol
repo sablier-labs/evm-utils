@@ -90,9 +90,9 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
     }
 
     /// @dev Get the implementation address of the comptroller.
-    function getComptrollerImplAddress() internal view returns (ISablierComptroller) {
+    function getComptrollerImplAddress() internal view returns (address) {
         bytes32 data = vm.load({ target: address(comptroller), slot: ERC1967Utils.IMPLEMENTATION_SLOT });
-        return ISablierComptroller(address(uint160(uint256(data))));
+        return address(uint160(uint256(data)));
     }
 
     /// @dev Returns the fee in USD for the given protocol.
