@@ -7,18 +7,18 @@ import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
 import { Base_Test } from "../../../../Base.t.sol";
 
 contract SupportsInterface_Comptroller_Concrete_Test is Base_Test {
-    bytes4 internal coreInterfaceId;
+    bytes4 internal minimalInterfaceId;
     bytes4 internal erc165InterfaceId;
 
     function setUp() public override {
         super.setUp();
 
-        coreInterfaceId = comptroller.CORE_INTERFACE_ID();
+        minimalInterfaceId = comptroller.MINIMAL_INTERFACE_ID();
         erc165InterfaceId = type(IERC165).interfaceId;
     }
 
     function test_WhenInputMatchesNone(bytes4 interfaceId) external view {
-        vm.assume(interfaceId != erc165InterfaceId && interfaceId != coreInterfaceId);
+        vm.assume(interfaceId != erc165InterfaceId && interfaceId != minimalInterfaceId);
 
         // It should return false.
         assertFalse(comptroller.supportsInterface(interfaceId), "supportsInterface");
@@ -36,8 +36,8 @@ contract SupportsInterface_Comptroller_Concrete_Test is Base_Test {
         assertTrue(comptroller.supportsInterface(erc165InterfaceId), "supportsInterface");
     }
 
-    function test_WhenInputMatchesCoreInterfaceId() external view {
+    function test_WhenInputMatchesMinimalInterfaceId() external view {
         // It should return true.
-        assertTrue(comptroller.supportsInterface(coreInterfaceId), "supportsInterface");
+        assertTrue(comptroller.supportsInterface(minimalInterfaceId), "supportsInterface");
     }
 }

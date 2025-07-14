@@ -2,7 +2,7 @@
 pragma solidity >=0.8.22;
 
 /// @notice A mock that returns false on {supportsInterface}.
-contract ComptrollerWithoutCoreInterfaceId {
+contract ComptrollerWithoutMinimalInterfaceId {
     constructor() { }
 
     function supportsInterface(bytes4) public view virtual returns (bool) { }

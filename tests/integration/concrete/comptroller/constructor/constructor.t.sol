@@ -55,10 +55,10 @@ contract Constructor_Comptroller_Concrete_Test is Base_Test {
         assertEq(comptroller.admin(), admin, "admin");
         assertEq(comptroller.MAX_FEE_USD(), MAX_FEE_USD, "max fee USD");
         assertEq(
-            comptroller.CORE_INTERFACE_ID(),
+            comptroller.MINIMAL_INTERFACE_ID(),
             ISablierComptroller.calculateMinFeeWeiFor.selector ^ ISablierComptroller.convertUSDFeeToWei.selector
                 ^ ISablierComptroller.execute.selector ^ ISablierComptroller.getMinFeeUSDFor.selector,
-            "core interface ID"
+            "minimal interface ID"
         );
         assertEq(comptroller.oracle(), address(oracle), "oracle");
 

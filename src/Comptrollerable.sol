@@ -46,10 +46,10 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @inheritdoc IComptrollerable
     function setComptroller(ISablierComptroller newComptroller) external override onlyComptroller {
-        // Check: the new comptroller must support the core interface ID from the current comptroller.
-        if (!newComptroller.supportsInterface(comptroller.CORE_INTERFACE_ID())) {
+        // Check: the new comptroller must support the minimal interface ID from the current comptroller.
+        if (!newComptroller.supportsInterface(comptroller.MINIMAL_INTERFACE_ID())) {
             revert Errors.SablierComptroller_UnsupportedInterfaceId(
-                address(comptroller), address(newComptroller), comptroller.CORE_INTERFACE_ID()
+                address(comptroller), address(newComptroller), comptroller.MINIMAL_INTERFACE_ID()
             );
         }
 

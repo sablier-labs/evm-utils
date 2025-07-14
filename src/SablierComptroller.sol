@@ -22,11 +22,11 @@ contract SablierComptroller is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierComptroller
-    bytes4 public constant CORE_INTERFACE_ID = this.calculateMinFeeWeiFor.selector ^ this.convertUSDFeeToWei.selector
-        ^ this.execute.selector ^ this.getMinFeeUSDFor.selector;
+    uint256 public constant override MAX_FEE_USD = 100e8;
 
     /// @inheritdoc ISablierComptroller
-    uint256 public constant override MAX_FEE_USD = 100e8;
+    bytes4 public constant MINIMAL_INTERFACE_ID = this.calculateMinFeeWeiFor.selector ^ this.convertUSDFeeToWei.selector
+        ^ this.execute.selector ^ this.getMinFeeUSDFor.selector;
 
     /// @inheritdoc ISablierComptroller
     address public override oracle;
@@ -122,7 +122,7 @@ contract SablierComptroller is
 
     /// @inheritdoc IERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
-        return interfaceId == type(IERC165).interfaceId || interfaceId == CORE_INTERFACE_ID;
+        return interfaceId == type(IERC165).interfaceId || interfaceId == MINIMAL_INTERFACE_ID;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

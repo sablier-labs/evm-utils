@@ -5,5 +5,5 @@ SupportsInterface_Comptroller_Concrete_Test
 │  └── it should return false
 ├── when input matches IERC165 interface id
 │  └── it should return true
-└── when input matches core interface id
+└── when input matches minimal interface id
    └── it should return true

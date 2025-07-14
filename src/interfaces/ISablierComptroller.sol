@@ -63,17 +63,17 @@ interface ISablierComptroller is IERC165, IRoleAdminable {
                                 READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @notice The core interface ID of the comptroller.
-    /// @dev Any new comptroller must support the core interface ID as a minimum. The core functions are:
+    /// @notice Retrieves the maximum USD fee that can be set for claiming an airdrop or withdrawing from a stream.
+    /// @dev This is a constant state variable and is 100e8, which is equivalent to $100.
+    function MAX_FEE_USD() external view returns (uint256);
+
+    /// @notice The minimal interface ID of the comptroller.
+    /// @dev Any new comptroller must support the minimal interface ID made up of the following functions:
     /// 1. {calculateMinFeeWeiFor} - used by protocols inherited from {IComptrollerable}.
     /// 2. {convertUSDFeeToWei}    - used by protocols inherited from {IComptrollerable}.
     /// 3. {execute}               - used by comptroller admin to perform necessary operations.
     /// 4. {getMinFeeUSDFor}       - used by protocols inherited from {IComptrollerable}.
-    function CORE_INTERFACE_ID() external view returns (bytes4);
-
-    /// @notice Retrieves the maximum USD fee that can be set for claiming an airdrop or withdrawing from a stream.
-    /// @dev This is a constant state variable and is 100e8, which is equivalent to $100.
-    function MAX_FEE_USD() external view returns (uint256);
+    function MINIMAL_INTERFACE_ID() external view returns (bytes4);
 
     /// @notice Calculates the minimum fee in wei for the given protocol.
     /// @dev See the documentation for {convertUSDFeeToWei} for more details.

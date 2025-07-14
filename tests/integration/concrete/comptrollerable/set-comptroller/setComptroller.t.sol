@@ -4,7 +4,7 @@ pragma solidity >=0.8.22;
 import { Errors } from "src/libraries/Errors.sol";
 import { IComptrollerable } from "src/interfaces/IComptrollerable.sol";
 import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
-import { ComptrollerWithoutCoreInterfaceId } from "src/mocks/ComptrollerMock.sol";
+import { ComptrollerWithoutMinimalInterfaceId } from "src/mocks/ComptrollerMock.sol";
 import { SablierComptroller } from "src/SablierComptroller.sol";
 
 import { Base_Test } from "../../../../Base.t.sol";
@@ -27,21 +27,21 @@ contract SetComptroller_Comptrollerable_Concrete_Test is Base_Test {
         comptrollerableMock.setComptroller(newComptroller);
     }
 
-    function test_RevertWhen_NewComptrollerWithoutCoreInterfaceId() external whenCallerCurrentComptroller {
-        address newComptrollerWithoutCoreInterfaceId = address(new ComptrollerWithoutCoreInterfaceId());
+    function test_RevertWhen_NewComptrollerWithoutMinimalInterfaceId() external whenCallerCurrentComptroller {
+        address newComptrollerWithoutMinimalInterfaceId = address(new ComptrollerWithoutMinimalInterfaceId());
 
         vm.expectRevert(
             abi.encodeWithSelector(
                 Errors.SablierComptroller_UnsupportedInterfaceId.selector,
                 comptroller,
-                newComptrollerWithoutCoreInterfaceId,
-                comptroller.CORE_INTERFACE_ID()
+                newComptrollerWithoutMinimalInterfaceId,
+                comptroller.MINIMAL_INTERFACE_ID()
             )
         );
-        comptrollerableMock.setComptroller(ISablierComptroller(newComptrollerWithoutCoreInterfaceId));
+        comptrollerableMock.setComptroller(ISablierComptroller(newComptrollerWithoutMinimalInterfaceId));
     }
 
-    function test_WhenNewComptrollerWithCoreInterfaceId() external whenCallerCurrentComptroller {
+    function test_WhenNewComptrollerWithMinimalInterfaceId() external whenCallerCurrentComptroller {
         vm.expectEmit({ emitter: address(comptrollerableMock) });
         emit IComptrollerable.SetComptroller(comptroller, newComptroller);
         comptrollerableMock.setComptroller(newComptroller);
