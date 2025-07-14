@@ -150,7 +150,7 @@ interface ISablierComptroller is IERC165, IERC1822Proxiable, IRoleAdminable {
     /// @return result The result from the call.
     function execute(address target, bytes calldata data) external returns (bytes memory result);
 
-    /// @notice Initializes the initial parameters of the contract.
+    /// @notice Initializes the initial parameters of the contract when used behind a proxy.
     ///
     /// @dev Once used, this function cannot be called again.
     ///
