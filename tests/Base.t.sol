@@ -2,6 +2,7 @@
 pragma solidity >=0.8.22 <0.9.0;
 
 import { StdAssertions } from "forge-std/src/StdAssertions.sol";
+import { ERC1967Utils } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
 
 import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
 import { AdminableMock } from "src/mocks/AdminableMock.sol";
@@ -86,6 +87,12 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
     /// @dev Convert value from USD to ETH wei.
     function convertUSDToWei(uint128 amountUSD) internal pure returns (uint256 amountWei) {
         amountWei = (1e18 * uint256(amountUSD)) / ETH_PRICE_USD;
+    }
+
+    /// @dev Get the implementation address of the comptroller.
+    function getComptrollerImplAddress() internal view returns (ISablierComptroller) {
+        bytes32 data = vm.load({ target: address(comptroller), slot: ERC1967Utils.IMPLEMENTATION_SLOT });
+        return ISablierComptroller(address(uint160(uint256(data))));
     }
 
     /// @dev Returns the fee in USD for the given protocol.
