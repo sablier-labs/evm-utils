@@ -31,9 +31,18 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @param initialComptroller The address of the initial comptroller contract.
     constructor(address initialComptroller) {
-        // Check: the initial comptroller address is not zero.
-        if (initialComptroller == address(0)) {
-            revert Errors.Comptrollerable_ZeroAddress();
+        // Define the minimal interface ID required by the contracts inherited from {Comptrollerable}.
+        bytes4 minimal_interface_id = ISablierComptroller.calculateMinFeeWeiFor.selector
+            ^ ISablierComptroller.convertUSDFeeToWei.selector ^ ISablierComptroller.execute.selector
+            ^ ISablierComptroller.getMinFeeUSDFor.selector;
+
+        // Check: the initial comptroller supports the minimal interface ID.
+        if (!ISablierComptroller(initialComptroller).supportsInterface(minimal_interface_id)) {
+            revert Errors.SablierComptroller_UnsupportedInterfaceId({
+                previousComptroller: address(0),
+                newComptroller: address(initialComptroller),
+                minimalInterfaceId: minimal_interface_id
+            });
         }
 
         // Set the initial comptroller.
@@ -46,11 +55,13 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @inheritdoc IComptrollerable
     function setComptroller(ISablierComptroller newComptroller) external override onlyComptroller {
-        // Check: the new comptroller must support the minimal interface ID from the current comptroller.
+        // Check: the new comptroller supports the minimal interface ID from the current comptroller.
         if (!newComptroller.supportsInterface(comptroller.MINIMAL_INTERFACE_ID())) {
-            revert Errors.SablierComptroller_UnsupportedInterfaceId(
-                address(comptroller), address(newComptroller), comptroller.MINIMAL_INTERFACE_ID()
-            );
+            revert Errors.SablierComptroller_UnsupportedInterfaceId({
+                previousComptroller: address(comptroller),
+                newComptroller: address(newComptroller),
+                minimalInterfaceId: comptroller.MINIMAL_INTERFACE_ID()
+            });
         }
 
         // Checks and Effects: set the new comptroller.

@@ -42,9 +42,6 @@ library Errors {
     /// @notice Thrown when `msg.sender` is not the comptroller.
     error Comptrollerable_CallerNotComptroller(address comptroller, address caller);
 
-    /// @notice Thrown when trying to set zero as the comptroller address.
-    error Comptrollerable_ZeroAddress();
-
     /*//////////////////////////////////////////////////////////////////////////
                                   NO-DELEGATE-CALL
     //////////////////////////////////////////////////////////////////////////*/
