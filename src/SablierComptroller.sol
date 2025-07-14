@@ -14,6 +14,8 @@ import { RoleAdminable } from "./RoleAdminable.sol";
 
 /// @title SablierComptroller
 /// @notice See the documentation in {ISablierComptroller}.
+/// @dev This contract inherits from OpenZeppelin's UUPS upgradeable contract and can perform an upgrade when used as an
+/// implementation of an {ERC1967Proxy}.
 contract SablierComptroller is
     ERC165, // 1 inherited component
     ISablierComptroller, // 3 inherited components
