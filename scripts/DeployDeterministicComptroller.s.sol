@@ -13,6 +13,8 @@ contract DeployDeterministicComptroller is BaseScript {
         );
 
         // Deploy the comptroller proxy and initialize the state variables.
+        // Note: This should be done only once when a new proxy is deployed. In the future, this must be changed to
+        // handle the {upgradeToAndCall} function to update the new comptroller implementation.
         comptrollerProxy = address(
             new ERC1967Proxy{ salt: SALT }({
                 implementation: address(comptrollerImpl),
