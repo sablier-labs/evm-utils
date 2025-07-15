@@ -97,7 +97,7 @@ abstract contract Comptrollerable is IComptrollerable {
         private
     {
         // Check: the new comptroller supports the minimal interface ID.
-        if (!ISablierComptroller(newComptroller).supportsInterface(interfaceId)) {
+        if (!newComptroller.supportsInterface(interfaceId)) {
             revert Errors.SablierComptroller_UnsupportedInterfaceId({
                 previousComptroller: address(previousComptroller),
                 newComptroller: address(newComptroller),
