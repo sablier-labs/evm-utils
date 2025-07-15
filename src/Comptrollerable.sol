@@ -38,9 +38,9 @@ abstract contract Comptrollerable is IComptrollerable {
 
         // Set the initial comptroller.
         _setComptroller({
-            interfaceId: initialMInimalInterfaceId,
             previousComptroller: ISablierComptroller(address(0)),
-            newComptroller: ISablierComptroller(initialComptroller)
+            newComptroller: ISablierComptroller(initialComptroller),
+            minimalInterfaceId: initialMInimalInterfaceId
         });
     }
 
@@ -52,9 +52,9 @@ abstract contract Comptrollerable is IComptrollerable {
     function setComptroller(ISablierComptroller newComptroller) external override onlyComptroller {
         // Checks and Effects: set the new comptroller.
         _setComptroller({
-            interfaceId: comptroller.MINIMAL_INTERFACE_ID(),
             previousComptroller: comptroller,
-            newComptroller: newComptroller
+            newComptroller: newComptroller,
+            minimalInterfaceId: comptroller.MINIMAL_INTERFACE_ID()
         });
     }
 
@@ -90,18 +90,18 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @dev See the documentation for the user-facing functions that call this private function.
     function _setComptroller(
-        bytes4 interfaceId,
         ISablierComptroller previousComptroller,
-        ISablierComptroller newComptroller
+        ISablierComptroller newComptroller,
+        bytes4 minimalInterfaceId
     )
         private
     {
         // Check: the new comptroller supports the minimal interface ID.
-        if (!newComptroller.supportsInterface(interfaceId)) {
-            revert Errors.SablierComptroller_UnsupportedInterfaceId({
+        if (!newComptroller.supportsInterface(minimalInterfaceId)) {
+            revert Errors.Comptrollerable_UnsupportedInterfaceId({
                 previousComptroller: address(previousComptroller),
                 newComptroller: address(newComptroller),
-                minimalInterfaceId: interfaceId
+                minimalInterfaceId: minimalInterfaceId
             });
         }
 

@@ -13,7 +13,7 @@ contract Constructor_Comptrollerable_Concrete_Test is Base_Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                Errors.SablierComptroller_UnsupportedInterfaceId.selector,
+                Errors.Comptrollerable_UnsupportedInterfaceId.selector,
                 address(0),
                 address(newComptrollerWithoutMinimalInterfaceId),
                 comptroller.MINIMAL_INTERFACE_ID()

@@ -30,17 +30,17 @@ library Errors {
     /// @notice Thrown if fee transfer fails.
     error SablierComptroller_FeeTransferFailed(address feeRecipient, uint256 feeAmount);
 
-    /// @notice Thrown when the new comptroller does not support the minimal interface ID from the previous comptroller.
-    error SablierComptroller_UnsupportedInterfaceId(
-        address previousComptroller, address newComptroller, bytes4 minimalInterfaceId
-    );
-
     /*//////////////////////////////////////////////////////////////////////////
                                   COMPTROLLERABLE
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @notice Thrown when `msg.sender` is not the comptroller.
     error Comptrollerable_CallerNotComptroller(address comptroller, address caller);
+
+    /// @notice Thrown when the new comptroller does not support the minimal interface ID from the previous comptroller.
+    error Comptrollerable_UnsupportedInterfaceId(
+        address previousComptroller, address newComptroller, bytes4 minimalInterfaceId
+    );
 
     /*//////////////////////////////////////////////////////////////////////////
                                   NO-DELEGATE-CALL
