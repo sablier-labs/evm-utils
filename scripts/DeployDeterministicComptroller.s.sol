@@ -12,7 +12,7 @@ contract DeployDeterministicComptroller is BaseScript {
             getAdmin(), getInitialMinFeeUSD(), getInitialMinFeeUSD(), getInitialMinFeeUSD(), getChainlinkOracle()
         );
 
-        // Deploy the comptroller proxy and initialize the implementation.
+        // Deploy the comptroller proxy and initialize the state variables.
         comptrollerProxy = address(
             new ERC1967Proxy{ salt: SALT }({
                 implementation: address(comptrollerImpl),

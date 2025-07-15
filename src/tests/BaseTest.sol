@@ -149,7 +149,7 @@ abstract contract BaseTest is BaseConstants, BaseUtils, StdCheats {
         address implementation =
             address(new SablierComptroller(admin_, airdropMinFeeUSD_, flowMinFeeUSD_, lockupMinFeeUSD_, oracle_));
 
-        // Deploy the proxy and initialize the implementation.
+        // Deploy the proxy and initialize the state variables.
         address proxy = address(
             new ERC1967Proxy({
                 implementation: implementation,
