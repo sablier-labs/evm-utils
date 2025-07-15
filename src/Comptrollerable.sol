@@ -36,17 +36,12 @@ abstract contract Comptrollerable is IComptrollerable {
             ^ ISablierComptroller.convertUSDFeeToWei.selector ^ ISablierComptroller.execute.selector
             ^ ISablierComptroller.getMinFeeUSDFor.selector;
 
-        // Check: the initial comptroller supports the minimal interface ID.
-        if (!ISablierComptroller(initialComptroller).supportsInterface(initialMInimalInterfaceId)) {
-            revert Errors.SablierComptroller_UnsupportedInterfaceId({
-                previousComptroller: address(0),
-                newComptroller: address(initialComptroller),
-                minimalInterfaceId: initialMInimalInterfaceId
-            });
-        }
-
         // Set the initial comptroller.
-        _setComptroller(ISablierComptroller(initialComptroller));
+        _setComptroller({
+            interfaceId: initialMInimalInterfaceId,
+            previousComptroller: ISablierComptroller(address(0)),
+            newComptroller: ISablierComptroller(initialComptroller)
+        });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -55,17 +50,12 @@ abstract contract Comptrollerable is IComptrollerable {
 
     /// @inheritdoc IComptrollerable
     function setComptroller(ISablierComptroller newComptroller) external override onlyComptroller {
-        // Check: the new comptroller supports the minimal interface ID from the current comptroller.
-        if (!newComptroller.supportsInterface(comptroller.MINIMAL_INTERFACE_ID())) {
-            revert Errors.SablierComptroller_UnsupportedInterfaceId({
-                previousComptroller: address(comptroller),
-                newComptroller: address(newComptroller),
-                minimalInterfaceId: comptroller.MINIMAL_INTERFACE_ID()
-            });
-        }
-
         // Checks and Effects: set the new comptroller.
-        _setComptroller(newComptroller);
+        _setComptroller({
+            interfaceId: comptroller.MINIMAL_INTERFACE_ID(),
+            previousComptroller: comptroller,
+            newComptroller: newComptroller
+        });
     }
 
     /// @inheritdoc IComptrollerable
@@ -99,9 +89,21 @@ abstract contract Comptrollerable is IComptrollerable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev See the documentation for the user-facing functions that call this private function.
-    function _setComptroller(ISablierComptroller newComptroller) private {
-        // Load the current comptroller address.
-        ISablierComptroller previousComptroller = comptroller;
+    function _setComptroller(
+        bytes4 interfaceId,
+        ISablierComptroller previousComptroller,
+        ISablierComptroller newComptroller
+    )
+        private
+    {
+        // Check: the new comptroller supports the minimal interface ID.
+        if (!ISablierComptroller(newComptroller).supportsInterface(interfaceId)) {
+            revert Errors.SablierComptroller_UnsupportedInterfaceId({
+                previousComptroller: address(previousComptroller),
+                newComptroller: address(newComptroller),
+                minimalInterfaceId: interfaceId
+            });
+        }
 
         // Effect: set the new comptroller.
         comptroller = newComptroller;
