@@ -18,8 +18,8 @@ import { RoleAdminable } from "./RoleAdminable.sol";
 /// implementation of an {ERC1967Proxy}.
 contract SablierComptroller is
     ERC165, // 1 inherited component
-    ISablierComptroller, // 3 inherited components
     Initializable, // 0 inherited components
+    ISablierComptroller, // 4 inherited components
     RoleAdminable, // 3 inherited components
     UUPSUpgradeable // 1 inherited component
 {
