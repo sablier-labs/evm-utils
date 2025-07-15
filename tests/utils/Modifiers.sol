@@ -54,7 +54,7 @@ abstract contract Modifiers is BaseTest {
         _;
     }
 
-    modifier whenComptrollerNotZeroAddress() {
+    modifier whenComptrollerWithMinimalInterfaceId() {
         _;
     }
 

@@ -32,16 +32,16 @@ abstract contract Comptrollerable is IComptrollerable {
     /// @param initialComptroller The address of the initial comptroller contract.
     constructor(address initialComptroller) {
         // Define the minimal interface ID required by the contracts inherited from {Comptrollerable}.
-        bytes4 minimal_interface_id = ISablierComptroller.calculateMinFeeWeiFor.selector
+        bytes4 initialMInimalInterfaceId = ISablierComptroller.calculateMinFeeWeiFor.selector
             ^ ISablierComptroller.convertUSDFeeToWei.selector ^ ISablierComptroller.execute.selector
             ^ ISablierComptroller.getMinFeeUSDFor.selector;
 
         // Check: the initial comptroller supports the minimal interface ID.
-        if (!ISablierComptroller(initialComptroller).supportsInterface(minimal_interface_id)) {
+        if (!ISablierComptroller(initialComptroller).supportsInterface(initialMInimalInterfaceId)) {
             revert Errors.SablierComptroller_UnsupportedInterfaceId({
                 previousComptroller: address(0),
                 newComptroller: address(initialComptroller),
-                minimalInterfaceId: minimal_interface_id
+                minimalInterfaceId: initialMInimalInterfaceId
             });
         }
 
