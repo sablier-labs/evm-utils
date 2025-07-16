@@ -48,7 +48,7 @@ abstract contract Adminable is IAdminable {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                            INTERNAL READ-ONLY FUNCTIONS
+                         INTERNAL STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev An internal function to initialize the admin.
