@@ -31,7 +31,7 @@ abstract contract Adminable is IAdminable {
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial admin.
     constructor(address initialAdmin) {
-        _initializeAdmin(initialAdmin);
+        _transferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -40,21 +40,21 @@ abstract contract Adminable is IAdminable {
 
     /// @inheritdoc IAdminable
     function transferAdmin(address newAdmin) public virtual override onlyAdmin {
-        // Effect: update the admin.
-        admin = newAdmin;
-
-        // Log the transfer of the admin.
-        emit IAdminable.TransferAdmin({ oldAdmin: msg.sender, newAdmin: newAdmin });
+        // Effect: transfer the admin.
+        _transferAdmin({ oldAdmin: msg.sender, newAdmin: newAdmin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////
                          INTERNAL STATE-CHANGING FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
 
-    /// @dev An internal function to initialize the admin.
-    function _initializeAdmin(address initialAdmin) internal {
-        admin = initialAdmin;
-        emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
+    /// @dev An internal function to transfer the admin.
+    function _transferAdmin(address oldAdmin, address newAdmin) internal {
+        // Effect: set the new admin.
+        admin = newAdmin;
+
+        // Log the transfer of the admin.
+        emit IAdminable.TransferAdmin({ oldAdmin: oldAdmin, newAdmin: newAdmin });
     }
 
     /*//////////////////////////////////////////////////////////////////////////

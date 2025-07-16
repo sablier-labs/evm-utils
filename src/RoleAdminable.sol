@@ -8,7 +8,9 @@ import { Errors } from "./libraries/Errors.sol";
 /// @title RoleAdminable
 /// @notice See the documentation in {IRoleAdminable}.
 /// @dev This contract is a lightweight version of OpenZeppelin's AccessControl contract which can be found at
-/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/access/AccessControl.sol.
+/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/access/AccessControl.sol. The contract
+/// inherits from {Adminable} and extends it with role-based permissions where the admin can grant and revoke roles to
+/// other accounts. Both role holders and the admin can access functions protected by roles.
 abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
@@ -20,9 +22,10 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /// @inheritdoc IRoleAdminable
     bytes32 public constant override FEE_MANAGEMENT_ROLE = keccak256("FEE_MANAGEMENT_ROLE");
 
-    /// @dev Since this contract is inherited by {SablierComptroller} which is upgradeable, we need to reserved storage
-    /// space to allow for adding new state variables in {RoleAdminable} and {Adminable} in the future.
-    uint256[50] private _gap;
+    /// @dev Since this contract is inherited by {SablierComptroller} which is upgradeable, we reserve 50 storage slots
+    /// to allow for adding new state variables in this and its parent contracts in the future. A gap of 49 slots is
+    /// used because 1 slot is used in {Adminable}.
+    uint256[49] private _gap;
 
     /// @dev A mapping of role identifiers to the addresses that have been granted the role. Roles are referred to by
     /// their `bytes32` identifier.

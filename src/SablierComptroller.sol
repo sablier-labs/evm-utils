@@ -189,7 +189,7 @@ contract SablierComptroller is
         onlyProxy
     {
         // Effect: set the initial admin.
-        _initializeAdmin(initialAdmin);
+        _transferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
 
         // Check and Effect: initialize the initial parameters of the contract.
         _initialize(initialAirdropMinFeeUSD, initialFlowMinFeeUSD, initialLockupMinFeeUSD, initialOracle);
