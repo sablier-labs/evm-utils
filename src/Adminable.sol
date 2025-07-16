@@ -31,7 +31,7 @@ abstract contract Adminable is IAdminable {
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial admin.
     constructor(address initialAdmin) {
-        initializeAdmin(initialAdmin);
+        _initializeAdmin(initialAdmin);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ abstract contract Adminable is IAdminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @dev An internal function to initialize the admin.
-    function initializeAdmin(address initialAdmin) internal {
+    function _initializeAdmin(address initialAdmin) internal {
         admin = initialAdmin;
         emit TransferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }

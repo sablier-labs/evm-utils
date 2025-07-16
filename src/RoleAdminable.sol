@@ -22,7 +22,7 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
 
     /// @dev Since this contract is inherited by {SablierComptroller} which is upgradeable, we need to reserved storage
     /// space to allow for adding new state variables in {RoleAdminable} and {Adminable} in the future.
-    uint256[50] private __gap;
+    uint256[50] private _gap;
 
     /// @dev A mapping of role identifiers to the addresses that have been granted the role. Roles are referred to by
     /// their `bytes32` identifier.
