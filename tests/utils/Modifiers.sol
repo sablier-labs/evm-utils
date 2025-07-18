@@ -46,6 +46,10 @@ abstract contract Modifiers is BaseTest {
         _;
     }
 
+    modifier whenCalledOnProxy() {
+        _;
+    }
+
     modifier whenCallerWithoutFeeCollectorRole() {
         _;
     }

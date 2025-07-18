@@ -8,7 +8,9 @@ import { Adminable } from "./Adminable.sol";
 /// @title RoleAdminable
 /// @notice See the documentation in {IRoleAdminable}.
 /// @dev This contract is a lightweight version of OpenZeppelin's AccessControl contract which can be found at
-/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/access/AccessControl.sol.
+/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/access/AccessControl.sol. The contract
+/// inherits from {Adminable} and extends it with role-based permissions where the admin can grant and revoke roles to
+/// other accounts. Both role holders and the admin can access functions protected by roles.
 abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /*//////////////////////////////////////////////////////////////////////////
                                   STATE VARIABLES
@@ -23,6 +25,11 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /// @dev A mapping of role identifiers to the addresses that have been granted the role. Roles are referred to by
     /// their `bytes32` identifier.
     mapping(bytes32 role => mapping(address account => bool)) private _roles;
+
+    /// @dev Since this contract is inherited by {SablierComptroller} which is upgradeable, we reserve 50 storage slots
+    /// to allow for adding new state variables in this and its parent contracts in the future. A gap of 48 slots is
+    /// added in addition to 1 slot used by admin in {Adminable} and 1 slot used by the roles mapping.
+    uint256[48] private __gap;
 
     /*//////////////////////////////////////////////////////////////////////////
                                       MODIFIERS
@@ -83,16 +90,8 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
     }
 
     /*//////////////////////////////////////////////////////////////////////////
-                        CONTRACT-INTERNAL READ-ONLY FUNCTIONS
+                            INTERNAL READ-ONLY FUNCTIONS
     //////////////////////////////////////////////////////////////////////////*/
-
-    /// @dev Checks whether `msg.sender` has the `role` or is the admin. This is used in the {onlyRole} modifier.
-    function _checkRoleOrIsAdmin(bytes32 role) private view {
-        // Check: `msg.sender` is the admin or has the `role`.
-        if (!_hasRoleOrIsAdmin(role, msg.sender)) {
-            revert Errors.UnauthorizedAccess({ caller: msg.sender, neededRole: role });
-        }
-    }
 
     /// @dev Returns `true` if `account` is the admin or has the `role`.
     function _hasRoleOrIsAdmin(bytes32 role, address account) internal view returns (bool) {
@@ -103,5 +102,17 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
 
         // Otherwise, return false.
         return false;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////
+                            PRIVATE READ-ONLY FUNCTIONS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev Checks whether `msg.sender` has the `role` or is the admin. This is used in the {onlyRole} modifier.
+    function _checkRoleOrIsAdmin(bytes32 role) private view {
+        // Check: `msg.sender` is the admin or has the `role`.
+        if (!_hasRoleOrIsAdmin(role, msg.sender)) {
+            revert Errors.UnauthorizedAccess({ caller: msg.sender, neededRole: role });
+        }
     }
 }
