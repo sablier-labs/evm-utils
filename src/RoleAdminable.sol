@@ -29,7 +29,7 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
     /// @dev Since this contract is inherited by {SablierComptroller} which is upgradeable, we reserve 50 storage slots
     /// to allow for adding new state variables in this and its parent contracts in the future. A gap of 48 slots is
     /// added in addition to 1 slot used by admin in {Adminable} and 1 slot used by the roles mapping.
-    uint256[48] private _gap;
+    uint256[48] private __gap;
 
     /*//////////////////////////////////////////////////////////////////////////
                                       MODIFIERS
