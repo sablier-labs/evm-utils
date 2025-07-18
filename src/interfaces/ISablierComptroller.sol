@@ -150,28 +150,6 @@ interface ISablierComptroller is IERC165, IERC1822Proxiable, IRoleAdminable {
     /// @return result The result from the call.
     function execute(address target, bytes calldata data) external returns (bytes memory result);
 
-    /// @notice Initializes the parameters of the contract when used behind a proxy.
-    ///
-    /// @dev Once used, this function cannot be called again.
-    ///
-    /// Requirements:
-    /// - Must be called via delegatecall.
-    /// - `msg.sender` must be an active proxy with the ERC-1967 compliant implementation pointing to self.
-    ///
-    /// @param initialAdmin The address of the initial contract admin.
-    /// @param initialAirdropMinFeeUSD The initial airdrops min USD fee charged.
-    /// @param initialFlowMinFeeUSD The initial flow min USD fee charged.
-    /// @param initialLockupMinFeeUSD The initial lockup min USD fee charged.
-    /// @param initialOracle The initial oracle contract address.
-    function initialize(
-        address initialAdmin,
-        uint256 initialAirdropMinFeeUSD,
-        uint256 initialFlowMinFeeUSD,
-        uint256 initialLockupMinFeeUSD,
-        address initialOracle
-    )
-        external;
-
     /// @notice Sets the custom USD fee for the provided user for the given protocol.
     /// @dev Emits a {SetCustomFeeUSD} event.
     ///

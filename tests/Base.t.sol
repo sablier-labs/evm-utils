@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22 <0.9.0;
 
+import { Upgrades } from "@openzeppelin/foundry-upgrades/src/Upgrades.sol";
 import { StdAssertions } from "forge-std/src/StdAssertions.sol";
-import { ERC1967Utils } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol";
 
 import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
 import { AdminableMock } from "src/mocks/AdminableMock.sol";
@@ -90,9 +90,8 @@ abstract contract Base_Test is BaseTest, Modifiers, StdAssertions {
     }
 
     /// @dev Get the implementation address of the comptroller.
-    function getComptrollerImplAddress() internal view returns (address) {
-        bytes32 data = vm.load({ target: address(comptroller), slot: ERC1967Utils.IMPLEMENTATION_SLOT });
-        return address(uint160(uint256(data)));
+    function getComptrollerImplAddress() internal view returns (address payable) {
+        return payable(Upgrades.getImplementationAddress(address(comptroller)));
     }
 
     /// @dev Returns the fee in USD for the given protocol.
