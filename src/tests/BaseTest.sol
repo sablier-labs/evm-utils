@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
+import { UnsafeUpgrades } from "@openzeppelin/foundry-upgrades/src/Upgrades.sol";
 import { StdCheats } from "forge-std/src/StdCheats.sol";
 
 import { IRoleAdminable } from "../interfaces/IRoleAdminable.sol";
@@ -143,22 +143,18 @@ abstract contract BaseTest is BaseConstants, BaseUtils, StdCheats {
         address oracle_
     )
         internal
-        returns (address)
+        returns (address proxy)
     {
         // Deploy the implementation.
-        address implementation =
-            address(new SablierComptroller(admin_, airdropMinFeeUSD_, flowMinFeeUSD_, lockupMinFeeUSD_, oracle_));
+        address implementation = address(new SablierComptroller(admin_));
 
         // Deploy the proxy and initialize the state variables.
-        address proxy = address(
-            new ERC1967Proxy({
-                implementation: implementation,
-                _data: abi.encodeCall(
-                    ISablierComptroller.initialize, (admin_, airdropMinFeeUSD_, flowMinFeeUSD_, lockupMinFeeUSD_, oracle_)
-                )
-            })
+        proxy = UnsafeUpgrades.deployUUPSProxy(
+            implementation,
+            abi.encodeCall(
+                SablierComptroller.initialize, (admin_, airdropMinFeeUSD_, flowMinFeeUSD_, lockupMinFeeUSD_, oracle_)
+            )
         );
-        return proxy;
     }
 
     /// @dev Authorize `account` to take admin actions on `target` contract.

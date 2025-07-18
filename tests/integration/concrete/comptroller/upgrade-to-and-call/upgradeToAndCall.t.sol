@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import { UUPSUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import { SablierComptroller } from "src/SablierComptroller.sol";
 import { Errors } from "src/libraries/Errors.sol";
 import { Base_Test } from "tests/Base.t.sol";
@@ -37,7 +37,7 @@ contract UpgradeToAndCall_Comptroller_Concrete_Test is Base_Test {
 
     function test_WhenNewImplementationCompatible() external whenCallerAdmin {
         // Deploy a new implementation that supports {IERC1822Proxiable} interface.
-        newImplementation = address(new SablierComptroller(admin, 0, 0, 0, address(oracle)));
+        newImplementation = address(new SablierComptroller(admin));
 
         // Upgrade to the new implementation.
         comptrollerCastedToUUPS.upgradeToAndCall(newImplementation, "");

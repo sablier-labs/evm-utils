@@ -1,59 +1,115 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.22;
 
-import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import { UnsafeUpgrades } from "@openzeppelin/foundry-upgrades/src/Upgrades.sol";
 
+import { Errors } from "src/libraries/Errors.sol";
 import { ISablierComptroller } from "src/interfaces/ISablierComptroller.sol";
+import { SablierComptroller } from "src/SablierComptroller.sol";
 
 import { Base_Test } from "tests/Base.t.sol";
 
 contract Initialize_Comptroller_Concrete_Test is Base_Test {
-    ISablierComptroller internal comptrollerImpl;
+    SablierComptroller internal uninitializedProxy;
 
     function setUp() public override {
         Base_Test.setUp();
 
-        comptrollerImpl = ISablierComptroller(getComptrollerImplAddress());
+        // Deploy the comptroller proxy without initializing it.
+        uninitializedProxy =
+            SablierComptroller(payable(UnsafeUpgrades.deployUUPSProxy(getComptrollerImplAddress(), "")));
     }
 
     function test_RevertWhen_CalledOnImplementation() external {
+        SablierComptroller implementation = SablierComptroller(getComptrollerImplAddress());
+
         // It should revert.
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        comptrollerImpl.initialize(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
+        implementation.initialize(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
     }
 
     function test_RevertGiven_Initialized() external whenCalledOnProxy {
+        SablierComptroller initializedProxy = SablierComptroller(payable(address(comptroller)));
+
         // It should revert.
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        comptroller.initialize(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
+        initializedProxy.initialize(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
     }
 
-    function test_GivenNotInitialized() external whenCalledOnProxy {
-        // Deploy a comptroller proxy without initializing it.
-        ISablierComptroller uninitializedComptroller =
-            ISablierComptroller(address(new ERC1967Proxy({ implementation: address(comptrollerImpl), _data: "" })));
+    function test_RevertWhen_InitialAirdropFeeExceedsMaxFee() external whenCalledOnProxy givenNotInitialized {
+        uint256 initialAirdropMinFeeUSD = MAX_FEE_USD + 1;
 
-        // It should initialize the states.
-        uninitializedComptroller.initialize(
-            admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle)
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierComptroller_MaxFeeUSDExceeded.selector, initialAirdropMinFeeUSD, MAX_FEE_USD
+            )
         );
+        uninitializedProxy.initialize(
+            admin, initialAirdropMinFeeUSD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle)
+        );
+    }
 
-        assertEq(uninitializedComptroller.admin(), admin, "admin");
-        assertEq(uninitializedComptroller.MAX_FEE_USD(), MAX_FEE_USD, "max fee USD");
-        assertEq(uninitializedComptroller.oracle(), address(oracle), "oracle");
+    function test_RevertWhen_InitialFlowFeeExceedsMaxFee()
+        external
+        whenCalledOnProxy
+        givenNotInitialized
+        whenInitialAirdropFeeNotExceedMaxFee
+    {
+        uint256 initialFlowMinFeeUSD = MAX_FEE_USD + 1;
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierComptroller_MaxFeeUSDExceeded.selector, initialFlowMinFeeUSD, MAX_FEE_USD
+            )
+        );
+        uninitializedProxy.initialize(
+            admin, AIRDROP_MIN_FEE_USD, initialFlowMinFeeUSD, LOCKUP_MIN_FEE_USD, address(oracle)
+        );
+    }
+
+    function test_RevertWhen_InitialLockupFeeExceedsMaxFee()
+        external
+        whenCalledOnProxy
+        givenNotInitialized
+        whenInitialAirdropFeeNotExceedMaxFee
+        whenInitialFlowFeeNotExceedMaxFee
+    {
+        uint256 initialLockupMinFeeUSD = MAX_FEE_USD + 1;
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Errors.SablierComptroller_MaxFeeUSDExceeded.selector, initialLockupMinFeeUSD, MAX_FEE_USD
+            )
+        );
+        uninitializedProxy.initialize(
+            admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, initialLockupMinFeeUSD, address(oracle)
+        );
+    }
+
+    function test_WhenInitialLockupFeeNotExceedMaxFee()
+        external
+        whenCalledOnProxy
+        givenNotInitialized
+        whenInitialAirdropFeeNotExceedMaxFee
+        whenInitialFlowFeeNotExceedMaxFee
+    {
+        uninitializedProxy.initialize(admin, AIRDROP_MIN_FEE_USD, FLOW_MIN_FEE_USD, LOCKUP_MIN_FEE_USD, address(oracle));
+
+        // It should initialize the proxy states.
+        assertEq(uninitializedProxy.admin(), admin, "admin");
+        assertEq(uninitializedProxy.MAX_FEE_USD(), MAX_FEE_USD, "max fee USD");
+        assertEq(uninitializedProxy.oracle(), address(oracle), "oracle");
         assertEq(
-            uninitializedComptroller.getMinFeeUSD(ISablierComptroller.Protocol.Airdrops),
+            uninitializedProxy.getMinFeeUSD(ISablierComptroller.Protocol.Airdrops),
             AIRDROP_MIN_FEE_USD,
             "get min fee USD Airdrops"
         );
         assertEq(
-            uninitializedComptroller.getMinFeeUSD(ISablierComptroller.Protocol.Flow),
-            FLOW_MIN_FEE_USD,
-            "get min fee USD Flow"
+            uninitializedProxy.getMinFeeUSD(ISablierComptroller.Protocol.Flow), FLOW_MIN_FEE_USD, "get min fee USD Flow"
         );
         assertEq(
-            uninitializedComptroller.getMinFeeUSD(ISablierComptroller.Protocol.Lockup),
+            uninitializedProxy.getMinFeeUSD(ISablierComptroller.Protocol.Lockup),
             LOCKUP_MIN_FEE_USD,
             "get min fee USD Lockup"
         );
