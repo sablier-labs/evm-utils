@@ -41,6 +41,7 @@ abstract contract RoleAdminable is IRoleAdminable, Adminable {
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @param initialAdmin The address of the initial admin.
+    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor(address initialAdmin) Adminable(initialAdmin) { }
 
     /*//////////////////////////////////////////////////////////////////////////
