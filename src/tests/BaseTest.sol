@@ -148,7 +148,8 @@ abstract contract BaseTest is BaseConstants, BaseUtils, StdCheats {
         // Deploy the implementation.
         address implementation = address(new SablierComptroller(admin_));
 
-        // Deploy the proxy and initialize the state variables.
+        // Deploy the proxy and initialize the state variables. See
+        // https://docs.openzeppelin.com/upgrades-plugins/foundry-upgrades#coverage_testing for more details.
         proxy = UnsafeUpgrades.deployUUPSProxy(
             implementation,
             abi.encodeCall(

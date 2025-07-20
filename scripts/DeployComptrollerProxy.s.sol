@@ -6,7 +6,8 @@ import { SablierComptroller } from "../src/SablierComptroller.sol";
 import { BaseScript } from "../src/tests/BaseScript.sol";
 
 /// @notice Deploys a new proxy and the Sablier Comptroller.
-/// @dev The deployed Sablier Comptroller is set as the implementation of the proxy.
+/// @dev The deployed Sablier Comptroller is set as the implementation of the proxy. See
+/// https://docs.openzeppelin.com/upgrades-plugins/foundry-upgrades#usage for more details.
 contract DeployComptrollerProxy is BaseScript {
     function run() public broadcast returns (address proxy, address implementation) {
         // Declare the constructor parameters of the implementation contract.
