@@ -8,6 +8,10 @@ abstract contract Modifiers is BaseTest {
                                        GIVEN
     //////////////////////////////////////////////////////////////////////////*/
 
+    modifier givenNotInitialized() {
+        _;
+    }
+
     modifier givenOracleNotZero() {
         _;
     }
