@@ -30,7 +30,6 @@ abstract contract Adminable is IAdminable {
 
     /// @dev Emits a {TransferAdmin} event.
     /// @param initialAdmin The address of the initial admin.
-    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor(address initialAdmin) {
         _transferAdmin({ oldAdmin: address(0), newAdmin: initialAdmin });
     }

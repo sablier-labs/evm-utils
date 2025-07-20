@@ -58,7 +58,6 @@ contract SablierComptroller is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @param initialAdmin The address of the initial contract admin.
-    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor(address initialAdmin) RoleAdminable(initialAdmin) {
         // Disable the initializers to prevent any future reinitialization.
         _disableInitializers();

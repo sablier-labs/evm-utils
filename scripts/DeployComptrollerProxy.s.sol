@@ -11,6 +11,10 @@ contract DeployComptrollerProxy is BaseScript {
         Options memory opts;
         opts.constructorData = abi.encode(getAdmin());
 
+        // Allow constructor in the implementation contract. See
+        // https://docs.openzeppelin.com/upgrades-plugins/faq#how-can-i-disable-checks.
+        opts.unsafeAllow = "constructor";
+
         // Declare the initializer data for the proxy.
         bytes memory initializerData = abi.encodeCall(
             SablierComptroller.initialize,
