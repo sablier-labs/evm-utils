@@ -5,8 +5,10 @@ import { Options, Upgrades } from "@openzeppelin/foundry-upgrades/src/Upgrades.s
 import { SablierComptroller } from "../src/SablierComptroller.sol";
 import { BaseScript } from "../src/tests/BaseScript.sol";
 
+/// @notice Deploys a new proxy and the Sablier Comptroller.
+/// @dev The deployed Sablier Comptroller is set as the implementation of the proxy.
 contract DeployComptrollerProxy is BaseScript {
-    function run() public broadcast returns (address proxy) {
+    function run() public broadcast returns (address proxy, address implementation) {
         // Declare the constructor parameters of the implementation contract.
         Options memory opts;
         opts.constructorData = abi.encode(getAdmin());
@@ -21,11 +23,17 @@ contract DeployComptrollerProxy is BaseScript {
             (getAdmin(), getInitialMinFeeUSD(), getInitialMinFeeUSD(), getInitialMinFeeUSD(), getChainlinkOracle())
         );
 
-        // Deploy the proxy along with the implementation and initialize the state variables.
+        // Perform the following steps:
+        // 1. Deploys the proxy.
+        // 2. Deploys the Comptroller.
+        // 3. Sets the implementation of the proxy to the address of the deployed Comptroller.
+        // 4. Initializes the state variables in the proxy contract.
         proxy = Upgrades.deployUUPSProxy({
             contractName: "SablierComptroller.sol:SablierComptroller",
             initializerData: initializerData,
             opts: opts
         });
+
+        implementation = Upgrades.getImplementationAddress(proxy);
     }
 }
