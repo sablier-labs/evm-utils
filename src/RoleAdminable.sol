@@ -8,7 +8,7 @@ import { Errors } from "./libraries/Errors.sol";
 /// @title RoleAdminable
 /// @notice See the documentation in {IRoleAdminable}.
 /// @dev This contract is a lightweight version of OpenZeppelin's AccessControl contract which can be found at
-/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/access/AccessControl.sol. The contract
+/// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.3.0/contracts/access/AccessControl.sol. The contract
 /// inherits from {Adminable} and extends it with role-based permissions where the admin can grant and revoke roles to
 /// other accounts. Both role holders and the admin can access functions protected by roles.
 abstract contract RoleAdminable is IRoleAdminable, Adminable {
