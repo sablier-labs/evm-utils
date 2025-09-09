@@ -14,12 +14,17 @@ abstract contract ProxyScript is BaseScript {
         return DeployProxyUtils.getImplementationAddress(proxy);
     }
 
-    /// @dev Returns the ABI encoded `initialize` function. This is used for initializing the proxy contract.
-    function _getInitializerData() internal view virtual returns (bytes memory) {
-        return abi.encodeCall(
-            SablierComptroller.initialize,
-            (getAdmin(), getInitialMinFeeUSD(), getInitialMinFeeUSD(), getInitialMinFeeUSD(), getChainlinkOracle())
-        );
+    /// @dev Initializes the proxy contract by populating its initial states.
+    function _populateInitialStates(address proxy) internal {
+        SablierComptroller comptrollerProxy = SablierComptroller(payable(proxy));
+
+        comptrollerProxy.initialize({
+            initialAdmin: getAdmin(),
+            initialAirdropMinFeeUSD: getInitialMinFeeUSD(),
+            initialLockupMinFeeUSD: getInitialMinFeeUSD(),
+            initialFlowMinFeeUSD: getInitialMinFeeUSD(),
+            initialOracle: getChainlinkOracle()
+        });
     }
 
     /// @dev Runs upgrade safety checks on the Comptroller contract. To see full list of the checks performed, visit

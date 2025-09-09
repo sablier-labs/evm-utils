@@ -12,11 +12,14 @@ contract DeployComptrollerProxy is ProxyScript {
         // Run upgrade safety checks.
         _runUpgradeSafetyChecks();
 
-        // Deploy implementation contract.
-        address impl = address(new SablierComptroller({ initialAdmin: getAdmin() }));
+        // Deploy implementation contract with default admin as its initial admin.
+        address impl = address(new SablierComptroller({ initialAdmin: DEFAULT_SABLIER_ADMIN }));
 
-        // Deploy proxy and initialize it.
-        proxy = address(new ERC1967Proxy(impl, _getInitializerData()));
+        // Deploy proxy without initialization.
+        proxy = address(new ERC1967Proxy({ implementation: impl, _data: "" }));
+
+        // Initialize the proxy by populating its initial states.
+        _populateInitialStates(proxy);
 
         // Get implementation address by reading the implementation storage slot of the proxy.
         implementation = _getImplementation(proxy);
