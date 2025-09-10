@@ -16,7 +16,7 @@ contract DeployDeterministicComptrollerProxy is ProxyHelpers {
         bytes32 salt = bytes32(abi.encodePacked(string.concat("Version ", getVersion())));
 
         // Deploy implementation contract with default admin as its initial admin. The default EOA admin is used across
-        // all chains so that we can have a deterministic address for the implementation contract.
+        // all chains so that we can have same the address for the implementation contract.
         address impl = address(new SablierComptroller{ salt: salt }({ initialAdmin: DEFAULT_SABLIER_ADMIN }));
 
         // Deploy proxy without initialization.
