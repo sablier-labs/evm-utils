@@ -8,7 +8,7 @@ import { SablierComptroller } from "src/SablierComptroller.sol";
 import { BaseScript } from "src/tests/BaseScript.sol";
 
 /// @dev Utility functions for validating and deploying proxy contract and its implementation.
-abstract contract ProxyScript is BaseScript {
+abstract contract ProxyHelpers is BaseScript {
     /// @dev Returns the implementation address of a proxy contract by reading its implementation storage slot.
     function _getImplementation(address proxy) internal view returns (address) {
         return DeployProxyUtils.getImplementationAddress(proxy);
@@ -30,7 +30,7 @@ abstract contract ProxyScript is BaseScript {
     /// @dev Runs upgrade safety checks on the Comptroller contract. To see full list of the checks performed, visit
     /// https://docs.openzeppelin.com/upgrades-plugins/faq#how-can-i-disable-checks.
     function _runUpgradeSafetyChecks() internal {
-        // Set `FOUNDRY_OUT` when optimized profile is used. Its value is read by the safety checks function.
+        // Set `FOUNDRY_OUT` since this value is read by the safety checks function.
         string memory profile = vm.envOr({ name: "FOUNDRY_PROFILE", defaultValue: string("default") });
         if (Strings.equal(profile, "optimized")) {
             vm.setEnv("FOUNDRY_OUT", "out-optimized");

@@ -3,11 +3,11 @@ pragma solidity >=0.8.22;
 
 import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import { SablierComptroller } from "src/SablierComptroller.sol";
-import { ProxyScript } from "./ProxyScript.sol";
+import { ProxyHelpers } from "./ProxyHelpers.sol";
 
 /// @notice Deploys a new proxy and the Sablier Comptroller.
 /// @dev The deployed Sablier Comptroller is set as the implementation of the proxy.
-contract DeployComptrollerProxy is ProxyScript {
+contract DeployComptrollerProxy is ProxyHelpers {
     function run() public broadcast returns (address proxy, address implementation) {
         // Run upgrade safety checks.
         _runUpgradeSafetyChecks();

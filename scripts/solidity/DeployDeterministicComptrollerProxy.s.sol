@@ -3,11 +3,11 @@ pragma solidity >=0.8.22;
 
 import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import { SablierComptroller } from "src/SablierComptroller.sol";
-import { ProxyScript } from "./ProxyScript.sol";
+import { ProxyHelpers } from "./ProxyHelpers.sol";
 
 /// @notice Deploys a new proxy and the Sablier Comptroller using CREATE2.
 /// @dev The deployed Sablier Comptroller is set as the implementation of the proxy.
-contract DeployDeterministicComptrollerProxy is ProxyScript {
+contract DeployDeterministicComptrollerProxy is ProxyHelpers {
     function run() public broadcast returns (address proxy, address implementation) {
         // Run upgrade safety checks.
         _runUpgradeSafetyChecks();
@@ -15,8 +15,8 @@ contract DeployDeterministicComptrollerProxy is ProxyScript {
         // Generate CREATE2 salt independent of chain id.
         bytes32 salt = bytes32(abi.encodePacked(string.concat("Version ", getVersion())));
 
-        // Deploy implementation contract with default admin as its initial admin. The EOA admin is used across all the
-        // chains for deploying implementation on the same address.
+        // Deploy implementation contract with default admin as its initial admin. The default EOA admin is used across
+        // all chains so that we can have a deterministic address for the implementation contract.
         address impl = address(new SablierComptroller{ salt: salt }({ initialAdmin: DEFAULT_SABLIER_ADMIN }));
 
         // Deploy proxy without initialization.
