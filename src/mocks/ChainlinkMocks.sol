@@ -2,10 +2,6 @@
 pragma solidity >=0.8.22;
 
 /// @dev By default, Chainlink uses 8 decimals for non-ETH pairs: https://ethereum.stackexchange.com/q/92508/24693
-/// IMPORTANT: Running the tests with via IR enabled will cause the tests to fail.
-/// See:
-/// - https://github.com/foundry-rs/foundry/issues/11598
-/// - https://github.com/foundry-rs/foundry/issues/6180
 uint8 constant DEFAULT_DECIMALS = 8;
 
 /*//////////////////////////////////////////////////////////////////////////
