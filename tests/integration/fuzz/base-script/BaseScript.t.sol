@@ -12,7 +12,7 @@ contract BaseScriptMock is BaseScript { }
 contract BaseScript_Fuzz_Test is StdAssertions {
     BaseScriptMock internal baseScript;
 
-    string public constant PACKAGE_VERSION = "1.0.0-beta.3";
+    string public constant PACKAGE_VERSION = "1.0.0";
 
     Vm internal vm = StdConstants.VM;
 

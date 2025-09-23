@@ -115,6 +115,7 @@ abstract contract BaseScript is Script {
         if (chainId == ChainId.OPTIMISM) return 0x13e3Ee699D1909E989722E753853AE30b17e08c5;
         if (chainId == ChainId.POLYGON) return 0xAB594600376Ec9fD91F8e885dADF0CE036862dE0;
         if (chainId == ChainId.SCROLL) return 0x6bF14CB0A831078629D993FDeBcB182b21A8774C;
+        if (chainId == ChainId.SONIC) return 0xc76dFb89fF298145b417d221B2c747d84952e01d;
         if (chainId == ChainId.ZKSYNC) return 0x6D41d1dc818112880b40e26BD6FD347E41008eDA;
 
         return address(0);
@@ -136,6 +137,7 @@ abstract contract BaseScript is Script {
         if (chainId == ChainId.ETHEREUM) return address(0xCAFE);
         if (chainId == ChainId.FORM) return address(0xCAFE);
         if (chainId == ChainId.GNOSIS) return address(0xCAFE);
+        if (chainId == ChainId.HYPEREVM) return address(0xCAFE);
         if (chainId == ChainId.IOTEX) return address(0xCAFE);
         if (chainId == ChainId.LIGHTLINK) return address(0xCAFE);
         if (chainId == ChainId.LINEA) return address(0xCAFE);
@@ -145,10 +147,10 @@ abstract contract BaseScript is Script {
         if (chainId == ChainId.POLYGON) return address(0xCAFE);
         if (chainId == ChainId.SCROLL) return address(0xCAFE);
         if (chainId == ChainId.SEI) return address(0xCAFE);
+        if (chainId == ChainId.SONIC) return address(0xCAFE);
         if (chainId == ChainId.SOPHON) return address(0xCAFE);
         if (chainId == ChainId.SUPERSEED) return address(0xCAFE);
         if (chainId == ChainId.TANGLE) return address(0xCAFE);
-        if (chainId == ChainId.ULTRA) return address(0xCAFE);
         if (chainId == ChainId.UNICHAIN) return address(0xCAFE);
         if (chainId == ChainId.XDC) return address(0xCAFE);
         if (chainId == ChainId.ZKSYNC) return address(0xCAFE);
@@ -157,13 +159,10 @@ abstract contract BaseScript is Script {
         if (chainId == ChainId.ARBITRUM_SEPOLIA) return address(0xCAFE);
         if (chainId == ChainId.BASE_SEPOLIA) return address(0xCAFE);
         if (chainId == ChainId.BLAST_SEPOLIA) return address(0xCAFE);
-        if (chainId == ChainId.ETHEREUM_SEPOLIA) return 0xAA38c6819c79d04d8008c4a84DDB95fDb328EB68;
         if (chainId == ChainId.LINEA_SEPOLIA) return address(0xCAFE);
         if (chainId == ChainId.MODE_SEPOLIA) return address(0xCAFE);
-        if (chainId == ChainId.MONAD_TESTNET) return address(0xCAFE);
         if (chainId == ChainId.OPTIMISM_SEPOLIA) return address(0xCAFE);
-        if (chainId == ChainId.SUPERSEED_SEPOLIA) return address(0xCAFE);
-        if (chainId == ChainId.ZKSYNC_SEPOLIA) return address(0xCAFE);
+        if (chainId == ChainId.SEPOLIA) return 0xAA38c6819c79d04d8008c4a84DDB95fDb328EB68;
 
         // Otherwise, revert.
         revert("Comptroller: not found");
