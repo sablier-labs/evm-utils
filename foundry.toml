@@ -84,8 +84,6 @@
   # testnets
   arbitrum_sepolia = "https://lb.routeme.sh/rpc/421614/${ROUTEMESH_API_KEY}"
   base_sepolia = "https://lb.routeme.sh/rpc/84532/${ROUTEMESH_API_KEY}"
-  blast_sepolia = "https://lb.routeme.sh/rpc/168587773/${ROUTEMESH_API_KEY}"
-  linea_sepolia = "https://lb.routeme.sh/rpc/59141/${ROUTEMESH_API_KEY}"
   mode_sepolia = "https://lb.routeme.sh/rpc/919/${ROUTEMESH_API_KEY}"
   optimism_sepolia = "https://lb.routeme.sh/rpc/11155420/${ROUTEMESH_API_KEY}"
   sepolia = "https://lb.routeme.sh/rpc/11155111/${ROUTEMESH_API_KEY}"

@@ -15,8 +15,8 @@ library ChainId {
             || chainId == SEI || chainId == SOPHON || chainId == SUPERSEED || chainId == TANGLE || chainId == SONIC
             || chainId == UNICHAIN || chainId == XDC || chainId == ZKSYNC;
 
-        bool isTestnet = chainId == ARBITRUM_SEPOLIA || chainId == BASE_SEPOLIA || chainId == BLAST_SEPOLIA
-            || chainId == LINEA_SEPOLIA || chainId == MODE_SEPOLIA || chainId == OPTIMISM_SEPOLIA || chainId == SEPOLIA;
+        bool isTestnet = chainId == ARBITRUM_SEPOLIA || chainId == BASE_SEPOLIA || chainId == MODE_SEPOLIA
+            || chainId == OPTIMISM_SEPOLIA || chainId == SEPOLIA;
 
         return isMainnet || isTestnet;
     }
@@ -59,8 +59,6 @@ library ChainId {
 
     uint256 public constant ARBITRUM_SEPOLIA = 421_614;
     uint256 public constant BASE_SEPOLIA = 84_532;
-    uint256 public constant BLAST_SEPOLIA = 168_587_773;
-    uint256 public constant LINEA_SEPOLIA = 59_141;
     uint256 public constant MODE_SEPOLIA = 919;
     uint256 public constant OPTIMISM_SEPOLIA = 11_155_420;
     uint256 public constant SEPOLIA = 11_155_111;
