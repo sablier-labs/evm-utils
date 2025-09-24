@@ -10,10 +10,10 @@ library ChainId {
     function isSupported(uint256 chainId) internal pure returns (bool) {
         bool isMainnet = chainId == ABSTRACT || chainId == ARBITRUM || chainId == AVALANCHE || chainId == BASE
             || chainId == BERACHAIN || chainId == BLAST || chainId == BSC || chainId == CHILIZ || chainId == COREDAO
-            || chainId == ETHEREUM || chainId == FORM || chainId == GNOSIS || chainId == HYPEREVM || chainId == IOTEX
-            || chainId == LIGHTLINK || chainId == LINEA || chainId == MODE || chainId == MORPH || chainId == OPTIMISM
-            || chainId == POLYGON || chainId == SCROLL || chainId == SEI || chainId == SOPHON || chainId == SUPERSEED
-            || chainId == TANGLE || chainId == SONIC || chainId == UNICHAIN || chainId == XDC || chainId == ZKSYNC;
+            || chainId == ETHEREUM || chainId == GNOSIS || chainId == HYPEREVM || chainId == LIGHTLINK || chainId == LINEA
+            || chainId == MODE || chainId == MORPH || chainId == OPTIMISM || chainId == POLYGON || chainId == SCROLL
+            || chainId == SEI || chainId == SOPHON || chainId == SUPERSEED || chainId == TANGLE || chainId == SONIC
+            || chainId == UNICHAIN || chainId == XDC || chainId == ZKSYNC;
 
         bool isTestnet = chainId == ARBITRUM_SEPOLIA || chainId == BASE_SEPOLIA || chainId == BLAST_SEPOLIA
             || chainId == LINEA_SEPOLIA || chainId == MODE_SEPOLIA || chainId == OPTIMISM_SEPOLIA || chainId == SEPOLIA;
@@ -35,10 +35,8 @@ library ChainId {
     uint256 public constant CHILIZ = 88_888;
     uint256 public constant COREDAO = 1116;
     uint256 public constant ETHEREUM = 1;
-    uint256 public constant FORM = 478;
     uint256 public constant GNOSIS = 100;
     uint256 public constant HYPEREVM = 999;
-    uint256 public constant IOTEX = 4689;
     uint256 public constant LIGHTLINK = 1890;
     uint256 public constant LINEA = 59_144;
     uint256 public constant MODE = 34_443;

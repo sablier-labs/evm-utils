@@ -135,10 +135,8 @@ abstract contract BaseScript is Script {
         if (chainId == ChainId.CHILIZ) return address(0xCAFE);
         if (chainId == ChainId.COREDAO) return address(0xCAFE);
         if (chainId == ChainId.ETHEREUM) return address(0xCAFE);
-        if (chainId == ChainId.FORM) return address(0xCAFE);
         if (chainId == ChainId.GNOSIS) return address(0xCAFE);
         if (chainId == ChainId.HYPEREVM) return address(0xCAFE);
-        if (chainId == ChainId.IOTEX) return address(0xCAFE);
         if (chainId == ChainId.LIGHTLINK) return address(0xCAFE);
         if (chainId == ChainId.LINEA) return address(0xCAFE);
         if (chainId == ChainId.MODE) return address(0xCAFE);
