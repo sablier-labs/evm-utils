@@ -95,6 +95,8 @@ contract BaseScript_Fuzz_Test is StdAssertions {
             assertEq(baseScript.getChainlinkOracle(), 0xAB594600376Ec9fD91F8e885dADF0CE036862dE0, "polygon oracle");
         } else if (chainId == ChainId.SCROLL) {
             assertEq(baseScript.getChainlinkOracle(), 0x6bF14CB0A831078629D993FDeBcB182b21A8774C, "scroll oracle");
+        } else if (chainId == ChainId.SONIC) {
+            assertEq(baseScript.getChainlinkOracle(), 0xc76dFb89fF298145b417d221B2c747d84952e01d, "sonic oracle");
         } else if (chainId == ChainId.ZKSYNC) {
             assertEq(baseScript.getChainlinkOracle(), 0x6D41d1dc818112880b40e26BD6FD347E41008eDA, "zksync oracle");
         } else {
@@ -103,7 +105,7 @@ contract BaseScript_Fuzz_Test is StdAssertions {
     }
 
     function testFuzz_GetComptroller(uint64 chainId) external setChainId(chainId) {
-        if (chainId == ChainId.ETHEREUM_SEPOLIA) {
+        if (chainId == ChainId.SEPOLIA) {
             assertEq(baseScript.getComptroller(), 0xAA38c6819c79d04d8008c4a84DDB95fDb328EB68, "sepolia comptroller");
         } else if (ChainId.isSupported(chainId)) {
             assertEq(baseScript.getComptroller(), address(0xCAFE), "comptroller");
