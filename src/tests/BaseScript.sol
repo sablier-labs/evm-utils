@@ -127,42 +127,15 @@ abstract contract BaseScript is Script {
         return address(0);
     }
 
-    /// @notice Returns the Sablier Comptroller on each chain. Revert if no comptroller is found.
+    /// @notice Returns the Sablier Comptroller on each chain.
     function getComptroller() public view returns (address) {
-        // Mainnets
-        if (chainId == ChainId.ABSTRACT) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.ARBITRUM) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.AVALANCHE) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.BASE) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.BERACHAIN) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.BLAST) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.BSC) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.CHILIZ) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.COREDAO) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.ETHEREUM) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.GNOSIS) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.HYPEREVM) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.LIGHTLINK) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.LINEA) return 0xF21b304A08993f98A79C7Eb841f812CCeab49B8b;
-        if (chainId == ChainId.MODE) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.MORPH) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.OPTIMISM) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.POLYGON) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.SCROLL) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.SEI) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.SONIC) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.SOPHON) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.SUPERSEED) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.UNICHAIN) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.XDC) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.ZKSYNC) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
+        if (ChainId.isSupported(chainId)) {
+            // For Linea, return the different address.
+            if (chainId == ChainId.LINEA) return 0xF21b304A08993f98A79C7Eb841f812CCeab49B8b;
 
-        // Testnets
-        if (chainId == ChainId.ARBITRUM_SEPOLIA) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.BASE_SEPOLIA) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.MODE_SEPOLIA) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.OPTIMISM_SEPOLIA) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.SEPOLIA) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
+            // For all other chains, return the vanity address.
+            return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
+        }
 
         // Otherwise, revert.
         revert("Comptroller: not found");

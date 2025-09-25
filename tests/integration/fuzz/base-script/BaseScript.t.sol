@@ -116,9 +116,6 @@ contract BaseScript_Fuzz_Test is StdAssertions {
         if (ChainId.isSupported(chainId)) {
             if (chainId == ChainId.LINEA) {
                 assertEq(baseScript.getComptroller(), 0xF21b304A08993f98A79C7Eb841f812CCeab49B8b, "comptroller");
-            } else if (chainId == ChainId.TANGLE) {
-                vm.expectRevert("Comptroller: not found");
-                baseScript.getComptroller();
             } else {
                 assertEq(baseScript.getComptroller(), 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399, "comptroller");
             }
