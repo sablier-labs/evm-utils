@@ -153,7 +153,6 @@ abstract contract BaseScript is Script {
         if (chainId == ChainId.SONIC) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
         if (chainId == ChainId.SOPHON) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
         if (chainId == ChainId.SUPERSEED) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
-        if (chainId == ChainId.TANGLE) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
         if (chainId == ChainId.UNICHAIN) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
         if (chainId == ChainId.XDC) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
         if (chainId == ChainId.ZKSYNC) return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
