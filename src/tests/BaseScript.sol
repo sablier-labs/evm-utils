@@ -26,7 +26,7 @@ abstract contract BaseScript is Script {
     /// @dev The address of the transaction broadcaster.
     address public broadcaster;
 
-    uint64 public chainId;
+    uint256 public chainId;
 
     /// @dev Used to derive the broadcaster's address if $ETH_FROM is not defined.
     string public mnemonic;
@@ -54,7 +54,7 @@ abstract contract BaseScript is Script {
     /// The use case for $ETH_FROM is to specify the broadcaster key and its address via the command line.
     constructor() {
         // Set the chain ID.
-        chainId = uint64(block.chainid);
+        chainId = block.chainid;
 
         address from = vm.envOr({ name: "ETH_FROM", defaultValue: address(0) });
         if (from != address(0)) {
