@@ -7,7 +7,7 @@ library ChainId {
                                       MAINNETS
     //////////////////////////////////////////////////////////////////////////*/
 
-    uint256 public constant TOTAL_MAINNET_CHAINS = 26;
+    uint256 public constant MAINNETS_COUNT = 26;
 
     uint256 public constant ABSTRACT = 2741;
     uint256 public constant ARBITRUM = 42_161;
@@ -40,7 +40,7 @@ library ChainId {
                                       TESTNETS
     //////////////////////////////////////////////////////////////////////////*/
 
-    uint256 public constant TOTAL_TESTNET_CHAINS = 5;
+    uint256 public constant TESTNETS_COUNT = 5;
 
     uint256 public constant ARBITRUM_SEPOLIA = 421_614;
     uint256 public constant BASE_SEPOLIA = 84_532;
@@ -54,7 +54,7 @@ library ChainId {
 
     /// @notice Returns the full list of supported mainnet chain IDs.
     function getAllMainnets() internal pure returns (uint256[] memory supportedIds) {
-        supportedIds = new uint256[](TOTAL_MAINNET_CHAINS);
+        supportedIds = new uint256[](MAINNETS_COUNT);
 
         supportedIds[0] = ABSTRACT;
         supportedIds[1] = ARBITRUM;
@@ -86,7 +86,7 @@ library ChainId {
 
     /// @notice Returns the full list of supported testnet chain IDs.
     function getAllTestnets() internal pure returns (uint256[] memory supportedIds) {
-        supportedIds = new uint256[](TOTAL_TESTNET_CHAINS);
+        supportedIds = new uint256[](TESTNETS_COUNT);
 
         supportedIds[0] = ARBITRUM_SEPOLIA;
         supportedIds[1] = BASE_SEPOLIA;
@@ -136,15 +136,15 @@ library ChainId {
     /// @notice Returns `true` if the given chain ID is supported.
     function isSupported(uint256 chainId) internal pure returns (bool) {
         // Return true if the chain ID is in the mainnet list.
-        uint256[] memory supportedIds = getAllMainnets();
-        for (uint256 i = 0; i < supportedIds.length; ++i) {
-            if (supportedIds[i] == chainId) return true;
+        uint256[] memory mainnets = getAllMainnets();
+        for (uint256 i = 0; i < mainnets.length; ++i) {
+            if (mainnets[i] == chainId) return true;
         }
 
         // Return true if the chain ID is in the testnet list.
-        supportedIds = getAllTestnets();
-        for (uint256 i = 0; i < supportedIds.length; ++i) {
-            if (supportedIds[i] == chainId) return true;
+        uint256[] memory testnets = getAllTestnets();
+        for (uint256 i = 0; i < testnets.length; ++i) {
+            if (testnets[i] == chainId) return true;
         }
 
         return false;

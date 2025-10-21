@@ -1,16 +1,16 @@
 [profile.default]
-  ast = true                       # needed for upgrade safety validations by foundry-upgrades
+  ast = true # needed for upgrade safety validations by foundry-upgrades
   auto_detect_solc = false
-  build_info = true                # needed for upgrade safety validations by foundry-upgrades
+  build_info = true # needed for upgrade safety validations by foundry-upgrades
   bytecode_hash = "ipfs"
-  evm_version = "shanghai"         # needed for greater coverage of EVM chains
+  evm_version = "shanghai" # needed for greater coverage of EVM chains
   extra_output = ["storageLayout"] # needed for upgrade safety validations by foundry-upgrades
+  ffi = true # needed for upgrade safety validations by foundry-upgrades
   fs_permissions = [
     { access = "read", path = "./out" },
     { access = "read", path = "./out-optimized" },
     { access = "read", path = "package.json" },
   ]
-  ffi = true                        # needed for upgrade safety validations by foundry-upgrades
   gas_reports = ["*"]
   optimizer = true
   optimizer_runs = 10_000
@@ -25,8 +25,8 @@
   runs = 1000
 
 [profile.default.invariant]
-  call_override = false  # Override unsafe external calls to perform reentrancy checks
-  depth = 100            # Number of calls executed in one run
+  call_override = false # Override unsafe external calls to perform reentrancy checks
+  depth = 100           # Number of calls executed in one run
   fail_on_revert = true
   runs = 200
   show_metrics = false
