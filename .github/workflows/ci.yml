@@ -15,11 +15,14 @@ on:
 jobs:
   check:
     uses: "sablier-labs/gha-utils/.github/workflows/full-check.yml@main"
+    with:
+      foundry-version: "stable"
 
   build:
     uses: "sablier-labs/gha-utils/.github/workflows/forge-build.yml@main"
     with:
       foundry-profiles: "default"
+      foundry-version: "stable"
 
   test-bulloak:
     needs: ["check", "build"]
@@ -35,6 +38,7 @@ jobs:
     uses: "sablier-labs/gha-utils/.github/workflows/forge-test.yml@main"
     with:
       foundry-fuzz-runs: 2000
+      foundry-version: "stable"
       match-path: "tests/integration/**/*.sol"
       name: "Integration tests"
 
@@ -45,6 +49,7 @@ jobs:
     with:
       foundry-invariant-depth: 100
       foundry-invariant-runs: 300
+      foundry-version: "stable"
       match-path: "tests/invariant/**/*.sol"
       name: "Invariant tests"
 
@@ -56,3 +61,4 @@ jobs:
     uses: "sablier-labs/gha-utils/.github/workflows/forge-coverage.yml@main"
     with:
       match-path: "tests/integration/**/*.sol"
+      foundry-version: "stable"
