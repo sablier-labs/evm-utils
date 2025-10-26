@@ -156,7 +156,14 @@ contract SablierComptroller is
     //////////////////////////////////////////////////////////////////////////*/
 
     /// @inheritdoc ISablierComptroller
-    function disableCustomFeeUSDFor(Protocol protocol, address user) external override onlyRole(FEE_MANAGEMENT_ROLE) {
+    function disableCustomFeeUSDFor(
+        Protocol protocol,
+        address user
+    )
+        external
+        override
+        onlyRole(FEE_MANAGEMENT_ROLE)
+    {
         // Get the current min fee USD for user.
         uint256 previousMinFeeUSD = _getMinFeeUSDFor(protocol, user);
 
@@ -174,7 +181,15 @@ contract SablierComptroller is
     }
 
     /// @inheritdoc ISablierComptroller
-    function execute(address target, bytes calldata data) external override onlyAdmin returns (bytes memory result) {
+    function execute(
+        address target,
+        bytes calldata data
+    )
+        external
+        override
+        onlyAdmin
+        returns (bytes memory result)
+    {
         bool success;
 
         // Interactions: call the target contract with the provided data.
@@ -253,10 +268,7 @@ contract SablierComptroller is
 
         // Log the update.
         emit ISablierComptroller.SetMinFeeUSD({
-            protocol: protocol,
-            caller: msg.sender,
-            previousMinFeeUSD: previousMinFeeUSD,
-            newMinFeeUSD: newMinFeeUSD
+            protocol: protocol, caller: msg.sender, previousMinFeeUSD: previousMinFeeUSD, newMinFeeUSD: newMinFeeUSD
         });
     }
 

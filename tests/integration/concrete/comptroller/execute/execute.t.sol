@@ -98,9 +98,7 @@ contract Execute_Concrete_Test is Base_Test {
         // It should emit an {Execute} event.
         vm.expectEmit({ emitter: address(comptroller) });
         emit ISablierComptroller.Execute({
-            target: address(comptrollerableMock),
-            data: setComptrollerPayload,
-            result: ""
+            target: address(comptrollerableMock), data: setComptrollerPayload, result: ""
         });
 
         comptroller.execute({ target: address(targets.comptrollerableMock), data: setComptrollerPayload });

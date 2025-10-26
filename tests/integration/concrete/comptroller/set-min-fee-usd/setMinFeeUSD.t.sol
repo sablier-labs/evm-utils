@@ -50,7 +50,13 @@ contract SetMinFeeUSD_Comptroller_Concrete_Test is Base_Test {
         comptroller.setMinFeeUSD(protocol, newMinFeeUSD);
     }
 
-    function test_WhenNewMinFeeNotExceedMaxFee(uint8 protocolIndex, uint128 newMinFeeUSD) external whenCallerAdmin {
+    function test_WhenNewMinFeeNotExceedMaxFee(
+        uint8 protocolIndex,
+        uint128 newMinFeeUSD
+    )
+        external
+        whenCallerAdmin
+    {
         ISablierComptroller.Protocol protocol = boundProtocolEnum(protocolIndex);
 
         // Bound custom fee USD to the max fee USD.
@@ -61,7 +67,13 @@ contract SetMinFeeUSD_Comptroller_Concrete_Test is Base_Test {
     }
 
     /// @dev Shared logic to test setting the min fee USD.
-    function _setMinFeeUSD(ISablierComptroller.Protocol protocol, address caller, uint128 newMinFeeUSD) private {
+    function _setMinFeeUSD(
+        ISablierComptroller.Protocol protocol,
+        address caller,
+        uint128 newMinFeeUSD
+    )
+        private
+    {
         uint256 previousMinFeeUSD = comptroller.getMinFeeUSD(protocol);
 
         // It should emit a {SetMinFeeUSD} event.
