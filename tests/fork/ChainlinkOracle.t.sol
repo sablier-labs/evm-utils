@@ -14,11 +14,11 @@ contract ChainlinkOracle_Fork_Test is Base_Test {
         uint256[] memory supportedChainIds = ChainId.getAllMainnets();
 
         // Run tests over all supported chains.
-        for (uint256 i = 0; i < 26; ++i) {
+        for (uint256 i = 0; i < ChainId.MAINNETS_COUNT; ++i) {
             uint256 chainId = supportedChainIds[i];
 
-            // Skip zksync as it requires a different foundry version.
-            if (chainId == ChainId.ZKSYNC) continue;
+            // Skip zksync as it requires a different foundry version, and monad as RPC is not supported yet.
+            if (chainId == ChainId.ZKSYNC || chainId == ChainId.MONAD) continue;
 
             // Get the chain name.
             string memory chainName = ChainId.getName(chainId);

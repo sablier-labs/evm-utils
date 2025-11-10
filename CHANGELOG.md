@@ -3,8 +3,15 @@
 All notable changes to this project will be documented in this file. The format is based on
 [Common Changelog](https://common-changelog.org/).
 
+[v1.0.2]: https://github.com/sablier-labs/evm-utils/releases/tag/v1.0.2
 [v1.0.1]: https://github.com/sablier-labs/evm-utils/releases/tag/v1.0.1
 [v1.0.0]: https://github.com/sablier-labs/evm-utils/releases/tag/v1.0.0
+
+## ## [v1.0.2] - 2025-11-10
+
+### Added
+
+- Support for Monad network
 
 ## [v1.0.1] - 2025-10-22
 
