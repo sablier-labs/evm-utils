@@ -89,8 +89,12 @@ contract BaseScript_Fuzz_Test is StdAssertions {
             assertEq(baseScript.getChainlinkOracle(), 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419, "ethereum oracle");
         } else if (chainId == ChainId.GNOSIS) {
             assertEq(baseScript.getChainlinkOracle(), 0x678df3415fc31947dA4324eC63212874be5a82f8, "gnosis oracle");
+        } else if (chainId == ChainId.HYPEREVM) {
+            assertEq(baseScript.getChainlinkOracle(), 0xa5a72eF19F82A579431186402425593a559ed352, "hyperevm oracle");
         } else if (chainId == ChainId.LINEA) {
             assertEq(baseScript.getChainlinkOracle(), 0x3c6Cd9Cc7c7a4c2Cf5a82734CD249D7D593354dA, "linea oracle");
+        } else if (chainId == ChainId.MONAD) {
+            assertEq(baseScript.getChainlinkOracle(), 0xBcD78f76005B7515837af6b50c7C52BCf73822fb, "monad oracle");
         } else if (chainId == ChainId.OPTIMISM) {
             assertEq(baseScript.getChainlinkOracle(), 0x13e3Ee699D1909E989722E753853AE30b17e08c5, "optimism oracle");
         } else if (chainId == ChainId.OPTIMISM_SEPOLIA) {
