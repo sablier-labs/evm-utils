@@ -135,6 +135,9 @@ abstract contract BaseScript is Script {
             // For Linea, return the different address.
             if (chainId == ChainId.LINEA) return 0xF21b304A08993f98A79C7Eb841f812CCeab49B8b;
 
+            // For Denergy, return the different address.
+            if (chainId == ChainId.DENERGY) return 0x946654AB30Dd6eD10236C89f2C8B2719df653691;
+
             // For all other chains, return the vanity address.
             return 0x0000008ABbFf7a84a2fE09f9A9b74D3BC2072399;
         }

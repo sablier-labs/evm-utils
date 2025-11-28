@@ -3,9 +3,17 @@
 All notable changes to this project will be documented in this file. The format is based on
 [Common Changelog](https://common-changelog.org/).
 
+[1.0.3]: https://github.com/sablier-labs/evm-utils/releases/tag/v1.0.3
 [1.0.2]: https://github.com/sablier-labs/evm-utils/releases/tag/v1.0.2
 [1.0.1]: https://github.com/sablier-labs/evm-utils/releases/tag/v1.0.1
 [1.0.0]: https://github.com/sablier-labs/evm-utils/releases/tag/v1.0.0
+
+## [1.0.3] - 2025-11-28
+
+### Added
+
+- Support for Denergy network
+- Chainlink Oracles for HyperEVM and Monad
 
 ## [1.0.2] - 2025-11-10
 
