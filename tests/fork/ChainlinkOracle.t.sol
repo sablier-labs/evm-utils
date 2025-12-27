@@ -69,6 +69,11 @@ contract ChainlinkOracle_Fork_Test is Base_Test {
         // Fork chain on the latest block number.
         vm.createSelectFork({ urlOrAlias: chainName });
 
+        // Enable vm cheatcodes on `baseScriptMock` by precomputing its address. This is required in Foundry v1.3.6
+        // because contracts deployed after a fork don't have cheatcode access by default.
+        address expectedMockAddress = vm.computeCreateAddress({ deployer: admin, nonce: vm.getNonce(admin) });
+        vm.allowCheatcodes(expectedMockAddress);
+
         BaseScriptMock baseScriptMock = new BaseScriptMock();
 
         // Get the Chainlink oracle address for the current chain.
