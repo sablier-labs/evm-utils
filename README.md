@@ -1,3 +1,8 @@
+# Archived
+
+This repository is no longer maintained, and it is archived. The latest version of the utils protocol can be viewed in
+the [evm-monorepo](https://github.com/sablier-labs/evm-monorepo/tree/main/utils).
+
 # Sablier EVM Utils [![Github Actions][gha-badge]][gha] [![Coverage][codecov-badge]][codecov] [![Foundry][foundry-badge]][foundry] [![Discord][discord-badge]][discord]
 
 [gha]: https://github.com/sablier-labs/evm-utils/actions
